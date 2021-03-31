@@ -1,8 +1,9 @@
 import {ViewElement} from './ViewElement.js';
+import {ViewValues} from './ViewValues.js';
 
 export class Filters extends ViewElement {
   constructor() {
-    super(`<form class="trip-filters" action="#" method="get">
+    super(ViewValues.selectors.FILTERS, `<form class="trip-filters" action="#" method="get">
                 <div class="trip-filters__filter">
                   <input id="filter-everything" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="everything" checked>
                   <label class="trip-filters__filter-label" for="filter-everything">Everything</label>

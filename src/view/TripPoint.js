@@ -1,8 +1,9 @@
-import {ViewElement} from './ViewElement';
+import {ViewElement} from './ViewElement.js';
+import {ViewValues} from './ViewValues.js';
 
 export class TripPoint extends ViewElement {
   constructor(title = 'Trip Action') {
-    super(`<li class="trip-events__item">
+    super(ViewValues.selectors.POINT, `<li class="trip-events__item">
               <div class="event">
                 <time class="event__date" datetime="2019-03-18">MAR 18</time>
                 <div class="event__type">

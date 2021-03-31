@@ -1,8 +1,9 @@
-import { ViewElement } from './ViewElement';
+import {ViewElement} from './ViewElement.js';
+import {ViewValues} from './ViewValues.js';
 
 export class TripPointEditor extends ViewElement {
   constructor() {
-    super(`<li class="trip-events__item">
+    super(ViewValues.selectors.POINT_EDITOR, `<li class="trip-events__item">
               <form class="event event--edit" action="#" method="post">
                 <header class="event__header">
                   <div class="event__type-wrapper">
