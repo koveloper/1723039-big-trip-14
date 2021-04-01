@@ -3,7 +3,10 @@ import {ViewValues} from './ViewValues.js';
 
 export class TripInfo extends ViewElement {
   constructor() {
-    super(ViewValues.selectors.INFO, `<section class="trip-main__trip-info  trip-info">
+    super();
+    this.containerSelector = ViewValues.selectors.INFO;
+    this.placeToInsert = 'afterBegin';
+    this.markup = `<section class="trip-main__trip-info  trip-info">
             <div class="trip-info__main">
               <h1 class="trip-info__title">Amsterdam &mdash; Chamonix &mdash; Geneva</h1>
 
@@ -13,6 +16,6 @@ export class TripInfo extends ViewElement {
             <p class="trip-info__cost">
               Total: &euro;&nbsp;<span class="trip-info__cost-value">1230</span>
             </p>
-          </section>`, 'afterBegin');
+          </section>`;
   }
 }

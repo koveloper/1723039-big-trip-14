@@ -3,7 +3,9 @@ import {ViewValues} from './ViewValues.js';
 
 export class TripPointCreator extends ViewElement {
   constructor() {
-    super(ViewValues.selectors.POINT_CREATOR, `<li class="trip-events__item">
+    super();
+    this.containerSelector = ViewValues.selectors.POINT_CREATOR;
+    this.markup = `<li class="trip-events__item">
               <form class="event event--edit" action="#" method="post">
                 <header class="event__header">
                   <div class="event__type-wrapper">
@@ -169,6 +171,6 @@ export class TripPointCreator extends ViewElement {
                   </section>
                 </section>
               </form>
-            </li>`);
+            </li>`;
   }
 }

@@ -3,7 +3,9 @@ import {ViewValues} from './ViewValues.js';
 
 export class TripPoint extends ViewElement {
   constructor(title = 'Trip Action') {
-    super(ViewValues.selectors.POINT, `<li class="trip-events__item">
+    super();
+    this.containerSelector = ViewValues.selectors.POINT;
+    this.markup = `<li class="trip-events__item">
               <div class="event">
                 <time class="event__date" datetime="2019-03-18">MAR 18</time>
                 <div class="event__type">
@@ -39,6 +41,6 @@ export class TripPoint extends ViewElement {
                   <span class="visually-hidden">Open event</span>
                 </button>
               </div>
-            </li>`);
+            </li>`;
   }
 }
