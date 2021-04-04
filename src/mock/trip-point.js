@@ -27,7 +27,7 @@ const availableOffers = (() => {
   const offersMap = new Map();
   for(const tripPointType of TRIP_POINT_TYPES) {
     const offers = [];
-    for(let i = 0; i < generateRandomInt(0, 6); i++) {
+    for(let i = 0; i < generateRandomInt(2, 6); i++) {
       offers.push({
         title: generateRandomWord(7 + generateRandomInt(-2, 6)),
         price: generateRandomInt(1, 15) * 10,
@@ -86,11 +86,11 @@ const generatePictures = () => {
 };
 
 let lastDate = null;
-const generateDate = () => {
+const generateDate = (maxDiffInDays = 1) => {
   if(lastDate === null) {
     lastDate = new Date();
   }
-  lastDate = new Date(lastDate.getTime() + (generateRandomInt(1, 10) * 24 * 3600 * 1000));
+  lastDate = new Date(lastDate.getTime() + (generateRandomInt(1800, maxDiffInDays * 24 * 3600 * 1000)));
   return lastDate.toISOString();
 };
 
@@ -109,9 +109,9 @@ export const generateTripPointData = () => {
       pictures: generatePictures(),
     },
     offers: generateOffers(type),
-    base_price: generateRandomInt(0, 15) * 100,
-    date_from: generateDate(),
-    date_to: generateDate(),
+    base_price: generateRandomInt(1, 150) * 10,
+    date_from: generateDate(5),
+    date_to: generateDate(2),
     isFavorite: generateFavorite(),
   };
 };
