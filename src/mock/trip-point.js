@@ -22,31 +22,12 @@ const generateRandomWord = (wordSize) => {
   return str;
 };
 
-const availableOffers = (() => {
-  const offersMap = new Map();
-  for(const tripPointType of TRIP_POINT_TYPES) {
-    const offers = [];
-    for(let i = 0; i < generateRandomInt(2, 6); i++) {
-      offers.push({
-        title: generateRandomWord(7 + generateRandomInt(-2, 6)),
-        price: generateRandomInt(1, 15) * 10,
-      });
-    }
-    offersMap.set(tripPointType.type, offers);
-  }
-  AVAILABLE_OFFERS_MAP.clear();
-  for(const key of offersMap.keys()) {
-    AVAILABLE_OFFERS_MAP.set(key, offersMap.get(key));
-  }
-  return offersMap;
-})();
-
 const generateOffers = (pointType) => {
   const opts = [];
-  const offset = generateRandomInt(0, availableOffers.get(pointType).length);
-  const size = generateRandomInt(0, availableOffers.get(pointType).length);
+  const offset = generateRandomInt(0, AVAILABLE_OFFERS_MAP.get(pointType).length);
+  const size = generateRandomInt(0, AVAILABLE_OFFERS_MAP.get(pointType).length);
   for(let i = 0; i < size; i++) {
-    opts.push(availableOffers.get(pointType)[(offset + i) % availableOffers.get(pointType).length]);
+    opts.push(AVAILABLE_OFFERS_MAP.get(pointType)[(offset + i) % AVAILABLE_OFFERS_MAP.get(pointType).length]);
   }
   return opts;
 };
@@ -63,6 +44,18 @@ const generateDescription = () => {
   return result;
 };
 
+const generatePictures = () => {
+  const arr = [];
+
+  for(let i = 0; i < generateRandomInt(4, 10); i++) {
+    arr.push({
+      src: `http://picsum.photos/300/200?r=${Math.random()}`,
+      description: generateWordSequence(generateRandomInt(2, 5)),
+    });
+  }
+  return arr;
+};
+
 let pointId = 0;
 const generatePointId = () => {
   return pointId++;
@@ -74,18 +67,6 @@ const generateWordSequence = (maxWords) => {
     seq += (seq.length ? ' ' : '') + generateRandomWord(generateRandomInt(7, 15));
   }
   return seq;
-};
-
-const generatePictures = () => {
-  const arr = [];
-
-  for(let i = 0; i < generateRandomInt(4, 10); i++) {
-    arr.push({
-      src: `http://picsum.photos/300/200?r=${Math.random()}`,
-      description: generateWordSequence(generateRandomInt(2, 5)),
-    });
-  }
-  return arr;
 };
 
 let lastDate = null;
@@ -101,16 +82,49 @@ const generateFavorite = () => {
   return Math.random() > 0.5;
 };
 
+(() => {
+  AVAILABLE_OFFERS_MAP.clear();
+  for(const tripPointType of TRIP_POINT_TYPES) {
+    const offers = [];
+    for(let i = 0; i < generateRandomInt(2, 6); i++) {
+      offers.push({
+        title: generateRandomWord(7 + generateRandomInt(-2, 6)),
+        price: generateRandomInt(1, 15) * 10,
+      });
+    }
+    AVAILABLE_OFFERS_MAP.set(tripPointType.type, offers);
+  }
+  for(const key of AVAILABLE_OFFERS_MAP.keys()) {
+    AVAILABLE_OFFERS_MAP.set(key, AVAILABLE_OFFERS_MAP.get(key));
+  }
+})();
+
+(() => {
+  const cities = [
+    'Washington',
+    'New York',
+    'Chicago',
+    'Miami',
+    'Oslo',
+    'Milan',
+    'Porto',
+    'London',
+  ];
+  for(const city of cities) {
+    CITY_LIST.push({
+      name: city,
+      description: generateDescription(),
+      pictures: generatePictures(),
+    });
+  }
+})();
+
 export const generateTripPointData = () => {
   const type = generatePointType().type;
   return {
     id: generatePointId(),
     type,
-    destination: {
-      name: generateCity(),
-      description: generateDescription(),
-      pictures: generatePictures(),
-    },
+    destination: generateCity(),
     offers: generateOffers(type),
     base_price: generateRandomInt(1, 150) * 10,
     date_from: generateDate(5),
