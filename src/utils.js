@@ -25,4 +25,12 @@ export const TimeUtils = {
       return `${Math.floor(diffInSeconds / 60)}m`;
     }
   },
+  getDateDiff: (isoDateStrFrom, isoDateStrTo) => {
+    const from = new Date(Date.parse(isoDateStrFrom)).toLocaleString('en', {month: 'short', day: '2-digit'});
+    const to = new Date(Date.parse(isoDateStrTo)).toLocaleString('en', {month: 'short', day: '2-digit'});
+    if(from === to) {
+      return from;
+    }
+    return [from, to.slice(0, 3) === from.slice(0, 3) ? to.slice(3) : to];
+  },
 };

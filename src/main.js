@@ -12,7 +12,7 @@ const testPoints = new Array(20).fill().map(() => generateTripPointData());
 
 const viewItems = {
   menu: new Menu(),
-  tripInfo: new TripInfo(),
+  tripInfo: new TripInfo(testPoints),
   filters: new Filters(),
   sort: new Sort(),
   tripEventsList: new TripPointsContainer(),
