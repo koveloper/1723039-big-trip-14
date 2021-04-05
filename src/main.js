@@ -2,16 +2,13 @@ import { Menu } from './view/Menu.js';
 import { TripInfo } from './view/TripInfo.js';
 import { Filters } from './view/Filters.js';
 import { Sort } from './view/Sort.js';
-import { TripPointCreator } from './view/TripPointCreator.js';
 import { TripPointEditor } from './view/TripPointEditor.js';
 import { TripPoint } from './view/TripPoint.js';
 import { TripPointsContainer } from './view/TripPointsContainer.js';
 import { TRIP_POINT_TYPES } from './structures.js';
 import { generateTripPointData } from './mock/trip-point.js';
 
-
 const testPoints = new Array(20).fill().map(() => generateTripPointData());
-
 
 const viewItems = {
   menu: new Menu(),
@@ -19,8 +16,8 @@ const viewItems = {
   filters: new Filters(),
   sort: new Sort(),
   tripEventsList: new TripPointsContainer(),
-  tripPointCreator: new TripPointCreator(),
-  tripPointEditor: new TripPointEditor(),
+  tripPointCreator: new TripPointEditor(),
+  tripPointEditor: new TripPointEditor(generateTripPointData()),
   tripPoints: testPoints.map((e) => new TripPoint(e)),
 };
 
