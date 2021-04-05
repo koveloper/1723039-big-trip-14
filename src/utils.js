@@ -9,6 +9,9 @@ export const TimeUtils = {
   convertTo_YYYYMMDD_HHMM: (isoTimeStampString) => {
     return isoTimeStampString.slice(0, -8);
   },
+  convertTo_DDMMYY_HHMM: (isoTimeStampString) => {
+    return new Date(Date.parse(isoTimeStampString)).toLocaleString('en', {day: '2-digit', month: '2-digit', year: '2-digit'}) + ' ' + new Date(Date.parse(isoTimeStampString)).toLocaleString('en', {hour12: false, hour: '2-digit', minute: '2-digit'});
+  },
   convertTo_HHMM: (isoTimeStampString) => {
     return isoTimeStampString.slice(-13, -8);
   },
