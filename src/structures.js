@@ -23,15 +23,5 @@ export const getPointTypeTitle = (pointTypeValue) => {
   return TRIP_POINT_TYPES.filter((p) => {return p.type === pointTypeValue;})[0].title;
 };
 
-export const CITY_LIST = [
-  'Washington',
-  'New York',
-  'Chicago',
-  'Miami',
-  'Oslo',
-  'Milan',
-  'Porto',
-  'London',
-];
-
+export const CITY_LIST = [];
 export const AVAILABLE_OFFERS_MAP = new Map();
