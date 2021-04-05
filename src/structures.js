@@ -19,6 +19,8 @@ export const TRIP_POINT_TYPES = [
   createPointType('Restaurant', false),
 ];
 
+export const FILTERS = ['Everything', 'Future', 'Past'];
+
 export const getPointTypeTitle = (pointTypeValue) => {
   return TRIP_POINT_TYPES.filter((p) => {return p.type === pointTypeValue;})[0].title;
 };

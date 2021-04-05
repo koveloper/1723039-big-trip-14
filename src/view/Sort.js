@@ -10,7 +10,7 @@ const createSortTemplate = (title = '', checked) => {
 };
 
 const createSortTemplates = () => {
-  return SORT_TYPES.map((title, index) => {return createSortTemplate(title, index === 0);}).join('');
+  return SORT_TYPES.map((title, index) => {return createSortTemplate(title, !index);}).join('');
 };
 
 export class Sort extends ViewElement {
