@@ -1,4 +1,4 @@
-import { TRIP_POINT_TYPES, PointTypeAdditionalOption } from '../structures.js';
+import { TRIP_POINT_TYPES, CITY_LIST, AVAILABLE_OFFERS_MAP } from '../structures.js';
 
 const generateRandomInt = (a = 0, b = 1) => {
   const min = Math.ceil(Math.min(a, b));
@@ -11,8 +11,7 @@ const generatePointType = () => {
 };
 
 const generateCity = () => {
-  const cityList = ['New York', 'Washington', 'London', 'Toronto'];
-  return cityList[generateRandomInt(cityList.length)];
+  return CITY_LIST[generateRandomInt(CITY_LIST.length)];
 };
 
 const generateRandomWord = (wordSize) => {
@@ -35,6 +34,10 @@ const availableOffers = (() => {
     }
     offersMap.set(tripPointType.type, offers);
   }
+  AVAILABLE_OFFERS_MAP.clear();
+  for(const key of offersMap.keys()) {
+    AVAILABLE_OFFERS_MAP.set(key, offersMap.get(key));
+  }
   return offersMap;
 })();
 
@@ -52,7 +55,7 @@ const generateDescription = () => {
   const templates = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus'.split(/\.\s/gm);
   let result = '';
   const size = templates.length;
-  for(let i = 0; i < generateRandomInt(0, 5); i++) {
+  for(let i = 0; i < generateRandomInt(1, 5); i++) {
     const num = generateRandomInt(0, size);
     result += templates[num % templates.length] + '. ';
     templates.splice(num % templates.length);
