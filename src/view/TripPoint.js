@@ -2,76 +2,89 @@ import {ViewElement} from './ViewElement.js';
 import {ViewValues} from './ViewValues.js';
 import {TimeUtils} from '../utils.js';
 
-const generateDate = (tripPoint) => {
-  return `<time class="event__date" datetime="${TimeUtils.convertTo_YYYYMMDD(tripPoint.date_from)}">${TimeUtils.convertTo_MonthDay(tripPoint.date_from)}</time>`;
+const createDate = (from, to) => {
+  return `<time class="event__date" datetime="${TimeUtils.convertTo_YYYYMMDD(from)}">${TimeUtils.convertTo_MonthDay(to)}</time>`;
 };
 
-const generateDestinationTitle = (tripPoint) => {
-  return `<h3 class="event__title">${tripPoint.destination.name}</h3>`;
+const createType = (type) => {
+  return `<div class="event__type"><img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon"></div>`;
 };
 
-const generateType = (tripPoint) => {
-  return `<div class="event__type"><img class="event__type-icon" width="42" height="42" src="img/icons/${tripPoint.type}.png" alt="Event type icon"></div>`;
+const createDestinationTitle = (name) => {
+  return `<h3 class="event__title">${name}</h3>`;
 };
 
-const generateShedule = (tripPoint) => {
+const createShedule = (from, to) => {
   return `<div class="event__schedule">
-                  <p class="event__time">
-                    <time class="event__start-time" datetime="${TimeUtils.convertTo_YYYYMMDD_HHMM(tripPoint.date_from)}">${TimeUtils.convertTo_HHMM(tripPoint.date_from)}</time>
-                    —
-                    <time class="event__end-time" datetime="${TimeUtils.convertTo_YYYYMMDD_HHMM(tripPoint.date_to)}">${TimeUtils.convertTo_HHMM(tripPoint.date_to)}</time>
-                  </p>
-                  <p class="event__duration">${TimeUtils.getDiff(tripPoint.date_from, tripPoint.date_to)}</p>
-                </div>`;
+            <p class="event__time">
+              <time class="event__start-time" datetime="${TimeUtils.convertTo_YYYYMMDD_HHMM(from)}">${TimeUtils.convertTo_HHMM(from)}</time>
+              —
+              <time class="event__end-time" datetime="${TimeUtils.convertTo_YYYYMMDD_HHMM(to)}">${TimeUtils.convertTo_HHMM(to)}</time>
+            </p>
+            <p class="event__duration">${TimeUtils.getDiff(from, to)}</p>
+          </div>`;
 };
 
-const generateBasePrice = (tripPoint) => {
+const createBasePrice = (value) => {
   return `<p class="event__price">
-                  €&nbsp;<span class="event__price-value">${tripPoint.base_price}</span>
-                </p>`;
+            €&nbsp;<span class="event__price-value">${value}</span>
+          </p>`;
 };
 
-const generateOffer = (title, price) => {
+const createOffer = (title, price) => {
   return `<li class="event__offer">
-                    <span class="event__offer-title">${title}</span>
-                    +€&nbsp;
-                    <span class="event__offer-price">${price}</span>
-                  </li>`;
+            <span class="event__offer-title">${title}</span>
+            +€&nbsp;
+            <span class="event__offer-price">${price}</span>
+          </li>`;
 };
 
-const generateOffers = (tripPoint) => {
+const createOffers = (offers) => {
   return `<h4 class="visually-hidden">Offers:</h4>
-                <ul class="event__selected-offers">
-                  ${tripPoint.offers.map((o) => generateOffer(o.title, o.price)).join('')}
-                </ul>`;
+          <ul class="event__selected-offers">
+            ${offers.map((o) => createOffer(o.title, o.price)).join('')}
+          </ul>`;
 };
 
-const generateFavoriteButton = (tripPoint) => {
-  return `<button class="event__favorite-btn ${tripPoint.isFavorite ? 'event__favorite-btn--active' : ''}" type="button">
-                  <span class="visually-hidden">Add to favorite</span>
-                  <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
-                    <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"></path>
-                  </svg>
-                </button>`;
+const createFavoriteButton = (isFavorite) => {
+  return `<button class="event__favorite-btn ${isFavorite ? 'event__favorite-btn--active' : ''}" type="button">
+            <span class="visually-hidden">Add to favorite</span>
+            <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
+              <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"></path>
+            </svg>
+          </button>`;
 };
 
 export class TripPoint extends ViewElement {
   constructor(tripPoint) {
     super();
     this.containerSelector = ViewValues.selectors.POINT_CONTAINER;
+    this.tripPoint = tripPoint;
+  }
+
+  set tripPoint(value) {
+    this.tripPoint_ = value;
+  }
+
+  get tripPoint() {
+    return this.tripPoint_;
+  }
+
+  render() {
     this.markup = `<li class="trip-events__item">
-              <div class="event">
-                ${generateDate(tripPoint)}
-                ${generateType(tripPoint)}
-                ${generateDestinationTitle(tripPoint)}
-                ${generateShedule(tripPoint)}                
-                ${generateBasePrice(tripPoint)}                
-                ${generateOffers(tripPoint)}                
-                ${generateFavoriteButton(tripPoint)}
-                <button class="event__rollup-btn" type="button">
-                  <span class="visually-hidden">Open event</span>
-                </button>
-              </div>
-            </li>`;
+                    <div class="event">
+                      ${createDate(this.tripPoint.date_from, this.tripPoint.date_to)}
+                      ${createType(this.tripPoint.type)}
+                      ${createDestinationTitle(this.tripPoint.destination.name)}
+                      ${createShedule(this.tripPoint.date_from, this.tripPoint.date_to)}                
+                      ${createBasePrice(this.tripPoint.base_price)}                
+                      ${createOffers(this.tripPoint.offers)}                
+                      ${createFavoriteButton(this.tripPoint.isFavorite)}
+                      <button class="event__rollup-btn" type="button">
+                        <span class="visually-hidden">Open event</span>
+                      </button>
+                    </div>
+                  </li>`;
+    super.render();
   }
 }
