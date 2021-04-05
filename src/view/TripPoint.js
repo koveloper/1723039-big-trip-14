@@ -58,7 +58,7 @@ const generateFavoriteButton = (tripPoint) => {
 export class TripPoint extends ViewElement {
   constructor(tripPoint) {
     super();
-    this.containerSelector = ViewValues.selectors.POINT;
+    this.containerSelector = ViewValues.selectors.POINT_CONTAINER;
     this.markup = `<li class="trip-events__item">
               <div class="event">
                 ${generateDate(tripPoint)}

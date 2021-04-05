@@ -5,8 +5,6 @@ export const ViewValues = {
     FILTERS: '.trip-controls__filters',
     SORT: '.trip-events',
     EVENTS: '.trip-events',
-    POINT_CREATOR: '.trip-events__list',
-    POINT_EDITOR: '.trip-events__list',
-    POINT: '.trip-events__list',
+    POINT_CONTAINER: '.trip-events__list',
   },
 };
