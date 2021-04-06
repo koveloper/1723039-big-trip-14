@@ -1,8 +1,7 @@
 import { ViewElement } from './ViewElement.js';
 import { ViewValues } from './ViewValues.js';
-import { TRIP_POINT_TYPES, CITY_LIST, AVAILABLE_OFFERS_MAP, getPointTypeTitle } from '../structures.js';
+import { TRIP_POINT_TYPES, CITY_LIST, AVAILABLE_OFFERS_MAP } from '../structures.js';
 import { TimeUtils } from '../utils.js';
-
 
 const parseTripPoint = (tripPoint = {}) => {
   const date_ = new Date().toISOString();
@@ -62,7 +61,7 @@ const createDestinationDataList = (id) => {
 const createDestination = (id, type, dst) => {
   return `<div class="event__field-group  event__field-group--destination">
             <label class="event__label  event__type-output" for="event-destination-${id}">
-              ${getPointTypeTitle(type)}
+              ${TRIP_POINT_TYPES.find((e) => {return e.type == type;}).title}
             </label>
             <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${dst}" list="destination-list-${id}">
             ${createDestinationDataList(id)}
@@ -110,7 +109,7 @@ const createHeader = (tripPoint) => {
 };
 
 const createOffer = (offer, id, offers) => {
-  const checked = offers.reduce((acc, el) => { return el.title === offer.title ? true : acc; }, false);
+  const checked = offers.find((el) => { return el.title === offer.title; });
   return `<div class="event__offer-selector">
             <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.title.toLowerCase()}-${id}" type="checkbox" name="event-offer-${offer.title.toLowerCase()}" ${checked ? 'checked' : ''}>
             <label class="event__offer-label" for="event-offer-${offer.title.toLowerCase()}-${id}">

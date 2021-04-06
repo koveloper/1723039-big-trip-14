@@ -5,7 +5,6 @@ import { Sort } from './view/Sort.js';
 import { TripPointEditor } from './view/TripPointEditor.js';
 import { TripPoint } from './view/TripPoint.js';
 import { TripPointsContainer } from './view/TripPointsContainer.js';
-import { TRIP_POINT_TYPES } from './structures.js';
 import { generateTripPointData } from './mock/trip-point.js';
 
 const testPoints = new Array(20).fill().map(() => generateTripPointData());
@@ -17,8 +16,8 @@ const viewItems = {
   sort: new Sort(),
   tripEventsList: new TripPointsContainer(),
   tripPointCreator: new TripPointEditor(),
-  tripPointEditor: new TripPointEditor(generateTripPointData()),
-  tripPoints: testPoints.map((e) => new TripPoint(e)),
+  tripPointEditor: new TripPointEditor(testPoints[0]),
+  tripPoints: testPoints.splice(1).map((e) => new TripPoint(e)),
 };
 
 Object.values(viewItems).reduce((acc, el) => {return [...acc, ...(Array.isArray(el) ? el : [el])];}, []).forEach((el) => el.render());
