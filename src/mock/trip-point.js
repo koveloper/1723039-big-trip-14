@@ -1,4 +1,5 @@
-import { TRIP_POINT_TYPES, CITY_LIST, AVAILABLE_OFFERS_MAP } from '../structures.js';
+// import { TRIP_POINT_TYPES, CITY_LIST, AVAILABLE_OFFERS_MAP } from '../structures.js';
+import { appData } from '../app-data.js';
 
 const generateRandomInt = (a = 0, b = 1) => {
   const min = Math.ceil(Math.min(a, b));
@@ -7,11 +8,11 @@ const generateRandomInt = (a = 0, b = 1) => {
 };
 
 const generatePointType = () => {
-  return TRIP_POINT_TYPES[generateRandomInt(TRIP_POINT_TYPES.length)];
+  return appData.pointTypes[generateRandomInt(appData.pointTypes.length)];
 };
 
 const generateCity = () => {
-  return CITY_LIST[generateRandomInt(CITY_LIST.length)];
+  return appData.cityList[generateRandomInt(appData.cityList.length)];
 };
 
 const generateRandomWord = (wordSize) => {
@@ -24,10 +25,11 @@ const generateRandomWord = (wordSize) => {
 
 const generateOffers = (pointType) => {
   const opts = [];
-  const offset = generateRandomInt(0, AVAILABLE_OFFERS_MAP.get(pointType).length);
-  const size = generateRandomInt(0, AVAILABLE_OFFERS_MAP.get(pointType).length);
+  const offers = appData.getOffersByTypeName(pointType);
+  const offset = generateRandomInt(0, offers.length);
+  const size = generateRandomInt(0, offers.length);
   for(let i = 0; i < size; i++) {
-    opts.push(AVAILABLE_OFFERS_MAP.get(pointType)[(offset + i) % AVAILABLE_OFFERS_MAP.get(pointType).length]);
+    opts.push(offers[(offset + i) % offers.length]);
   }
   return opts;
 };
@@ -83,8 +85,7 @@ const generateFavorite = () => {
 };
 
 (() => {
-  AVAILABLE_OFFERS_MAP.clear();
-  for(const tripPointType of TRIP_POINT_TYPES) {
+  for(const tripPointType of appData.pointTypes) {
     const offers = [];
     for(let i = 0; i < generateRandomInt(2, 6); i++) {
       offers.push({
@@ -92,10 +93,7 @@ const generateFavorite = () => {
         price: generateRandomInt(1, 15) * 10,
       });
     }
-    AVAILABLE_OFFERS_MAP.set(tripPointType.type, offers);
-  }
-  for(const key of AVAILABLE_OFFERS_MAP.keys()) {
-    AVAILABLE_OFFERS_MAP.set(key, AVAILABLE_OFFERS_MAP.get(key));
+    appData.setOffersByTypeName(tripPointType.type, offers);
   }
 })();
 
@@ -111,7 +109,7 @@ const generateFavorite = () => {
     'London',
   ];
   for(const city of cities) {
-    CITY_LIST.push({
+    appData.addCity({
       name: city,
       description: generateDescription(),
       pictures: generatePictures(),

@@ -1,14 +1,14 @@
 import { ViewElement } from './ViewElement.js';
-import { ViewValues } from './ViewValues.js';
-import { TRIP_POINT_TYPES, CITY_LIST, AVAILABLE_OFFERS_MAP } from '../structures.js';
+import { ViewValues } from '../constants.js';
+import { appData } from '../app-data.js';
 import { TimeUtils } from '../utils.js';
 
 const parseTripPoint = (tripPoint = {}) => {
   const date_ = new Date().toISOString();
   const {
     id = 'new',
-    type = TRIP_POINT_TYPES[0].type,
-    destination = CITY_LIST[0],
+    type = appData.pointTypes[0].type,
+    destination = appData.cityList[0],
     offers = [],
     base_price = '',
     date_from = date_,
@@ -46,7 +46,7 @@ const createEventTypeMenuButton = (id, type) => {
             <div class="event__type-list">
               <fieldset class="event__type-group">
                 <legend class="visually-hidden">Event type</legend>
-                ${TRIP_POINT_TYPES.map((t) => createEventTypeInput(t.title, id)).join('')}
+                ${appData.pointTypes.map((t) => createEventTypeInput(t.title, id)).join('')}
               </fieldset>
             </div>
           </div>`;
@@ -54,14 +54,14 @@ const createEventTypeMenuButton = (id, type) => {
 
 const createDestinationDataList = (id) => {
   return `<datalist id="destination-list-${id}">
-            ${CITY_LIST.map((c) => '<option value="' + c + '"></option>')}
+            ${appData.cityList.map((c) => '<option value="' + c + '"></option>')}
           </datalist>`;
 };
 
 const createDestination = (id, type, dst) => {
   return `<div class="event__field-group  event__field-group--destination">
             <label class="event__label  event__type-output" for="event-destination-${id}">
-              ${TRIP_POINT_TYPES.find((e) => {return e.type == type;}).title}
+              ${appData.getPointTypeByTypeName(type).title}
             </label>
             <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${dst}" list="destination-list-${id}">
             ${createDestinationDataList(id)}
@@ -94,7 +94,7 @@ const createBasePrice = (id, value) => {
 const createButtons = (isEditMode) => {
   return `<button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
           <button class="event__reset-btn" type="reset">${isEditMode ? 'Delete' : 'Cancel'}</button>`
-          + (isEditMode ? '<button class="event__rollup-btn" type="button"><span class="visually-hidden">Open event</span></button>' : '');
+    + (isEditMode ? '<button class="event__rollup-btn" type="button"><span class="visually-hidden">Open event</span></button>' : '');
 };
 
 const createHeader = (tripPoint) => {
@@ -121,11 +121,10 @@ const createOffer = (offer, id, offers) => {
 };
 
 const createOffers = (id, type, offers) => {
-  AVAILABLE_OFFERS_MAP.get(type);
   return `<section class="event__section  event__section--offers">
             <h3 class="event__section-title  event__section-title--offers">Offers</h3>
             <div class="event__available-offers">
-              ${AVAILABLE_OFFERS_MAP.get(type).map((o) => createOffer(o, id, offers)).join('')}
+              ${appData.getOffersByTypeName(type).map((o) => createOffer(o, id, offers)).join('')}
             </div>
           </section>`;
 };

@@ -1,6 +1,6 @@
-import {ViewElement} from './ViewElement.js';
-import {ViewValues} from './ViewValues.js';
-import {FILTERS} from '../structures.js';
+import { ViewElement } from './ViewElement.js';
+import { ViewValues } from '../constants.js';
+import { appData } from '../app-data.js';
 
 const createFilter = (title, checked) => {
   const idMix = title.toLowerCase();
@@ -11,7 +11,7 @@ const createFilter = (title, checked) => {
 };
 
 const createFilters = () => {
-  return FILTERS.map((f, i) => createFilter(f, !i)).join('');
+  return appData.filters.map((f, i) => createFilter(f, !i)).join('');
 };
 
 export class Filters extends ViewElement {

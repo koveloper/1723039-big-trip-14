@@ -1,5 +1,5 @@
-import {ViewElement} from './ViewElement.js';
-import {ViewValues} from './ViewValues.js';
+import { ViewElement } from './ViewElement.js';
+import { ViewValues } from '../constants.js';
 
 export class Menu extends ViewElement {
   constructor() {

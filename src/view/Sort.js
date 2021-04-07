@@ -1,6 +1,6 @@
-import {ViewElement} from './ViewElement.js';
-import {ViewValues} from './ViewValues.js';
-import {SORT_TYPES} from '../structures.js';
+import { ViewElement } from './ViewElement.js';
+import { ViewValues } from '../constants.js';
+import { appData } from '../app-data.js';
 
 const createSortTemplate = (title = '', checked) => {
   return `<div class="trip-sort__item  trip-sort__item--${title.toLowerCase()}">
@@ -10,7 +10,7 @@ const createSortTemplate = (title = '', checked) => {
 };
 
 const createSortTemplates = () => {
-  return SORT_TYPES.map((title, index) => {return createSortTemplate(title, !index);}).join('');
+  return appData.sortTypes.map((title, index) => { return createSortTemplate(title, !index); }).join('');
 };
 
 export class Sort extends ViewElement {

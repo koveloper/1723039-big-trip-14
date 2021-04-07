@@ -1,5 +1,5 @@
 import {ViewElement} from './ViewElement.js';
-import {ViewValues} from './ViewValues.js';
+import { ViewValues } from '../constants.js';
 
 export class TripPointsContainer extends ViewElement {
   constructor() {

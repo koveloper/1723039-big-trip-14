@@ -1,13 +1,13 @@
-import {ViewElement} from './ViewElement.js';
-import {ViewValues} from './ViewValues.js';
-import {TimeUtils} from '../utils.js';
+import { ViewElement } from './ViewElement.js';
+import { ViewValues } from '../constants.js';
+import { TimeUtils } from '../utils.js';
 
 const createDateLimits = (from, to) => {
   let inner = '';
-  if(from && to) {
+  if (from && to) {
     const dateLimits = TimeUtils.getDateDiff(from, to);
     inner = `${dateLimits[0]}&nbsp;&mdash;&nbsp;${dateLimits[1]}`;
-  } else if(from) {
+  } else if (from) {
     inner = TimeUtils.convertTo_MonthDay(from);
   }
   return `<p class="trip-info__dates">${inner}</p>`;
@@ -32,7 +32,7 @@ export class TripInfo extends ViewElement {
     this.containerSelector = ViewValues.selectors.INFO;
     this.placeToInsert = 'afterBegin';
     const totalCost = tripPointsArray.reduce((acc, tp) => {
-      return acc + tp.base_price + tp.offers.reduce((med, offer) => {return med + offer.price;}, 0);
+      return acc + tp.base_price + tp.offers.reduce((med, offer) => { return med + offer.price; }, 0);
     }, 0);
     this.markup = `<section class="trip-main__trip-info  trip-info">
             ${createMainInfo(tripPointsArray)}

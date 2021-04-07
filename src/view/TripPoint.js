@@ -1,6 +1,6 @@
-import {ViewElement} from './ViewElement.js';
-import {ViewValues} from './ViewValues.js';
-import {TimeUtils} from '../utils.js';
+import { ViewElement } from './ViewElement.js';
+import { ViewValues } from '../constants.js';
+import { TimeUtils } from '../utils.js';
 
 const createDate = (from, to) => {
   return `<time class="event__date" datetime="${TimeUtils.convertTo_YYYYMMDD(from)}">${TimeUtils.convertTo_MonthDay(to)}</time>`;

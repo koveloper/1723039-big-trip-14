@@ -20,4 +20,4 @@ const viewItems = {
   tripPoints: testPoints.splice(1).map((e) => new TripPoint(e)),
 };
 
-Object.values(viewItems).reduce((acc, el) => {return [...acc, ...(Array.isArray(el) ? el : [el])];}, []).forEach((el) => el.render());
+Object.values(viewItems).flatMap((v) => v).forEach((el) => el.render());
