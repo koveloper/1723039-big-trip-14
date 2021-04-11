@@ -63,14 +63,12 @@ const viewElementCallback = (e) => {
     case 'trip-point-edit-close':
       switchToPointViewMode(sourceWrapper);
       break;
-    
 	case 'trip-point-save':
       //TODO
       break;
     case 'trip-point-delete':
       //TODO
       break;
-	  
     default:
       break;
   }
