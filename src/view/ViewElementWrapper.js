@@ -2,22 +2,24 @@ import RenderUnit from '../RenderUnit.js';
 
 export default class ViewElementWrapper {
 
-  constructor(containerSelector = '', viewElements = [], renderPostion) {
+  constructor(containerSelector = '', viewElement, renderPostion) {
     this._containerSelector = containerSelector;
-    this._viewElements = viewElements;
+    this._viewElement = viewElement;
     this._renderPostion = renderPostion;
   }
 
-  get elements() {
-    return Array.isArray(this._viewElements) ? this._viewElements : [this._viewElements];
+  get viewElement() {
+    return this._viewElement;
+  }
+
+  toggle(newWrapper) {
+    document.querySelector(this._containerSelector).replaceChild(newWrapper.viewElement.element, this.viewElement.element);
   }
 
   render() {
-    if(!this._viewElements || !this._containerSelector) {
+    if(!this._viewElement || !this._containerSelector) {
       return;
     }
-    for(const ve of this.elements) {
-      RenderUnit.renderElement(document.querySelector(this._containerSelector), ve.element, this._renderPostion);
-    }
+    RenderUnit.renderElement(document.querySelector(this._containerSelector), this._viewElement.element, this._renderPostion);
   }
 }
