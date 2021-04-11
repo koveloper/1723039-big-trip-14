@@ -5,19 +5,22 @@ import SortView from './view/Sort.js';
 import TripPointEditorView from './view/TripPointEditor.js';
 import TripPointView from './view/TripPoint.js';
 import TripPointsContainerView from './view/TripPointsContainer.js';
+import RenderUnit from './RenderUnit.js';
+import ViewElementWrapper from './view/ViewElementWrapper.js';
 import { generateTripPointData } from './mock/trip-point.js';
+import { ViewValues } from './constants.js';
 
 const testPoints = new Array(20).fill().map(() => generateTripPointData());
 
-const viewItems = {
-  menu: new MenuView(),
-  tripInfo: new TripInfoView(testPoints),
-  filters: new FiltersView(),
-  sort: new SortView(),
-  tripEventsList: new TripPointsContainerView(),
-  tripPointCreator: new TripPointEditorView(),
-  tripPointEditor: new TripPointEditorView(testPoints[0]),
-  tripPoints: testPoints.splice(1).map((e) => new TripPointView(e)),
+const viewItemsWrappers = {
+  menu:  new ViewElementWrapper(ViewValues.selectors.MENU, new MenuView()),
+  tripInfo: new ViewElementWrapper(ViewValues.selectors.INFO, new TripInfoView(testPoints), RenderUnit.getRenderPostions().AFTERBEGIN),
+  filters: new ViewElementWrapper(ViewValues.selectors.FILTERS, new FiltersView()),
+  sort: new ViewElementWrapper(ViewValues.selectors.SORT, new SortView()),
+  tripEventsList: new ViewElementWrapper(ViewValues.selectors.EVENTS, new TripPointsContainerView()),
+  tripPointCreator: new ViewElementWrapper(ViewValues.selectors.POINT_CONTAINER, new TripPointEditorView()),
+  tripPointEditor: new ViewElementWrapper(ViewValues.selectors.POINT_CONTAINER, new TripPointEditorView(testPoints[0])),
+  tripPoints: new ViewElementWrapper(ViewValues.selectors.POINT_CONTAINER, testPoints.splice(1).map((e) => new TripPointView(e))),
 };
 
-Object.values(viewItems).flatMap((v) => v).forEach((el) => el.render());
+Object.values(viewItemsWrappers).forEach((we) => we.render());

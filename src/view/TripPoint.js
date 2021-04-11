@@ -58,19 +58,11 @@ const createFavoriteButton = (isFavorite) => {
 export default class TripPoint extends ViewElement {
   constructor(tripPoint) {
     super();
-    this.containerSelector = ViewValues.selectors.POINT_CONTAINER;
-    this._tripPoint = tripPoint;
+    this.tripPoint = tripPoint;
   }
 
   set tripPoint(value) {
     this._tripPoint = value;
-  }
-
-  get tripPoint() {
-    return this._tripPoint;
-  }
-
-  render() {
     this.template = `<li class="trip-events__item">
                     <div class="event">
                       ${createDate(this.tripPoint.date_from, this.tripPoint.date_to)}
@@ -85,6 +77,9 @@ export default class TripPoint extends ViewElement {
                       </button>
                     </div>
                   </li>`;
-    super.render();
+  }
+
+  get tripPoint() {
+    return this._tripPoint;
   }
 }

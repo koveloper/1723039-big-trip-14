@@ -1,8 +1,9 @@
+import { createElement } from '../utils.js';
+
 export default class ViewElement {
   constructor() {
     this._template = '';
-    this.containerSelector = '';
-    this.placeToInsert = 'beforeEnd';
+    this._element = null;
   }
 
   set template(value) {
@@ -13,29 +14,14 @@ export default class ViewElement {
     return this._template;
   }
 
-  set containerSelector(containerSelector) {
-    this.containerSelector_ = containerSelector;
-  }
-
-  get containerSelector() {
-    return this.containerSelector_;
-  }
-
-  get container() {
-    return this.containerSelector_ ? document.querySelector(this.containerSelector_) : null;
-  }
-
-  set placeToInsert(placeToInsert) {
-    this.placeToInsert_ = placeToInsert;
-  }
-
-  get placeToInsert() {
-    return this.placeToInsert_;
-  }
-
-  render() {
-    if (this.container) {
-      this.container.insertAdjacentHTML(this.placeToInsert, this.template);
+  get element() {
+    if (!this._element) {
+      this._element = createElement(this.template);
     }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
   }
 }

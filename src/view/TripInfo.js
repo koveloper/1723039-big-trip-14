@@ -1,5 +1,4 @@
 import ViewElement from './ViewElement.js';
-import { ViewValues } from '../constants.js';
 import { TimeUtils } from '../utils.js';
 
 const createDateLimits = (from, to) => {
@@ -29,8 +28,6 @@ const createTotalCost = (value) => {
 export default class TripInfo extends ViewElement {
   constructor(tripPointsArray = []) {
     super();
-    this.containerSelector = ViewValues.selectors.INFO;
-    this.placeToInsert = 'afterBegin';
     const totalCost = tripPointsArray.reduce((acc, tp) => {
       return acc + tp.base_price + tp.offers.reduce((med, offer) => { return med + offer.price; }, 0);
     }, 0);

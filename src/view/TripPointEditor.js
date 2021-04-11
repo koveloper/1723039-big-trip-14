@@ -1,5 +1,4 @@
 import ViewElement from './ViewElement.js';
-import { ViewValues } from '../constants.js';
 import { appData } from '../app-data.js';
 import { TimeUtils } from '../utils.js';
 
@@ -160,7 +159,6 @@ const createDetails = (tripPoint) => {
 export default class TripPointEditor extends ViewElement {
   constructor(tripPoint = {}) {
     super();
-    this.containerSelector = ViewValues.selectors.POINT_CONTAINER;
     this.template = `<li class="trip-events__item">
                     <form class="event event--edit" action="#" method="post">
                       ${createHeader(tripPoint)}

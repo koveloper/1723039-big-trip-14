@@ -1,5 +1,4 @@
 import ViewElement from './ViewElement.js';
-import { ViewValues } from '../constants.js';
 import { appData } from '../app-data.js';
 
 const createSortTemplate = (title = '', checked) => {
@@ -16,7 +15,6 @@ const createSortTemplates = () => {
 export default class Sort extends ViewElement {
   constructor() {
     super();
-    this.containerSelector = ViewValues.selectors.SORT;
     this.template = `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
                     ${createSortTemplates()}            
                   </form>`;

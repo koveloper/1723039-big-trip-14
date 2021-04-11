@@ -34,3 +34,9 @@ export const TimeUtils = {
     return [from, to.slice(0, 3) === from.slice(0, 3) ? to.slice(3) : to];
   },
 };
+
+export const createElement = (template) => {
+  const newElement = document.createElement('div');
+  newElement.innerHTML = template;
+  return newElement.firstChild;
+};
