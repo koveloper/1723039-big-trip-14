@@ -165,6 +165,21 @@ export default class TripPointEditor extends ViewElement {
                       ${createDetails(tripPoint)}
                     </form>
                   </li>`;
+    this._isEditMode = parseTripPoint(tripPoint).isEditMode;
+    const clickEvent = (e) => {
+      e.preventDefault();
+      let eventType = undefined;
+      switch(e.currentTarget.getAttribute('type')) {
+        case 'submit': eventType = 'trip-point-save'; break;
+        case 'reset': eventType = `trip-point-${this._isEditMode ? 'delete' : 'reset'}`; break;
+        case 'button': eventType = 'trip-point-edit-close'; break;
+        default: break;
+      }
+      if(eventType) {
+        this.commitEvent(eventType);
+      }
+    };
+    [...this.element.querySelectorAll('button')].forEach((b) => b.onclick = clickEvent);
   }
 }
 
