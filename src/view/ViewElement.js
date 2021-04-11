@@ -1,41 +1,44 @@
-export class ViewElement {
+import { createElement } from '../utils.js';
+
+export default class ViewElement {
   constructor() {
-    this.containerSelector = '';
-    this.markup = '';
-    this.placeToInsert = 'beforeEnd';
+    this._template = '';
+    this._element = null;
+    this._eventListeners = new Set();
   }
 
-  set markup(murkup) {
-    this.markup_ = murkup;
+  set template(value) {
+    this._template = value;
   }
 
-  get markup() {
-    return this.markup_;
+  get template() {
+    return this._template;
   }
 
-  set containerSelector(containerSelector) {
-    this.containerSelector_ = containerSelector;
-  }
-
-  get containerSelector() {
-    return this.containerSelector_;
-  }
-
-  get container() {
-    return this.containerSelector_ ? document.querySelector(this.containerSelector_) : null;
-  }
-
-  set placeToInsert(placeToInsert) {
-    this.placeToInsert_ = placeToInsert;
-  }
-
-  get placeToInsert() {
-    return this.placeToInsert_;
-  }
-
-  render() {
-    if (this.container) {
-      this.container.insertAdjacentHTML(this.placeToInsert, this.markup);
+  get element() {
+    if (!this._element) {
+      this._element = createElement(this.template);
     }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+
+  addEventListener(l) {
+    if(typeof l == 'function') {
+      this._eventListeners.add(l);
+    }
+  }
+
+  removeEventListener(l) {
+    this._eventListeners.remove(l);
+  }
+
+  commitEvent(type, data) {
+    this._eventListeners.forEach((l) => {
+      l({type, source: this, data});
+    });
   }
 }

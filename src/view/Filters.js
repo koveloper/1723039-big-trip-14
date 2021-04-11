@@ -1,5 +1,4 @@
-import { ViewElement } from './ViewElement.js';
-import { ViewValues } from '../constants.js';
+import ViewElement from './ViewElement.js';
 import { appData } from '../app-data.js';
 
 const createFilter = (title, checked) => {
@@ -14,11 +13,10 @@ const createFilters = () => {
   return appData.filters.map((f, i) => createFilter(f, !i)).join('');
 };
 
-export class Filters extends ViewElement {
+export default class Filters extends ViewElement {
   constructor() {
     super();
-    this.containerSelector = ViewValues.selectors.FILTERS;
-    this.markup = `<form class="trip-filters" action="#" method="get">
+    this.template = `<form class="trip-filters" action="#" method="get">
                 ${createFilters()}
                 <button class="visually-hidden" type="submit">Accept filter</button>
               </form>`;

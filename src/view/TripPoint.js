@@ -1,5 +1,4 @@
-import { ViewElement } from './ViewElement.js';
-import { ViewValues } from '../constants.js';
+import ViewElement from './ViewElement.js';
 import { TimeUtils } from '../utils.js';
 
 const createDate = (from, to) => {
@@ -55,23 +54,15 @@ const createFavoriteButton = (isFavorite) => {
           </button>`;
 };
 
-export class TripPoint extends ViewElement {
+export default class TripPoint extends ViewElement {
   constructor(tripPoint) {
     super();
-    this.containerSelector = ViewValues.selectors.POINT_CONTAINER;
     this.tripPoint = tripPoint;
   }
 
   set tripPoint(value) {
-    this.tripPoint_ = value;
-  }
-
-  get tripPoint() {
-    return this.tripPoint_;
-  }
-
-  render() {
-    this.markup = `<li class="trip-events__item">
+    this._tripPoint = value;
+    this.template = `<li class="trip-events__item">
                     <div class="event">
                       ${createDate(this.tripPoint.date_from, this.tripPoint.date_to)}
                       ${createType(this.tripPoint.type)}
@@ -85,6 +76,13 @@ export class TripPoint extends ViewElement {
                       </button>
                     </div>
                   </li>`;
-    super.render();
+    this.element.querySelector('.event__rollup-btn').onclick = (e) => {
+      e.preventDefault();
+      this.commitEvent('trip-point-edit');
+    };
+  }
+
+  get tripPoint() {
+    return this._tripPoint;
   }
 }

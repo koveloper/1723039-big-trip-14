@@ -1,5 +1,4 @@
-import { ViewElement } from './ViewElement.js';
-import { ViewValues } from '../constants.js';
+import ViewElement from './ViewElement.js';
 import { appData } from '../app-data.js';
 import { TimeUtils } from '../utils.js';
 
@@ -157,16 +156,30 @@ const createDetails = (tripPoint) => {
           </section>`;
 };
 
-export class TripPointEditor extends ViewElement {
+export default class TripPointEditor extends ViewElement {
   constructor(tripPoint = {}) {
     super();
-    this.containerSelector = ViewValues.selectors.POINT_CONTAINER;
-    this.markup = `<li class="trip-events__item">
+    this.template = `<li class="trip-events__item">
                     <form class="event event--edit" action="#" method="post">
                       ${createHeader(tripPoint)}
                       ${createDetails(tripPoint)}
                     </form>
                   </li>`;
+    this._isEditMode = parseTripPoint(tripPoint).isEditMode;
+    const clickEvent = (e) => {
+      e.preventDefault();
+      let eventType = undefined;
+      switch(e.currentTarget.getAttribute('type')) {
+        case 'submit': eventType = 'trip-point-save'; break;
+        case 'reset': eventType = `trip-point-${this._isEditMode ? 'delete' : 'reset'}`; break;
+        case 'button': eventType = 'trip-point-edit-close'; break;
+        default: break;
+      }
+      if(eventType) {
+        this.commitEvent(eventType);
+      }
+    };
+    [...this.element.querySelectorAll('button')].forEach((b) => b.onclick = clickEvent);
   }
 }
 
