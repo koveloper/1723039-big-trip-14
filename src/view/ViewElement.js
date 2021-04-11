@@ -4,6 +4,7 @@ export default class ViewElement {
   constructor() {
     this._template = '';
     this._element = null;
+    this._eventListeners = new Set();
   }
 
   set template(value) {
@@ -23,5 +24,21 @@ export default class ViewElement {
 
   removeElement() {
     this._element = null;
+  }
+
+  addEventListener(l) {
+    if(typeof l == 'function') {
+      this._eventListeners.add(l);
+    }
+  }
+
+  removeEventListener(l) {
+    this._eventListeners.remove(l);
+  }
+
+  commitEvent(type, data) {
+    this._eventListeners.forEach((l) => {
+      l({type, source: this, data});
+    });
   }
 }
