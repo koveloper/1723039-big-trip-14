@@ -18,9 +18,7 @@ const viewItemsWrappers = {
   filters: new ViewElementWrapper(ViewValues.selectors.FILTERS, new FiltersView()),
   sort: new ViewElementWrapper(ViewValues.selectors.SORT, new SortView()),
   tripEventsList: new ViewElementWrapper(ViewValues.selectors.EVENTS, new TripPointsContainerView()),
-  tripPointCreator: new ViewElementWrapper(ViewValues.selectors.POINT_CONTAINER, new TripPointEditorView()),
-  tripPointEditor: new ViewElementWrapper(ViewValues.selectors.POINT_CONTAINER, new TripPointEditorView(testPoints[0])),
-  tripPoints: new ViewElementWrapper(ViewValues.selectors.POINT_CONTAINER, testPoints.splice(1).map((e) => new TripPointView(e))),
+  tripPoints: new ViewElementWrapper(ViewValues.selectors.POINT_CONTAINER, testPoints.map((e) => new TripPointView(e))),
 };
 
 Object.values(viewItemsWrappers).forEach((we) => we.render());
