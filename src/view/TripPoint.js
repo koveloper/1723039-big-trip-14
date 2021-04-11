@@ -1,5 +1,4 @@
 import ViewElement from './ViewElement.js';
-import { ViewValues } from '../constants.js';
 import { TimeUtils } from '../utils.js';
 
 const createDate = (from, to) => {
@@ -77,6 +76,10 @@ export default class TripPoint extends ViewElement {
                       </button>
                     </div>
                   </li>`;
+    this.element.querySelector('.event__rollup-btn').onclick = (e) => {
+      e.preventDefault();
+      this.commitEvent('trip-point-edit');
+    };
   }
 
   get tripPoint() {
