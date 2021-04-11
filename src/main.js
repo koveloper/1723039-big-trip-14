@@ -5,6 +5,7 @@ import SortView from './view/Sort.js';
 import TripPointEditorView from './view/TripPointEditor.js';
 import TripPointView from './view/TripPoint.js';
 import TripPointsContainerView from './view/TripPointsContainer.js';
+import TripPointsContainerEmptyView from './view/TripPointsContainerEmpty.js';
 import RenderUnit from './RenderUnit.js';
 import ViewElementWrapper from './view/ViewElementWrapper.js';
 import { generateTripPointData } from './mock/trip-point.js';
@@ -19,10 +20,11 @@ const viewItemsWrappers = {
   sort: new ViewElementWrapper(ViewValues.selectors.SORT, new SortView()),
   tripEventsList: new ViewElementWrapper(ViewValues.selectors.EVENTS, new TripPointsContainerView()),
   tripPoints: testPoints.map((e) => new ViewElementWrapper(ViewValues.selectors.POINT_CONTAINER, new TripPointView(e))),
+  noTripPoints: new ViewElementWrapper(ViewValues.selectors.POINT_CONTAINER, new TripPointsContainerEmptyView()),
 };
 
 const tripPointsEditors = new Map();
-
+const openedTripPoints = new Set();
 
 const switchToPointViewMode = (sourceWrapper) => {
   for(const entry of tripPointsEditors) {
@@ -31,6 +33,7 @@ const switchToPointViewMode = (sourceWrapper) => {
       return;
     }
   }
+  openedTripPoints.delete(sourceWrapper);
 };
 
 const switchToPointEditMode = (sourceWrapper) => {
@@ -40,6 +43,7 @@ const switchToPointEditMode = (sourceWrapper) => {
     tripPointsEditors.set(sourceWrapper, editor);
   }
   sourceWrapper.toggle(tripPointsEditors.get(sourceWrapper));
+  openedTripPoints.add(tripPointsEditors.get(sourceWrapper));
 };
 
 const getViewElementWrapper = (viewElement) => {
@@ -70,7 +74,30 @@ const viewElementCallback = (e) => {
   }
 };
 
+document.addEventListener('keydown', (event) => {
+  if(event.key.toLowerCase() == 'escape') {
+    for(const opened of [...openedTripPoints.values()]) {
+      switchToPointViewMode(opened);
+    }
+  }
+});
+
 Object.values(viewItemsWrappers).flatMap((v) => v).forEach((el) => {
   el.viewElement.addEventListener(viewElementCallback);
-  el.render();
 });
+
+const renderApp = () => {
+  viewItemsWrappers.menu.render();
+  viewItemsWrappers.tripInfo.render();
+  viewItemsWrappers.filters.render();
+  viewItemsWrappers.sort.render();
+  viewItemsWrappers.tripEventsList.render();
+  if(viewItemsWrappers.tripPoints && viewItemsWrappers.tripPoints.length) {
+    viewItemsWrappers.tripPoints.forEach((w) => w.render());
+  } else {
+    viewItemsWrappers.noTripPoints.render();
+  }
+};
+
+renderApp();
+
