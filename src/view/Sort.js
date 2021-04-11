@@ -1,4 +1,4 @@
-import { ViewElement } from './ViewElement.js';
+import ViewElement from './ViewElement.js';
 import { ViewValues } from '../constants.js';
 import { appData } from '../app-data.js';
 
@@ -13,7 +13,7 @@ const createSortTemplates = () => {
   return appData.sortTypes.map((title, index) => { return createSortTemplate(title, !index); }).join('');
 };
 
-export class Sort extends ViewElement {
+export default class Sort extends ViewElement {
   constructor() {
     super();
     this.containerSelector = ViewValues.selectors.SORT;

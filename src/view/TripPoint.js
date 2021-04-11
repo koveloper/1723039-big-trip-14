@@ -1,4 +1,4 @@
-import { ViewElement } from './ViewElement.js';
+import ViewElement from './ViewElement.js';
 import { ViewValues } from '../constants.js';
 import { TimeUtils } from '../utils.js';
 
@@ -55,7 +55,7 @@ const createFavoriteButton = (isFavorite) => {
           </button>`;
 };
 
-export class TripPoint extends ViewElement {
+export default class TripPoint extends ViewElement {
   constructor(tripPoint) {
     super();
     this.containerSelector = ViewValues.selectors.POINT_CONTAINER;

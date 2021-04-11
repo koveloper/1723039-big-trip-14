@@ -1,4 +1,4 @@
-import { ViewElement } from './ViewElement.js';
+import ViewElement from './ViewElement.js';
 import { ViewValues } from '../constants.js';
 import { TimeUtils } from '../utils.js';
 
@@ -26,7 +26,7 @@ const createTotalCost = (value) => {
           </p>`;
 };
 
-export class TripInfo extends ViewElement {
+export default class TripInfo extends ViewElement {
   constructor(tripPointsArray = []) {
     super();
     this.containerSelector = ViewValues.selectors.INFO;
@@ -39,6 +39,4 @@ export class TripInfo extends ViewElement {
             ${createTotalCost(totalCost)}
           </section>`;
   }
-
-
 }

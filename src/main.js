@@ -1,23 +1,23 @@
-import { Menu } from './view/Menu.js';
-import { TripInfo } from './view/TripInfo.js';
-import { Filters } from './view/Filters.js';
-import { Sort } from './view/Sort.js';
-import { TripPointEditor } from './view/TripPointEditor.js';
-import { TripPoint } from './view/TripPoint.js';
-import { TripPointsContainer } from './view/TripPointsContainer.js';
+import MenuView from './view/Menu.js';
+import TripInfoView from './view/TripInfo.js';
+import FiltersView from './view/Filters.js';
+import SortView from './view/Sort.js';
+import TripPointEditorView from './view/TripPointEditor.js';
+import TripPointView from './view/TripPoint.js';
+import TripPointsContainerView from './view/TripPointsContainer.js';
 import { generateTripPointData } from './mock/trip-point.js';
 
 const testPoints = new Array(20).fill().map(() => generateTripPointData());
 
 const viewItems = {
-  menu: new Menu(),
-  tripInfo: new TripInfo(testPoints),
-  filters: new Filters(),
-  sort: new Sort(),
-  tripEventsList: new TripPointsContainer(),
-  tripPointCreator: new TripPointEditor(),
-  tripPointEditor: new TripPointEditor(testPoints[0]),
-  tripPoints: testPoints.splice(1).map((e) => new TripPoint(e)),
+  menu: new MenuView(),
+  tripInfo: new TripInfoView(testPoints),
+  filters: new FiltersView(),
+  sort: new SortView(),
+  tripEventsList: new TripPointsContainerView(),
+  tripPointCreator: new TripPointEditorView(),
+  tripPointEditor: new TripPointEditorView(testPoints[0]),
+  tripPoints: testPoints.splice(1).map((e) => new TripPointView(e)),
 };
 
 Object.values(viewItems).flatMap((v) => v).forEach((el) => el.render());

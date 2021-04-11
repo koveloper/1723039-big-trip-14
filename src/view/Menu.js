@@ -1,7 +1,7 @@
-import { ViewElement } from './ViewElement.js';
+import ViewElement from './ViewElement.js';
 import { ViewValues } from '../constants.js';
 
-export class Menu extends ViewElement {
+export default class Menu extends ViewElement {
   constructor() {
     super();
     this.containerSelector = ViewValues.selectors.MENU;

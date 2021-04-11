@@ -1,4 +1,4 @@
-export class ViewElement {
+export default class ViewElement {
   constructor() {
     this._template = '';
     this.containerSelector = '';
