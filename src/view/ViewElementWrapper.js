@@ -1,4 +1,4 @@
-import RenderUnit from '../RenderUnit.js';
+import { renderElement } from '../utils.js';
 
 export default class ViewElementWrapper {
 
@@ -20,6 +20,6 @@ export default class ViewElementWrapper {
     if(!this._viewElement || !this._containerSelector) {
       return;
     }
-    RenderUnit.renderElement(document.querySelector(this._containerSelector), this._viewElement.element, this._renderPostion);
+    renderElement(document.querySelector(this._containerSelector), this._viewElement.element, this._renderPostion);
   }
 }

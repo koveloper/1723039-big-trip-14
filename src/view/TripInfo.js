@@ -15,7 +15,7 @@ const createDateLimits = (from, to) => {
 const createMainInfo = (tripPointsArray = []) => {
   return `<div class="trip-info__main">
             <h1 class="trip-info__title">${tripPointsArray.map((tp) => tp.destination.name).join(' &mdash; ')}</h1>
-            ${createDateLimits(tripPointsArray[0].date_from, tripPointsArray[tripPointsArray.length - 1].date_to)}            
+            ${tripPointsArray.length ? createDateLimits(tripPointsArray[0].date_from, tripPointsArray[tripPointsArray.length - 1].date_to)  : ''}            
           </div>`;
 };
 
