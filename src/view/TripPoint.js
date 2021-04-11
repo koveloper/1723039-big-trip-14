@@ -59,15 +59,15 @@ export class TripPoint extends ViewElement {
   constructor(tripPoint) {
     super();
     this.containerSelector = ViewValues.selectors.POINT_CONTAINER;
-    this.tripPoint = tripPoint;
+    this._tripPoint = tripPoint;
   }
 
   set tripPoint(value) {
-    this.tripPoint_ = value;
+    this._tripPoint = value;
   }
 
   get tripPoint() {
-    return this.tripPoint_;
+    return this._tripPoint;
   }
 
   render() {
