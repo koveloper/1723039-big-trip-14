@@ -34,7 +34,7 @@ export class TripInfo extends ViewElement {
     const totalCost = tripPointsArray.reduce((acc, tp) => {
       return acc + tp.base_price + tp.offers.reduce((med, offer) => { return med + offer.price; }, 0);
     }, 0);
-    this.markup = `<section class="trip-main__trip-info  trip-info">
+    this.template = `<section class="trip-main__trip-info  trip-info">
             ${createMainInfo(tripPointsArray)}
             ${createTotalCost(totalCost)}
           </section>`;

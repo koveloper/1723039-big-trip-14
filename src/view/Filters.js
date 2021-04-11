@@ -18,7 +18,7 @@ export class Filters extends ViewElement {
   constructor() {
     super();
     this.containerSelector = ViewValues.selectors.FILTERS;
-    this.markup = `<form class="trip-filters" action="#" method="get">
+    this.template = `<form class="trip-filters" action="#" method="get">
                 ${createFilters()}
                 <button class="visually-hidden" type="submit">Accept filter</button>
               </form>`;

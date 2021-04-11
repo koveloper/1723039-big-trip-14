@@ -5,6 +5,6 @@ export class TripPointsContainer extends ViewElement {
   constructor() {
     super();
     this.containerSelector = ViewValues.selectors.EVENTS;
-    this.markup = '<ul class="trip-events__list"></ul>';
+    this.template = '<ul class="trip-events__list"></ul>';
   }
 }

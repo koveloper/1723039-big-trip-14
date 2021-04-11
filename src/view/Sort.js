@@ -17,7 +17,7 @@ export class Sort extends ViewElement {
   constructor() {
     super();
     this.containerSelector = ViewValues.selectors.SORT;
-    this.markup = `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
+    this.template = `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
                     ${createSortTemplates()}            
                   </form>`;
   }

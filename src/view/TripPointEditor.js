@@ -161,7 +161,7 @@ export class TripPointEditor extends ViewElement {
   constructor(tripPoint = {}) {
     super();
     this.containerSelector = ViewValues.selectors.POINT_CONTAINER;
-    this.markup = `<li class="trip-events__item">
+    this.template = `<li class="trip-events__item">
                     <form class="event event--edit" action="#" method="post">
                       ${createHeader(tripPoint)}
                       ${createDetails(tripPoint)}

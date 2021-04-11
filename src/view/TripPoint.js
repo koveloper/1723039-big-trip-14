@@ -71,7 +71,7 @@ export class TripPoint extends ViewElement {
   }
 
   render() {
-    this.markup = `<li class="trip-events__item">
+    this.template = `<li class="trip-events__item">
                     <div class="event">
                       ${createDate(this.tripPoint.date_from, this.tripPoint.date_to)}
                       ${createType(this.tripPoint.type)}

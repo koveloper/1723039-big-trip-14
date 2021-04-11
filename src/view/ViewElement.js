@@ -1,16 +1,16 @@
 export class ViewElement {
   constructor() {
+    this._template = '';
     this.containerSelector = '';
-    this.markup = '';
     this.placeToInsert = 'beforeEnd';
   }
 
-  set markup(murkup) {
-    this.markup_ = murkup;
+  set template(value) {
+    this._template = value;
   }
 
-  get markup() {
-    return this.markup_;
+  get template() {
+    return this._template;
   }
 
   set containerSelector(containerSelector) {
@@ -35,7 +35,7 @@ export class ViewElement {
 
   render() {
     if (this.container) {
-      this.container.insertAdjacentHTML(this.placeToInsert, this.markup);
+      this.container.insertAdjacentHTML(this.placeToInsert, this.template);
     }
   }
 }
