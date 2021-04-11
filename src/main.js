@@ -6,8 +6,8 @@ import TripPointEditorView from './view/TripPointEditor.js';
 import TripPointView from './view/TripPoint.js';
 import TripPointsContainerView from './view/TripPointsContainer.js';
 import TripPointsContainerEmptyView from './view/TripPointsContainerEmpty.js';
-import RenderUnit from './RenderUnit.js';
 import ViewElementWrapper from './view/ViewElementWrapper.js';
+import { RenderPosition } from './utils.js';
 import { generateTripPointData } from './mock/trip-point.js';
 import { ViewValues } from './constants.js';
 
@@ -15,7 +15,7 @@ const testPoints = new Array(20).fill().map(() => generateTripPointData());
 
 const viewItemsWrappers = {
   menu: new ViewElementWrapper(ViewValues.selectors.MENU, new MenuView()),
-  tripInfo: new ViewElementWrapper(ViewValues.selectors.INFO, new TripInfoView(testPoints), RenderUnit.getRenderPostions().AFTERBEGIN),
+  tripInfo: new ViewElementWrapper(ViewValues.selectors.INFO, new TripInfoView(testPoints), RenderPosition.AFTERBEGIN),
   filters: new ViewElementWrapper(ViewValues.selectors.FILTERS, new FiltersView()),
   sort: new ViewElementWrapper(ViewValues.selectors.SORT, new SortView()),
   tripEventsList: new ViewElementWrapper(ViewValues.selectors.EVENTS, new TripPointsContainerView()),
