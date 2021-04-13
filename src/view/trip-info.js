@@ -1,5 +1,5 @@
-import ViewElement from './ViewElement.js';
-import { TimeUtils } from '../utils.js';
+import AbstractViewElement from './abstract-view-element.js';
+import { TimeUtils } from '../utils/time.js';
 
 const createDateLimits = (from, to) => {
   let inner = '';
@@ -25,14 +25,18 @@ const createTotalCost = (value) => {
           </p>`;
 };
 
-export default class TripInfo extends ViewElement {
+export default class TripInfo extends AbstractViewElement {
   constructor(tripPointsArray = []) {
     super();
-    const totalCost = tripPointsArray.reduce((acc, tp) => {
+    this._tripPointsArray = tripPointsArray;
+  }
+
+  getTemplate() {
+    const totalCost = this._tripPointsArray.reduce((acc, tp) => {
       return acc + tp.base_price + tp.offers.reduce((med, offer) => { return med + offer.price; }, 0);
     }, 0);
-    this.template = `<section class="trip-main__trip-info  trip-info">
-            ${createMainInfo(tripPointsArray)}
+    return `<section class="trip-main__trip-info  trip-info">
+            ${createMainInfo(this._tripPointsArray)}
             ${createTotalCost(totalCost)}
           </section>`;
   }

@@ -1,6 +1,7 @@
-import ViewElement from './ViewElement.js';
+import AbstractViewElement from './abstract-view-element.js';
+import { handlerTypes } from './handlers.js';
 import { appData } from '../app-data.js';
-import { TimeUtils } from '../utils.js';
+import { TimeUtils } from '../utils/time.js';
 
 const parseTripPoint = (tripPoint = {}) => {
   const date_ = new Date().toISOString();
@@ -156,30 +157,24 @@ const createDetails = (tripPoint) => {
           </section>`;
 };
 
-export default class TripPointEditor extends ViewElement {
+export default class TripPointEditor extends AbstractViewElement {
   constructor(tripPoint = {}) {
     super();
-    this.template = `<li class="trip-events__item">
-                    <form class="event event--edit" action="#" method="post">
-                      ${createHeader(tripPoint)}
-                      ${createDetails(tripPoint)}
-                    </form>
-                  </li>`;
-    this._isEditMode = parseTripPoint(tripPoint).isEditMode;
-    const clickEvent = (e) => {
-      e.preventDefault();
-      let eventType = undefined;
-      switch(e.currentTarget.getAttribute('type')) {
-        case 'submit': eventType = 'trip-point-save'; break;
-        case 'reset': eventType = `trip-point-${this._isEditMode ? 'delete' : 'reset'}`; break;
-        case 'button': eventType = 'trip-point-edit-close'; break;
-        default: break;
-      }
-      if(eventType) {
-        this.commitEvent(eventType);
-      }
-    };
-    [...this.element.querySelectorAll('button')].forEach((b) => b.onclick = clickEvent);
+    this._tripPoint = tripPoint;
+    this._registerHandler(handlerTypes.SAVE_POINT, this.getElement().querySelector('.event__save-btn'), 'click');
+    this._registerHandler(handlerTypes.DELETE_POINT, this.getElement().querySelector('.event__reset-btn'), 'click');
+    if(parseTripPoint(tripPoint).isEditMode) {
+      this._registerHandler(handlerTypes.CLOSE_POINT_POPUP, this.getElement().querySelector('.event__rollup-btn'), 'click');
+    }
+  }
+
+  getTemplate() {
+    return `<li class="trip-events__item">
+              <form class="event event--edit" action="#" method="post">
+                ${createHeader(this._tripPoint)}
+                ${createDetails(this._tripPoint)}
+              </form>
+            </li>`;
   }
 }
 
