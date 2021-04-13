@@ -40,10 +40,10 @@ export default class AbstractViewElement {
     }
   }
 
-  _registerHandler(handlerType, component, onEvent) {
+  _registerHandler(handlerType, domElmnt, onEvent) {
     this._unregisterHandler(arguments);
-    this._handlers[handlerType] = bindContext(this, handlerType, this._handler);//handler.bind(this);
-    component.addEventListener(onEvent, this._handlers[handlerType]);
+    this._handlers[handlerType] = bindContext(this, handlerType, this._handler);
+    domElmnt.addEventListener(onEvent, this._handlers[handlerType]);
   }
 
   _unregisterHandler(handlerType, component, onEvent) {
