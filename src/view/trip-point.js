@@ -1,4 +1,4 @@
-import ViewElement from './abstract-view-element.js';
+import AbstractViewElement from './abstract-view-element.js';
 import { TimeUtils } from '../utils.js';
 
 const createDate = (from, to) => {
@@ -54,7 +54,7 @@ const createFavoriteButton = (isFavorite) => {
           </button>`;
 };
 
-export default class TripPoint extends ViewElement {
+export default class TripPoint extends AbstractViewElement {
   constructor(tripPoint) {
     super();
     this.tripPoint = tripPoint;

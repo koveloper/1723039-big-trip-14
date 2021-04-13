@@ -1,4 +1,4 @@
-import ViewElement from './abstract-view-element.js';
+import AbstractViewElement from './abstract-view-element.js';
 import { appData } from '../app-data.js';
 
 const createFilter = (title, checked) => {
@@ -13,7 +13,7 @@ const createFilters = () => {
   return appData.filters.map((f, i) => createFilter(f, !i)).join('');
 };
 
-export default class Filters extends ViewElement {
+export default class Filters extends AbstractViewElement {
   constructor() {
     super();
     this.template = `<form class="trip-filters" action="#" method="get">

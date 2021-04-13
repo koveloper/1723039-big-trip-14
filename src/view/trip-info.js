@@ -1,4 +1,4 @@
-import ViewElement from './abstract-view-element.js';
+import AbstractViewElement from './abstract-view-element.js';
 import { TimeUtils } from '../utils.js';
 
 const createDateLimits = (from, to) => {
@@ -25,7 +25,7 @@ const createTotalCost = (value) => {
           </p>`;
 };
 
-export default class TripInfo extends ViewElement {
+export default class TripInfo extends AbstractViewElement {
   constructor(tripPointsArray = []) {
     super();
     const totalCost = tripPointsArray.reduce((acc, tp) => {

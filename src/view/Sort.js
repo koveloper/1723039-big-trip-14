@@ -1,4 +1,4 @@
-import ViewElement from './abstract-view-element.js';
+import AbstractViewElement from './abstract-view-element.js';
 import { appData } from '../app-data.js';
 
 const createSortTemplate = (title = '', checked) => {
@@ -12,7 +12,7 @@ const createSortTemplates = () => {
   return appData.sortTypes.map((title, index) => { return createSortTemplate(title, !index); }).join('');
 };
 
-export default class Sort extends ViewElement {
+export default class Sort extends AbstractViewElement {
   constructor() {
     super();
     this.template = `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">

@@ -1,4 +1,4 @@
-import ViewElement from './abstract-view-element.js';
+import AbstractViewElement from './abstract-view-element.js';
 import { appData } from '../app-data.js';
 import { TimeUtils } from '../utils.js';
 
@@ -156,7 +156,7 @@ const createDetails = (tripPoint) => {
           </section>`;
 };
 
-export default class TripPointEditor extends ViewElement {
+export default class TripPointEditor extends AbstractViewElement {
   constructor(tripPoint = {}) {
     super();
     this.template = `<li class="trip-events__item">

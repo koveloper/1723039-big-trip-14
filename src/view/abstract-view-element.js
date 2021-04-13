@@ -1,8 +1,11 @@
 import { createElement } from '../utils.js';
 
-export default class ViewElement {
+export default class AbstractViewElement {
   constructor() {
-    this._template = '';
+    if (new.target === AbstractViewElement) {
+      throw new Error('Can\'t instantiate Abstract, only concrete one.');
+    }
+    this._template = null;
     this._element = null;
     this._eventListeners = new Set();
   }
@@ -12,7 +15,7 @@ export default class ViewElement {
   }
 
   get template() {
-    return this._template;
+    throw new Error('Method is not supported by child.');
   }
 
   get element() {
