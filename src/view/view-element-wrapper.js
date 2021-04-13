@@ -1,4 +1,4 @@
-import { renderElement } from '../utils.js';
+import { renderElement } from '../utils/ui.js';
 
 export default class ViewElementWrapper {
 
@@ -13,13 +13,13 @@ export default class ViewElementWrapper {
   }
 
   toggle(newWrapper) {
-    document.querySelector(this._containerSelector).replaceChild(newWrapper.viewElement.element, this.viewElement.element);
+    document.querySelector(this._containerSelector).replaceChild(newWrapper.viewElement.getElement(), this.viewElement.getElement());
   }
 
   render() {
     if(!this._viewElement || !this._containerSelector) {
       return;
     }
-    renderElement(document.querySelector(this._containerSelector), this._viewElement.element, this._renderPostion);
+    renderElement(document.querySelector(this._containerSelector), this._viewElement.getElement(), this._renderPostion);
   }
 }

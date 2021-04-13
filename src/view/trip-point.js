@@ -1,5 +1,6 @@
 import AbstractViewElement from './abstract-view-element.js';
-import { TimeUtils } from '../utils.js';
+import { handlerTypes } from './handlers.js';
+import { TimeUtils } from '../utils/time.js';
 
 const createDate = (from, to) => {
   return `<time class="event__date" datetime="${TimeUtils.convertTo_YYYYMMDD(from)}">${TimeUtils.convertTo_MonthDay(to)}</time>`;
@@ -62,6 +63,7 @@ export default class TripPoint extends AbstractViewElement {
 
   set tripPoint(value) {
     this._tripPoint = value;
+    this._registerHandler(handlerTypes.OPEN_POINT_POPUP, this.getElement().querySelector('.event__rollup-btn'), 'click');
     // this.element.querySelector('.event__rollup-btn').onclick = (e) => {
     //   e.preventDefault();
     //   this.commitEvent('trip-point-edit');
@@ -74,18 +76,18 @@ export default class TripPoint extends AbstractViewElement {
 
   getTemplate() {
     return `<li class="trip-events__item">
-                    <div class="event">
-                      ${createDate(this.tripPoint.date_from, this.tripPoint.date_to)}
-                      ${createType(this.tripPoint.type)}
-                      ${createDestinationTitle(this.tripPoint.destination.name)}
-                      ${createShedule(this.tripPoint.date_from, this.tripPoint.date_to)}                
-                      ${createBasePrice(this.tripPoint.base_price)}                
-                      ${createOffers(this.tripPoint.offers)}                
-                      ${createFavoriteButton(this.tripPoint.isFavorite)}
-                      <button class="event__rollup-btn" type="button">
-                        <span class="visually-hidden">Open event</span>
-                      </button>
-                    </div>
-                  </li>`;
+              <div class="event">
+                ${createDate(this.tripPoint.date_from, this.tripPoint.date_to)}
+                ${createType(this.tripPoint.type)}
+                ${createDestinationTitle(this.tripPoint.destination.name)}
+                ${createShedule(this.tripPoint.date_from, this.tripPoint.date_to)}                
+                ${createBasePrice(this.tripPoint.base_price)}                
+                ${createOffers(this.tripPoint.offers)}                
+                ${createFavoriteButton(this.tripPoint.isFavorite)}
+                <button class="event__rollup-btn" type="button">
+                  <span class="visually-hidden">Open event</span>
+                </button>
+              </div>
+            </li>`;
   }
 }

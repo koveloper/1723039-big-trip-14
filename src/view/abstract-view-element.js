@@ -1,4 +1,4 @@
-import { createElement } from '../utils.js';
+import { createElement } from '../utils/ui.js';
 
 export default class AbstractViewElement {
   constructor() {
@@ -13,7 +13,7 @@ export default class AbstractViewElement {
     throw new Error('Method is not supported by child.');
   }
 
-  get element() {
+  getElement() {
     if (!this._element) {
       this._element = createElement(this.getTemplate());
     }

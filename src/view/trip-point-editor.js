@@ -1,6 +1,6 @@
 import AbstractViewElement from './abstract-view-element.js';
 import { appData } from '../app-data.js';
-import { TimeUtils } from '../utils.js';
+import { TimeUtils } from '../utils/time.js';
 
 const parseTripPoint = (tripPoint = {}) => {
   const date_ = new Date().toISOString();
