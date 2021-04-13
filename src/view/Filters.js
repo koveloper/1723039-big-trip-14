@@ -1,4 +1,4 @@
-import ViewElement from './ViewElement.js';
+import ViewElement from './abstract-view-element.js';
 import { appData } from '../app-data.js';
 
 const createFilter = (title, checked) => {

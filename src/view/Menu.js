@@ -1,4 +1,4 @@
-import ViewElement from './ViewElement.js';
+import ViewElement from './abstract-view-element.js';
 
 export default class Menu extends ViewElement {
   constructor() {
