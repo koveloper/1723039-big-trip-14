@@ -62,7 +62,18 @@ export default class TripPoint extends AbstractViewElement {
 
   set tripPoint(value) {
     this._tripPoint = value;
-    this.template = `<li class="trip-events__item">
+    // this.element.querySelector('.event__rollup-btn').onclick = (e) => {
+    //   e.preventDefault();
+    //   this.commitEvent('trip-point-edit');
+    // };
+  }
+
+  get tripPoint() {
+    return this._tripPoint;
+  }
+
+  getTemplate() {
+    return `<li class="trip-events__item">
                     <div class="event">
                       ${createDate(this.tripPoint.date_from, this.tripPoint.date_to)}
                       ${createType(this.tripPoint.type)}
@@ -76,13 +87,5 @@ export default class TripPoint extends AbstractViewElement {
                       </button>
                     </div>
                   </li>`;
-    this.element.querySelector('.event__rollup-btn').onclick = (e) => {
-      e.preventDefault();
-      this.commitEvent('trip-point-edit');
-    };
-  }
-
-  get tripPoint() {
-    return this._tripPoint;
   }
 }

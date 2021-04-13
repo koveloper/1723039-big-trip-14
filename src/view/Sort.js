@@ -15,8 +15,11 @@ const createSortTemplates = () => {
 export default class Sort extends AbstractViewElement {
   constructor() {
     super();
-    this.template = `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
-                    ${createSortTemplates()}            
-                  </form>`;
+  }
+
+  getTemplate() {
+    return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
+              ${createSortTemplates()}            
+            </form>`;
   }
 }

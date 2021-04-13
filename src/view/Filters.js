@@ -16,9 +16,12 @@ const createFilters = () => {
 export default class Filters extends AbstractViewElement {
   constructor() {
     super();
-    this.template = `<form class="trip-filters" action="#" method="get">
-                ${createFilters()}
-                <button class="visually-hidden" type="submit">Accept filter</button>
-              </form>`;
+  }
+
+  getTemplate() {
+    return this.template = `<form class="trip-filters" action="#" method="get">
+                            ${createFilters()}
+                            <button class="visually-hidden" type="submit">Accept filter</button>
+                          </form>`;
   }
 }

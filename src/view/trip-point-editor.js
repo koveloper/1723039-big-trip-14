@@ -159,27 +159,31 @@ const createDetails = (tripPoint) => {
 export default class TripPointEditor extends AbstractViewElement {
   constructor(tripPoint = {}) {
     super();
-    this.template = `<li class="trip-events__item">
-                    <form class="event event--edit" action="#" method="post">
-                      ${createHeader(tripPoint)}
-                      ${createDetails(tripPoint)}
-                    </form>
-                  </li>`;
-    this._isEditMode = parseTripPoint(tripPoint).isEditMode;
-    const clickEvent = (e) => {
-      e.preventDefault();
-      let eventType = undefined;
-      switch(e.currentTarget.getAttribute('type')) {
-        case 'submit': eventType = 'trip-point-save'; break;
-        case 'reset': eventType = `trip-point-${this._isEditMode ? 'delete' : 'reset'}`; break;
-        case 'button': eventType = 'trip-point-edit-close'; break;
-        default: break;
-      }
-      if(eventType) {
-        this.commitEvent(eventType);
-      }
-    };
-    [...this.element.querySelectorAll('button')].forEach((b) => b.onclick = clickEvent);
+    this._tripPoint = tripPoint;
+    // this._isEditMode = parseTripPoint(tripPoint).isEditMode;
+    // const clickEvent = (e) => {
+    //   e.preventDefault();
+    //   let eventType = undefined;
+    //   switch(e.currentTarget.getAttribute('type')) {
+    //     case 'submit': eventType = 'trip-point-save'; break;
+    //     case 'reset': eventType = `trip-point-${this._isEditMode ? 'delete' : 'reset'}`; break;
+    //     case 'button': eventType = 'trip-point-edit-close'; break;
+    //     default: break;
+    //   }
+    //   if(eventType) {
+    //     this.commitEvent(eventType);
+    //   }
+    // };
+    // [...this.element.querySelectorAll('button')].forEach((b) => b.onclick = clickEvent);
+  }
+
+  getTemplate() {
+    return `<li class="trip-events__item">
+              <form class="event event--edit" action="#" method="post">
+                ${createHeader(this._tripPoint)}
+                ${createDetails(this._tripPoint)}
+              </form>
+            </li>`;
   }
 }
 

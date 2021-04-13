@@ -5,22 +5,17 @@ export default class AbstractViewElement {
     if (new.target === AbstractViewElement) {
       throw new Error('Can\'t instantiate Abstract, only concrete one.');
     }
-    this._template = null;
     this._element = null;
     this._eventListeners = new Set();
   }
 
-  set template(value) {
-    this._template = value;
-  }
-
-  get template() {
+  getTemplate() {
     throw new Error('Method is not supported by child.');
   }
 
   get element() {
     if (!this._element) {
-      this._element = createElement(this.template);
+      this._element = createElement(this.getTemplate());
     }
     return this._element;
   }
