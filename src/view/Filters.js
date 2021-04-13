@@ -19,9 +19,9 @@ export default class Filters extends AbstractViewElement {
   }
 
   getTemplate() {
-    return this.template = `<form class="trip-filters" action="#" method="get">
-                            ${createFilters()}
-                            <button class="visually-hidden" type="submit">Accept filter</button>
-                          </form>`;
+    return `<form class="trip-filters" action="#" method="get">
+              ${createFilters()}
+              <button class="visually-hidden" type="submit">Accept filter</button>
+            </form>`;
   }
 }

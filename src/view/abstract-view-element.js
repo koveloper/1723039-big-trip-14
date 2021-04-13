@@ -1,12 +1,19 @@
 import { createElement } from '../utils/ui.js';
 
+const bindContext = function (context, handlerType, fn) {
+  return function (...args) {
+    return fn.call(context, handlerType, ...args);
+  };
+};
+
 export default class AbstractViewElement {
   constructor() {
     if (new.target === AbstractViewElement) {
       throw new Error('Can\'t instantiate Abstract, only concrete one.');
     }
     this._element = null;
-    this._eventListeners = new Set();
+    this._callbacks = {};
+    this._handlers = {};
   }
 
   getTemplate() {
@@ -24,19 +31,28 @@ export default class AbstractViewElement {
     this._element = null;
   }
 
-  addEventListener(l) {
-    if(typeof l == 'function') {
-      this._eventListeners.add(l);
+  _handler(handlerType, evt) {
+    if(evt) {
+      evt.preventDefault();
+    }
+    if(this._callbacks[handlerType]) {
+      this._callbacks[handlerType](handlerType, this);
     }
   }
 
-  removeEventListener(l) {
-    this._eventListeners.remove(l);
+  _registerHandler(handlerType, component, onEvent) {
+    this._unregisterHandler(arguments);
+    this._handlers[handlerType] = bindContext(this, handlerType, this._handler);//handler.bind(this);
+    component.addEventListener(onEvent, this._handlers[handlerType]);
   }
 
-  commitEvent(type, data) {
-    this._eventListeners.forEach((l) => {
-      l({type, source: this, data});
-    });
+  _unregisterHandler(handlerType, component, onEvent) {
+    if(this._handlers[handlerType]) {
+      component.removeEventListener(onEvent, this._handlers[handlerType]);
+    }
+  }
+
+  setCallback(handlerType, callbackFunction) {
+    this._callbacks[handlerType] = callbackFunction;
   }
 }

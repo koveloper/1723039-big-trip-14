@@ -11,13 +11,13 @@ export const RenderPosition = {
   BEFOREEND: 'beforeend',
 };
 
+const checkForAbstractViewElement = (iptr) => {
+  return iptr instanceof AbstractViewElement ? iptr.getElement() : iptr;
+};
+
 export const renderElement = (container, element, place = RenderPosition.BEFOREEND) => {
-  if(container instanceof AbstractViewElement) {
-    container = container.getElement();
-  }
-  if(element instanceof AbstractViewElement) {
-    element = element.getElement();
-  }
+  container = checkForAbstractViewElement(container);
+  element = checkForAbstractViewElement(element);
   switch (place) {
     case RenderPosition.AFTERBEGIN:
       container.prepend(element);
@@ -32,6 +32,9 @@ export const getComponent = (selector) => {
   return document.querySelector(selector);
 };
 
-// toggle(newWrapper) {
-//   document.querySelector(this._containerSelector).replaceChild(newWrapper.viewElement.getElement(), this.viewElement.getElement());
-// }
+export const toggleView = (container, from, to) => {
+  container = checkForAbstractViewElement(container);
+  from = checkForAbstractViewElement(from);
+  to = checkForAbstractViewElement(to);
+  container.replaceChild(to, from);
+};
