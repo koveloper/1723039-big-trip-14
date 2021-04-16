@@ -1,11 +1,6 @@
 import MenuView from './view/menu.js';
 import TripInfoView from './view/trip-info.js';
 import FiltersView from './view/filters.js';
-import SortView from './view/sort.js';
-import TripPointEditorView from './view/trip-point-editor.js';
-import TripPointView from './view/trip-point.js';
-import TripPointsContainerView from './view/trip-points-container.js';
-import TripPointsContainerEmptyView from './view/trip-points-container-empty.js';
 import TripPresenter from './presenter/trip.js';
 import { handlerTypes } from './view/handlers.js';
 import { RenderPosition, getComponent, renderElement, toggleView } from './utils/ui.js';
@@ -19,10 +14,6 @@ const viewItems = {
   tripInfo: new TripInfoView(testPoints),
   filters: new FiltersView(),
   tripPresenter: new TripPresenter(getComponent(ViewValues.selectors.TRIP)),
-  // sort: new SortView(),
-  // tripEventsList: new TripPointsContainerView(),
-  // tripPoints: testPoints.map((e) => new TripPointView(e)),
-  // noTripPoints: new TripPointsContainerEmptyView(),
 };
 
 // const tripPointsEditors = new Map();
@@ -78,13 +69,6 @@ const renderApp = () => {
   renderElement(getComponent(ViewValues.selectors.MENU), viewItems.menu);
   renderElement(getComponent(ViewValues.selectors.INFO), viewItems.tripInfo, RenderPosition.AFTERBEGIN);
   renderElement(getComponent(ViewValues.selectors.FILTERS), viewItems.filters);
-  // renderElement(getComponent(ViewValues.selectors.SORT), viewItems.sort);
-  // renderElement(getComponent(ViewValues.selectors.EVENTS), viewItems.tripEventsList);
-  // if(viewItems.tripPoints && viewItems.tripPoints.length) {
-  //   viewItems.tripPoints.forEach((w) => renderElement(viewItems.tripEventsList, w));
-  // } else {
-  //   renderElement(getComponent(ViewValues.selectors.EVENTS), viewItems.noTripPoints);
-  // }
   viewItems.tripPresenter.init(testPoints);
 };
 
