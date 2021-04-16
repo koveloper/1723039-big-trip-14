@@ -168,6 +168,10 @@ export default class TripPointEditor extends AbstractViewElement {
     }
   }
 
+  get tripPoint() {
+    return this._tripPoint;
+  }
+
   getTemplate() {
     return `<li class="trip-events__item">
               <form class="event event--edit" action="#" method="post">

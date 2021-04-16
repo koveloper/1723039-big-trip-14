@@ -3,7 +3,8 @@ import TripPointEditorView from '../view/trip-point-editor.js';
 import TripPointView from '../view/trip-point.js';
 import TripPointsContainerView from '../view/trip-points-container.js';
 import TripPointsContainerEmptyView from '../view/trip-points-container-empty.js';
-import { RenderPosition, getComponent, renderElement, toggleView } from '../utils/ui.js';
+import { renderElement, toggleView } from '../utils/ui.js';
+import { handlerTypes } from '../view/handlers.js';
 
 export default class TripPresenter {
   constructor(tripContainer) {
@@ -12,7 +13,24 @@ export default class TripPresenter {
     this._tripPointsContainerView = new TripPointsContainerView();
     this._noPointsView = new TripPointsContainerEmptyView();
     this._tripPoints = [];
-    this._tripPointsView = [];
+    this._tripPointsView = {};
+    this._openedTripPoint = null;
+    this._closePointEditForm = this._closePointEditForm.bind(this);
+    this._openPointEditForm = this._openPointEditForm.bind(this);
+  }
+
+  _closePointEditForm() {
+    if(this._openedTripPoint) {
+      toggleView(this._tripPointsContainerView, this._openedTripPoint, this._tripPointsView[this._openedTripPoint.tripPoint.id]);
+      this._openedTripPoint = null;
+    }
+  }
+
+  _openPointEditForm(evt) {
+    this._closePointEditForm();
+    this._openedTripPoint = new TripPointEditorView(Object.assign({}, evt.src.tripPoint));
+    this._openedTripPoint.addEventListener(handlerTypes.CLOSE_POINT_POPUP, this._closePointEditForm);
+    toggleView(this._tripPointsContainerView, evt.src, this._openedTripPoint);
   }
 
   init(tripPoints) {
@@ -30,7 +48,10 @@ export default class TripPresenter {
   }
 
   _renderTripPoint(tripPointData) {
-    renderElement(this._tripPointsContainerView, new TripPointView(tripPointData));
+    const pointView = new TripPointView(tripPointData);
+    this._tripPointsView[tripPointData.id] = pointView;
+    pointView.addEventListener(handlerTypes.OPEN_POINT_POPUP, this._openPointEditForm);
+    renderElement(this._tripPointsContainerView, pointView);
   }
 
   _renderNoPoints() {
