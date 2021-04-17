@@ -1,10 +1,9 @@
 import SortView from '../view/sort.js';
-import TripPointEditorView from '../view/trip-point-editor.js';
-import TripPointView from '../view/trip-point.js';
+import TripPointPresenter from './trip-point.js';
 import TripPointsContainerView from '../view/trip-points-container.js';
 import TripPointsContainerEmptyView from '../view/trip-points-container-empty.js';
-import { renderElement, toggleView } from '../utils/ui.js';
-import { handlerTypes } from '../view/handlers.js';
+import { renderElement } from '../utils/ui.js';
+import { updateItem } from '../utils/common.js';
 
 export default class TripPresenter {
   constructor(tripContainer) {
@@ -13,24 +12,29 @@ export default class TripPresenter {
     this._tripPointsContainerView = new TripPointsContainerView();
     this._noPointsView = new TripPointsContainerEmptyView();
     this._tripPoints = [];
-    this._tripPointsView = {};
+    this._tripPointsPresenters = {};
     this._openedTripPoint = null;
-    this._closePointEditForm = this._closePointEditForm.bind(this);
-    this._openPointEditForm = this._openPointEditForm.bind(this);
+    this._editClickCallback = this._editClickCallback.bind(this);
+    this._closeClickCallback = this._closeClickCallback.bind(this);
+    this._tripPointDataUpdatedCallback = this._tripPointDataUpdatedCallback.bind(this);
   }
 
-  _closePointEditForm() {
+  _closeClickCallback(pointIptr) {
+    pointIptr.setEditModeEnabled(false);
+    this._openedTripPoint = null;
+  }
+
+  _editClickCallback(pointIptr) {
     if(this._openedTripPoint) {
-      toggleView(this._tripPointsContainerView, this._openedTripPoint, this._tripPointsView[this._openedTripPoint.tripPoint.id]);
-      this._openedTripPoint = null;
+      this._openedTripPoint.setEditModeEnabled(false);
     }
+    this._openedTripPoint = pointIptr;
+    pointIptr.setEditModeEnabled(true);
   }
 
-  _openPointEditForm(evt) {
-    this._closePointEditForm();
-    this._openedTripPoint = new TripPointEditorView(Object.assign({}, evt.src.tripPoint));
-    this._openedTripPoint.addEventListener(handlerTypes.CLOSE_POINT_POPUP, this._closePointEditForm);
-    toggleView(this._tripPointsContainerView, evt.src, this._openedTripPoint);
+  _tripPointDataUpdatedCallback(pointPresenterIptr, updatedPointData) {
+    this._tripPoints = updateItem(this._tripPoints, updatedPointData);
+    pointPresenterIptr.init(updatedPointData);
   }
 
   init(tripPoints) {
@@ -48,10 +52,14 @@ export default class TripPresenter {
   }
 
   _renderTripPoint(tripPointData) {
-    const pointView = new TripPointView(tripPointData);
-    this._tripPointsView[tripPointData.id] = pointView;
-    pointView.addEventListener(handlerTypes.OPEN_POINT_POPUP, this._openPointEditForm);
-    renderElement(this._tripPointsContainerView, pointView);
+    const pointPresenter = new TripPointPresenter({
+      containerForTripPoints: this._tripPointsContainerView,
+      editClickCallback: this._editClickCallback,
+      closeClickCallback: this._closeClickCallback,
+      updateDataCallback: this._tripPointDataUpdatedCallback,
+    });
+    this._tripPointsPresenters[tripPointData.id] = pointPresenter;
+    pointPresenter.init(tripPointData);
   }
 
   _renderNoPoints() {
