@@ -36,7 +36,9 @@ export default class AbstractViewElement {
       evt.preventDefault();
     }
     if(this._callbacks[handlerType]) {
-      this._callbacks[handlerType](handlerType, this);
+      for(const f of this._callbacks[handlerType]) {
+        f({src: this, type: handlerType});
+      }
     }
   }
 
@@ -52,7 +54,10 @@ export default class AbstractViewElement {
     }
   }
 
-  setCallback(handlerType, callbackFunction) {
-    this._callbacks[handlerType] = callbackFunction;
+  addEventListener(handlerType, callbackFunction) {
+    if(!this._callbacks[handlerType]) {
+      this._callbacks[handlerType] = [];
+    }
+    this._callbacks[handlerType].push(callbackFunction);
   }
 }

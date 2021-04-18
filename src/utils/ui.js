@@ -36,5 +36,15 @@ export const toggleView = (container, from, to) => {
   container = checkForAbstractViewElement(container);
   from = checkForAbstractViewElement(from);
   to = checkForAbstractViewElement(to);
-  container.replaceChild(to, from);
+  if (container && to && container.contains(from)) {
+    container.replaceChild(to, from);
+  }
+};
+
+export const removeView = (component) => {
+  if (!(component instanceof AbstractViewElement)) {
+    throw new Error('Can remove only ViewElement');
+  }
+  component.getElement().remove();
+  component.removeElement();
 };
