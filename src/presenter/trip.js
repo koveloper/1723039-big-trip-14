@@ -17,6 +17,12 @@ export default class TripPresenter {
     this._editClickCallback = this._editClickCallback.bind(this);
     this._closeClickCallback = this._closeClickCallback.bind(this);
     this._tripPointDataUpdatedCallback = this._tripPointDataUpdatedCallback.bind(this);
+    this._sortTypeClickCallback = this._sortTypeClickCallback.bind(this);
+    this._sortView.setSortTypeClickCallback(this._sortTypeClickCallback);
+  }
+
+  _sortTypeClickCallback(sortType) {
+    this._sortView.setSortType(sortType);
   }
 
   _closeClickCallback(pointIptr) {

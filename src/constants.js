@@ -10,13 +10,13 @@ export const ViewValues = {
     'Future',
     'Past',
   ],
-  sortTypes: [
-    'Day',
-    'Event',
-    'Time',
-    'Price',
-    'Offers',
-  ],
+  sortTypes: {
+    day: 'day',
+    event: 'event',
+    time: 'time',
+    price: 'price',
+    offers: 'offers',
+  },
   pointTypes: [
     {
       name: 'Taxi',
