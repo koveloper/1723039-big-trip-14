@@ -78,6 +78,11 @@ export default class TripPointPresenter {
     }
   }
 
+  destroy() {
+    removeView(this._tripPointView);
+    removeView(this._tripPointEditView);
+  }
+
   get tripPointData() {
     return this._tripPointData;
   }

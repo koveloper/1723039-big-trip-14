@@ -4,6 +4,8 @@ import TripPointsContainerView from '../view/trip-points-container.js';
 import TripPointsContainerEmptyView from '../view/trip-points-container-empty.js';
 import { renderElement } from '../utils/ui.js';
 import { updateItem } from '../utils/common.js';
+import { ViewValues } from '../constants.js';
+import { TimeUtils } from '../utils/time.js';
 
 export default class TripPresenter {
   constructor(tripContainer) {
@@ -18,10 +20,28 @@ export default class TripPresenter {
     this._closeClickCallback = this._closeClickCallback.bind(this);
     this._tripPointDataUpdatedCallback = this._tripPointDataUpdatedCallback.bind(this);
     this._sortTypeClickCallback = this._sortTypeClickCallback.bind(this);
-    this._sortView.setSortTypeClickCallback(this._sortTypeClickCallback);
+    this._currentSortType = ViewValues.sortTypes.day;
   }
 
   _sortTypeClickCallback(sortType) {
+    if(this._currentSortType === sortType) {
+      return;
+    }
+    const getOffersCost = (tripPoint) => {
+      return tripPoint.offers.reduce((acc, offer) => (acc + offer.price), 0);
+    };
+    //create sort functions
+    const sortFunctions = {};
+    sortFunctions[ViewValues.sortTypes.day] = (a, b) => TimeUtils.compare(a.date_from, b.date_from);
+    sortFunctions[ViewValues.sortTypes.event] = (a, b) => a.destination.name.localeCompare(b.destination.name);
+    sortFunctions[ViewValues.sortTypes.time] = (a, b) => TimeUtils.compareTime(a.date_from, b.date_from);
+    sortFunctions[ViewValues.sortTypes.price] = (a, b) => {return a.base_price >= b.base_price ? 1 : -1;};
+    sortFunctions[ViewValues.sortTypes.offers] = (a, b) => {return getOffersCost(a) >= getOffersCost(b) ? 1 : -1;};
+    //make sort and render
+    this._tripPoints = this._tripPoints.slice().sort(sortFunctions[sortType]);
+    this._clearTripPoints();
+    this._renderTripPoints();
+    this._currentSortType = sortType;
     this._sortView.setSortType(sortType);
   }
 
@@ -50,6 +70,7 @@ export default class TripPresenter {
 
   _renderSort() {
     renderElement(this._tripContainer, this._sortView);
+    this._sortView.setSortTypeClickCallback(this._sortTypeClickCallback);
   }
 
   _renderTripPoints() {
@@ -71,6 +92,12 @@ export default class TripPresenter {
   _renderNoPoints() {
     renderElement(this._tripContainer, this._noPointsView);
   }
+
+  _clearTripPoints() {
+    Object.values(this._tripPointsPresenters).forEach((presenter) => presenter.destroy());
+    this._tripPointsPresenters = {};
+  }
+
 
   _renderTrip() {
     if(!this._tripPoints || !this._tripPoints.length) {

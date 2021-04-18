@@ -33,4 +33,30 @@ export const TimeUtils = {
     }
     return [from, to.slice(0, 3) === from.slice(0, 3) ? to.slice(3) : to];
   },
+  compare: (isoDateStrA, isoDateStrB) => {
+    return Date.parse(isoDateStrA) - Date.parse(isoDateStrB);
+  },
+  compareTime: (isoDateStrA, isoDateStrB) => {
+    const a = new Date(Date.parse(isoDateStrA));
+    const b = new Date(Date.parse(isoDateStrB));
+    if(a.getUTCHours() > b.getUTCHours()) {
+      return 1;
+    }
+    if(a.getUTCHours() < b.getUTCHours()) {
+      return -1;
+    }
+    if(a.getUTCMinutes() > b.getUTCMinutes()) {
+      return 1;
+    }
+    if(a.getUTCMinutes() < b.getUTCMinutes()) {
+      return -1;
+    }
+    if(a.getUTCSeconds() > b.getUTCSeconds()) {
+      return 1;
+    }
+    if(a.getUTCSeconds() < b.getUTCSeconds()) {
+      return -1;
+    }
+    return 0;
+  },
 };
