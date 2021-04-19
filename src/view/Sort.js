@@ -5,7 +5,7 @@ import { handlerTypes } from './handlers.js';
 const createSortTemplate = (title = '', checked) => {
   return `<div class="trip-sort__item  trip-sort__item--${title}">
             <input id="sort-${title}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-${title}" ${checked ? 'checked' : ''}>
-            <label class="trip-sort__btn" for="sort-${title}">${title}</label>
+            <label class="trip-sort__btn" data-sort-type="${title}" for="sort-${title}">${title}</label>
           </div>`;
 };
 
@@ -36,8 +36,8 @@ export default class Sort extends AbstractViewElement {
   }
 
   _sortTypeClickHandler(evt) {
-    if(evt.event.srcElement.classList.contains('trip-sort__btn') && this._sortTypeClickCallback) {
-      this._sortTypeClickCallback(evt.event.srcElement.getAttribute('for').replace('sort-', ''));
+    if(evt.event.target.dataset.sortType && this._sortTypeClickCallback) {
+      this._sortTypeClickCallback(evt.event.target.dataset.sortType);
     }
   }
 
