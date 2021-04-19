@@ -3,9 +3,8 @@ import TripPointPresenter from './trip-point.js';
 import TripPointsContainerView from '../view/trip-points-container.js';
 import TripPointsContainerEmptyView from '../view/trip-points-container-empty.js';
 import { renderElement } from '../utils/ui.js';
-import { updateItem } from '../utils/common.js';
+import { updateItem, sortFunctions } from '../utils/common.js';
 import { ViewValues } from '../constants.js';
-import { TimeUtils } from '../utils/time.js';
 
 export default class TripPresenter {
   constructor(tripContainer) {
@@ -27,16 +26,6 @@ export default class TripPresenter {
     if(this._currentSortType === sortType) {
       return;
     }
-    const getOffersCost = (tripPoint) => {
-      return tripPoint.offers.reduce((acc, offer) => (acc + offer.price), 0);
-    };
-    //create sort functions
-    const sortFunctions = {};
-    sortFunctions[ViewValues.sortTypes.day] = (a, b) => TimeUtils.compare(a.date_from, b.date_from);
-    sortFunctions[ViewValues.sortTypes.event] = (a, b) => a.destination.name.localeCompare(b.destination.name);
-    sortFunctions[ViewValues.sortTypes.time] = (a, b) => TimeUtils.compareTime(a.date_from, b.date_from);
-    sortFunctions[ViewValues.sortTypes.price] = (a, b) => {return a.base_price >= b.base_price ? 1 : -1;};
-    sortFunctions[ViewValues.sortTypes.offers] = (a, b) => {return getOffersCost(a) >= getOffersCost(b) ? 1 : -1;};
     //make sort and render
     this._tripPoints = this._tripPoints.slice().sort(sortFunctions[sortType]);
     this._clearTripPoints();
