@@ -13,7 +13,7 @@ class AppData {
   constructor() {
     this.pointTypes_ = ViewValues.pointTypes.map((v) => createPointType(v.name, v.isInMotion));
     this.filters_ = ViewValues.filters;
-    this.sortTypes_ = ViewValues.sortTypes;
+    this.sortTypes_ = Object.values(ViewValues.sortTypes);
     this.cityListObject_ = {};
     this.cityList_ = [];
   }

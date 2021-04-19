@@ -37,7 +37,7 @@ export default class AbstractViewElement {
     }
     if(this._callbacks[handlerType]) {
       for(const f of this._callbacks[handlerType]) {
-        f({src: this, type: handlerType});
+        f({src: this, type: handlerType, event: evt});
       }
     }
   }

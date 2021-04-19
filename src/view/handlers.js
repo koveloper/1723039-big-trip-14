@@ -4,4 +4,5 @@ export const handlerTypes = {
   FAVORITE_CLICK: 'favor-click',
   SAVE_POINT: 'save-point',
   DELETE_POINT: 'delete-point',
+  SORT_TYPE_CLICK: 'sort-type-click',
 };
