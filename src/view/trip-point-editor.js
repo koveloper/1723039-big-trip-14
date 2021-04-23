@@ -191,12 +191,13 @@ export default class TripPointEditor extends AbstractInteractiveElement {
       const filter = (off) => getOfferIdFromTitle(off.title) === evt.event.target.dataset.offerId;
       const offerInModel = appData.getOffersByTypeName(this._data.type).find(filter);
       const offerInData = this._data.offers.find(filter);
+      let offers = this._data.offers.slice();
       if(offerInData) {
-        this._data.offers = this._data.offers.filter((off) => getOfferIdFromTitle(off.title) !== offerInData.title);
+        offers = offers.filter((off) => getOfferIdFromTitle(off.title) !== offerInData.title);
       } else {
-        this._data.offers.push(offerInModel);
+        offers.push(offerInModel);
       }
-      this.updateData({});
+      this.updateData({offers});
     }
   }
 
