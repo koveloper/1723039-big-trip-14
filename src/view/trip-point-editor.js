@@ -223,44 +223,26 @@ export default class TripPointEditor extends AbstractInteractiveElement {
   }
 
   _initHandlers() {
-    this._registerEventSupport({
-      parent: this.getElement(),
-      selectorInsideParent: '.event__save-btn',
-      handlerUID: viewEvents.uid.SAVE_POINT,
-      eventType: viewEvents.type.CLICK,
-    });
-    this._registerEventSupport({
-      parent: this.getElement(),
-      selectorInsideParent: '.event__reset-btn',
-      handlerUID: viewEvents.uid.DELETE_POINT,
-      eventType: viewEvents.type.CLICK,
-    });
-    this._registerEventSupport({
-      parent: this.getElement(),
-      selectorInsideParent: '.event__type-list',
-      handlerUID: viewEvents.uid.EVENT_TYPE_CLICK,
-      eventType: viewEvents.type.CLICK,
-    });
-    this._registerEventSupport({
-      parent: this.getElement(),
-      selectorInsideParent: '.event__input--destination',
-      handlerUID: viewEvents.uid.DESTINATION_FIELD_INPUT,
-      eventType: viewEvents.type.KEYBOARD_BUTTON_UP,
-    });
-    this._registerEventSupport({
-      parent: this.getElement(),
-      selectorInsideParent: '.event__input--price',
-      handlerUID: viewEvents.uid.PRICE_FIELD_INPUT,
-      eventType: viewEvents.type.KEYBOARD_BUTTON_UP,
-    });
+    const createRegEventObject = (selectorInsideParent, handlerUID, eventType = viewEvents.type.CLICK, args) => {
+      return Object.assign({
+        selectorInsideParent,
+        handlerUID,
+        eventType,
+      }, args);
+    };
+    const events = [
+      createRegEventObject('.event__save-btn', viewEvents.uid.SAVE_POINT),
+      createRegEventObject('.event__reset-btn', viewEvents.uid.DELETE_POINT),
+      createRegEventObject('.event__type-list', viewEvents.uid.EVENT_TYPE_CLICK),
+      createRegEventObject('.event__input--destination', viewEvents.uid.DESTINATION_FIELD_INPUT, viewEvents.type.KEYBOARD_BUTTON_UP),
+      createRegEventObject('.event__input--price', viewEvents.uid.DESTINATION_FIELD_INPUT, viewEvents.type.KEYBOARD_BUTTON_UP),
+    ];
     if(this._data.isEditMode) {
-      this._registerEventSupport({
-        parent: this.getElement(),
-        selectorInsideParent: '.event__rollup-btn',
-        handlerUID: viewEvents.uid.CLOSE_POINT_POPUP,
-        eventType: viewEvents.type.CLICK,
-      });
+      events.push(createRegEventObject('.event__rollup-btn', viewEvents.uid.CLOSE_POINT_POPUP));
     }
+    events.forEach((evt) => {
+      this._registerEventSupport(Object.assign({parent: this.getElement()}, evt));
+    });
   }
 
   restoreHandlers() {
