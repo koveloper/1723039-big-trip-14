@@ -175,11 +175,6 @@ export default class TripPointEditor extends AbstractInteractiveElement {
     this._wrapAsInternalListener(this._offersListClick, viewEvents.uid.OFFERS_CLICK);
   }
 
-  _wrapAsInternalListener(func, eventUID) {
-    func = func.bind(this);
-    this.setEventListener(eventUID, func);
-  }
-
   _eventTypeListClick(evt) {
     if(evt.event.target.dataset.eventType) {
       this.updateData({type: evt.event.target.dataset.eventType});
@@ -201,20 +196,8 @@ export default class TripPointEditor extends AbstractInteractiveElement {
     }
   }
 
-  _makeDefaultActionsOnTextField({event, dataName, stateName, dataCreateFunctionByTextFieldValue, compareWith} = {}) {
-    if(event.target.value == compareWith) {
-      return;
-    }
-    const upd = {
-      state: {},
-    };
-    upd[dataName] =  dataCreateFunctionByTextFieldValue(event.target.value);
-    upd.state[stateName] = getFocusObject(event.target);
-    this.updateData(upd);
-  }
-
   _destinationTextFieldEvent(evt) {
-    this._makeDefaultActionsOnTextField({
+    this._performDefaultCallbackOnTextField({
       event: evt.event,
       dataName: 'destination',
       stateName: 'destination',
@@ -224,7 +207,7 @@ export default class TripPointEditor extends AbstractInteractiveElement {
   }
 
   _priceTextFieldEvent(evt) {
-    this._makeDefaultActionsOnTextField({
+    this._performDefaultCallbackOnTextField({
       event: evt.event,
       dataName: 'base_price',
       stateName: 'price',
@@ -259,12 +242,8 @@ export default class TripPointEditor extends AbstractInteractiveElement {
 
   restoreHandlers() {
     this._initHandlers();
-    const state = this._data.state;
-    if(state) {
-      const inputs = ['destination', 'price'];
-      inputs.forEach((inp) => restoreFocus(this.getElement().querySelector(`.event__input--${inp}`), state[inp]));
-      delete this._data.state;
-    }
+    this._restoreDefaultTextFields(this._data.state, ['destination', 'price']);
+    delete this._data.state;
   }
 
   get tripPoint() {

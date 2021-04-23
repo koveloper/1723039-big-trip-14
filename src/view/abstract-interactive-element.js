@@ -1,12 +1,37 @@
 import AbstractViewElement from './abstract-view-element.js';
 import { toggleView } from '../utils/ui.js';
 import { bindEventListenerContext } from '../utils/common.js';
+import { restoreFocus, getFocusObject } from '../utils/ui.js';
 
 export default class AbstractInteractiveElement extends AbstractViewElement {
 
   constructor() {
     super();
     this._events = {};
+  }
+
+  _wrapAsInternalListener(func, eventUID) {
+    func = func.bind(this);
+    this.setEventListener(eventUID, func);
+  }
+
+  _performDefaultCallbackOnTextField({event, dataName, stateName, dataCreateFunctionByTextFieldValue, compareWith} = {}) {
+    if(event.target.value == compareWith) {
+      return;
+    }
+    const upd = {
+      state: {},
+    };
+    upd[dataName] =  dataCreateFunctionByTextFieldValue(event.target.value);
+    upd.state[stateName] = getFocusObject(event.target);
+    this.updateData(upd);
+  }
+
+  _restoreDefaultTextFields(state, textFieldsArray) {
+    if(!state) {
+      return;
+    }
+    textFieldsArray.forEach((inp) => restoreFocus(this.getElement().querySelector(`.event__input--${inp}`), state[inp]));
   }
 
   restoreHandlers() {
