@@ -1,6 +1,6 @@
 import TripPointEditorView from '../view/trip-point-editor.js';
 import TripPointView from '../view/trip-point.js';
-import { handlerTypes } from '../view/handlers.js';
+import { viewEvents } from '../view/view-events.js';
 import { renderElement, toggleView, removeView } from '../utils/ui.js';
 
 const Mode = {
@@ -32,11 +32,11 @@ export default class TripPointPresenter {
     const prevEditPointView = this._tripPointEditView;
     //create view instances
     this._tripPointView = new TripPointView(tripPointData);
-    this._tripPointView.setEventListener(handlerTypes.OPEN_POINT_POPUP, this._openPointEditForm);
-    this._tripPointView.setEventListener(handlerTypes.FAVORITE_CLICK, this._favoriteClick);
+    this._tripPointView.setEventListener(viewEvents.uid.OPEN_POINT_POPUP, this._openPointEditForm);
+    this._tripPointView.setEventListener(viewEvents.uid.FAVORITE_CLICK, this._favoriteClick);
     //
     this._tripPointEditView = new TripPointEditorView(tripPointData);
-    this._tripPointEditView.setEventListener(handlerTypes.CLOSE_POINT_POPUP, this._closePointEditForm);
+    this._tripPointEditView.setEventListener(viewEvents.uid.CLOSE_POINT_POPUP, this._closePointEditForm);
     //in case of first call just render and return
     if(!prevPointView || !prevEditPointView) {
       renderElement(this._container, this._tripPointView);

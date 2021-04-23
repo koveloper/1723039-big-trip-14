@@ -1,5 +1,5 @@
 import AbstractInteractiveElement from './abstract-interactive-element.js';
-import { handlerTypes } from './handlers.js';
+import { viewEvents } from './view-events.js';
 import { appData } from '../app-data.js';
 import { TimeUtils } from '../utils/time.js';
 
@@ -164,21 +164,21 @@ export default class TripPointEditor extends AbstractInteractiveElement {
     this._registerEventSupport({
       parent: this.getElement(),
       selectorInsideParent: '.event__save-btn',
-      handlerUID: handlerTypes.SAVE_POINT,
-      eventType: 'click',
+      handlerUID: viewEvents.uid.SAVE_POINT,
+      eventType: viewEvents.type.CLICK,
     });
     this._registerEventSupport({
       parent: this.getElement(),
       selectorInsideParent: '.event__reset-btn',
-      handlerUID: handlerTypes.DELETE_POINT,
-      eventType: 'click',
+      handlerUID: viewEvents.uid.DELETE_POINT,
+      eventType: viewEvents.type.CLICK,
     });
     if(parseTripPoint(tripPoint).isEditMode) {
       this._registerEventSupport({
         parent: this.getElement(),
         selectorInsideParent: '.event__rollup-btn',
-        handlerUID: handlerTypes.CLOSE_POINT_POPUP,
-        eventType: 'click',
+        handlerUID: viewEvents.uid.CLOSE_POINT_POPUP,
+        eventType: viewEvents.type.CLICK,
       });
     }
   }
