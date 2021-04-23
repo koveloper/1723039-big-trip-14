@@ -69,16 +69,16 @@ const createDestination = (id, type, dst) => {
           </div>`;
 };
 
-const createDateField = (pointId, dateStr) => {
-  return `<label class="visually-hidden" for="event-start-time-${pointId}">From</label>
-          <input class="event__input  event__input--time" id="event-start-time-${pointId}" type="text" name="event-start-time" value="${dateStr}">`;
+const createDateField = (pointId, dateStr, endTimeStamp) => {
+  return `<label class="visually-hidden" for="event-${endTimeStamp ? 'end' : 'start'}-time-${pointId}">${endTimeStamp ? 'To' : 'From'}</label>
+          <input class="event__input  event__input--time" id="event-${endTimeStamp ? 'end' : 'start'}-time-${pointId}" type="text" name="event-${endTimeStamp ? 'end' : 'start'}-time" value="${dateStr}">`;
 };
 
 const createDates = (id, from, to) => {
   return `<div class="event__field-group  event__field-group--time">
             ${createDateField(id, from)}
-            —
-            ${createDateField(id, to)}            
+            &mdash;
+            ${createDateField(id, to, true)}            
           </div>`;
 };
 
