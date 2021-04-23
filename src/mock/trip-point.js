@@ -90,6 +90,7 @@ const generateFavorite = () => {
       offers.push({
         title: generateRandomWord(7 + generateRandomInt(-2, 6)),
         price: generateRandomInt(1, 15) * 10,
+        id: nanoid(),
       });
     }
     appData.setOffersByTypeName(tripPointType.type, offers);

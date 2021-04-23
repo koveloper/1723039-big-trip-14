@@ -9,6 +9,7 @@ export const viewEvents = {
     EVENT_TYPE_CLICK: 'event-type-click',
     DESTINATION_FIELD_INPUT: 'destination-field-input',
     PRICE_FIELD_INPUT: 'proce-field-input',
+    OFFERS_CLICK: 'offers-click',
   },
   type: {
     CLICK: 'click',

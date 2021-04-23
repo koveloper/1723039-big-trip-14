@@ -118,10 +118,10 @@ const createOffer = (offer, pointId, offers) => {
   const offerId = getOfferIdFromTitle(offer.title);
   return `<div class="event__offer-selector">
             <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offerId}-${pointId}" type="checkbox" name="event-offer-${offerId}" ${checked ? 'checked' : ''}>
-            <label class="event__offer-label" for="event-offer-${offerId}-${pointId}">
-              <span class="event__offer-title">${offer.title}</span>
+            <label class="event__offer-label" data-offer-id='${offerId}' for="event-offer-${offerId}-${pointId}">
+              <span class="event__offer-title" data-offer-id='${offerId}'>${offer.title}</span>
               +€&nbsp;
-              <span class="event__offer-price">${offer.price}</span>
+              <span class="event__offer-price" data-offer-id='${offerId}'>${offer.price}</span>
             </label>
           </div>`;
 };
@@ -187,7 +187,17 @@ export default class TripPointEditor extends AbstractInteractiveElement {
   }
 
   _offersListClick(evt) {
-    console.log(evt);
+    if(evt.event.target.dataset.offerId) {
+      const filter = (off) => getOfferIdFromTitle(off.title) === evt.event.target.dataset.offerId;
+      const offerInModel = appData.getOffersByTypeName(this._data.type).find(filter);
+      const offerInData = this._data.offers.find(filter);
+      if(offerInData) {
+        this._data.offers = this._data.offers.filter((off) => getOfferIdFromTitle(off.title) !== offerInData.title);
+      } else {
+        this._data.offers.push(offerInModel);
+      }
+      this.updateData({});
+    }
   }
 
   _makeDefaultActionsOnTextField({event, dataName, stateName, dataCreateFunctionByTextFieldValue, compareWith} = {}) {
