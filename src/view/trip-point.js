@@ -1,4 +1,4 @@
-import AbstractViewElement from './abstract-view-element.js';
+import AbstractInteractiveElement from './abstract-interactive-element.js';
 import { handlerTypes } from './handlers.js';
 import { TimeUtils } from '../utils/time.js';
 
@@ -55,7 +55,7 @@ const createFavoriteButton = (isFavorite) => {
           </button>`;
 };
 
-export default class TripPoint extends AbstractViewElement {
+export default class TripPoint extends AbstractInteractiveElement {
   constructor(tripPoint) {
     super();
     this.tripPoint = tripPoint;

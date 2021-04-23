@@ -1,4 +1,4 @@
-import AbstractViewElement from './abstract-view-element.js';
+import AbstractInteractiveElement from './abstract-interactive-element.js';
 import { appData } from '../app-data.js';
 import { handlerTypes } from './handlers.js';
 
@@ -13,7 +13,7 @@ const createSortTemplates = () => {
   return appData.sortTypes.map((title, index) => { return createSortTemplate(title, !index); }).join('');
 };
 
-export default class Sort extends AbstractViewElement {
+export default class Sort extends AbstractInteractiveElement {
   constructor() {
     super();
     this._sortTypeClickHandler = this._sortTypeClickHandler.bind(this);
