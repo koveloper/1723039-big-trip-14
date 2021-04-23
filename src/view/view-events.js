@@ -8,6 +8,7 @@ export const viewEvents = {
     SORT_TYPE_CLICK: 'sort-type-click',
     EVENT_TYPE_CLICK: 'event-type-click',
     DESTINATION_FIELD_INPUT: 'destination-field-input',
+    PRICE_FIELD_INPUT: 'proce-field-input',
   },
   type: {
     CLICK: 'click',

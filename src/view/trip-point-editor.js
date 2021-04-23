@@ -168,11 +168,33 @@ export default class TripPointEditor extends AbstractInteractiveElement {
     //
     this._destinationKeyAction = this._destinationKeyAction.bind(this);
     this.setEventListener(viewEvents.uid.DESTINATION_FIELD_INPUT, this._destinationKeyAction);
+    //
+    this._priceKeyAction = this._priceKeyAction.bind(this);
+    this.setEventListener(viewEvents.uid.PRICE_FIELD_INPUT, this._priceKeyAction);
   }
 
   _eventTypeListClick(evt) {
     if(evt.event.target.dataset.eventType) {
       this.updateData({type: evt.event.target.dataset.eventType});
+    }
+  }
+
+  _getFocusObject(target) {
+    return {
+      isFocusOn: true,
+      caret: [target.selectionStart, target.selectionEnd],
+    };
+  }
+
+  _restoreFocus(target, focusObj) {
+    if(!focusObj) {
+      return;
+    }
+    if(focusObj.isFocusOn) {
+      target.focus();
+    }
+    if(focusObj.caret) {
+      target.setSelectionRange(focusObj.caret[0], focusObj.caret[1]);
     }
   }
 
@@ -183,10 +205,19 @@ export default class TripPointEditor extends AbstractInteractiveElement {
     this.updateData({
       destination: Object.assign({}, {name: evt.event.target.value}, appData.getCity(evt.event.target.value)),
       state: {
-        destination: {
-          isFocusOn: true,
-          caret: [evt.event.target.selectionStart, evt.event.target.selectionEnd],
-        },
+        destination: this._getFocusObject(evt.event.target),
+      },
+    });
+  }
+
+  _priceKeyAction(evt) {
+    if(evt.event.target.value === this._data.base_price) {
+      return;
+    }
+    this.updateData({
+      base_price: parseInt(evt.event.target.value),
+      state: {
+        price: this._getFocusObject(evt.event.target),
       },
     });
   }
@@ -216,6 +247,12 @@ export default class TripPointEditor extends AbstractInteractiveElement {
       handlerUID: viewEvents.uid.DESTINATION_FIELD_INPUT,
       eventType: viewEvents.type.KEYBOARD_BUTTON_UP,
     });
+    this._registerEventSupport({
+      parent: this.getElement(),
+      selectorInsideParent: '.event__input--price',
+      handlerUID: viewEvents.uid.PRICE_FIELD_INPUT,
+      eventType: viewEvents.type.KEYBOARD_BUTTON_UP,
+    });
     if(this._data.isEditMode) {
       this._registerEventSupport({
         parent: this.getElement(),
@@ -230,14 +267,8 @@ export default class TripPointEditor extends AbstractInteractiveElement {
     this._initHandlers();
     const state = this._data.state;
     if(state) {
-      if(state.destination) {
-        if(state.destination.isFocusOn) {
-          this.getElement().querySelector('.event__input--destination').focus();
-        }
-        if(state.destination.caret) {
-          this.getElement().querySelector('.event__input--destination').setSelectionRange(state.destination.caret[0], state.destination.caret[1]);
-        }
-      }
+      const inputs = ['destination', 'price'];
+      inputs.forEach((inp) => this._restoreFocus(this.getElement().querySelector(`.event__input--${inp}`), state[inp]));
       delete this._data.state;
     }
   }
