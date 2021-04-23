@@ -167,11 +167,11 @@ export default class TripPointEditor extends AbstractInteractiveElement {
     this._eventTypeListClick = this._eventTypeListClick.bind(this);
     this.setEventListener(viewEvents.uid.EVENT_TYPE_CLICK, this._eventTypeListClick);
     //
-    this._destinationKeyAction = this._destinationKeyAction.bind(this);
-    this.setEventListener(viewEvents.uid.DESTINATION_FIELD_INPUT, this._destinationKeyAction);
+    this._destinationTextFieldEvent = this._destinationTextFieldEvent.bind(this);
+    this.setEventListener(viewEvents.uid.DESTINATION_FIELD_INPUT, this._destinationTextFieldEvent);
     //
-    this._priceKeyAction = this._priceKeyAction.bind(this);
-    this.setEventListener(viewEvents.uid.PRICE_FIELD_INPUT, this._priceKeyAction);
+    this._priceTextFieldEvent = this._priceTextFieldEvent.bind(this);
+    this.setEventListener(viewEvents.uid.PRICE_FIELD_INPUT, this._priceTextFieldEvent);
   }
 
   _eventTypeListClick(evt) {
@@ -180,27 +180,35 @@ export default class TripPointEditor extends AbstractInteractiveElement {
     }
   }
 
-  _destinationKeyAction(evt) {
-    if(evt.event.target.value === this._data.destination.name) {
+  _makeDefaultActionsOnTextField({event, dataName, stateName, dataCreateFunctionByTextFieldValue, compareWith} = {}) {
+    if(event.target.value == compareWith) {
       return;
     }
-    this.updateData({
-      destination: Object.assign({}, {name: evt.event.target.value}, appData.getCity(evt.event.target.value)),
-      state: {
-        destination: getFocusObject(evt.event.target),
-      },
+    const upd = {
+      state: {},
+    };
+    upd[dataName] =  dataCreateFunctionByTextFieldValue(event.target.value);
+    upd.state[stateName] = getFocusObject(event.target);
+    this.updateData(upd);
+  }
+
+  _destinationTextFieldEvent(evt) {
+    this._makeDefaultActionsOnTextField({
+      event: evt.event,
+      dataName: 'destination',
+      stateName: 'destination',
+      dataCreateFunctionByTextFieldValue: (value) => Object.assign({}, {name: value}, appData.getCity(value)),
+      compareWith: this._data.destination.name,
     });
   }
 
-  _priceKeyAction(evt) {
-    if(evt.event.target.value === this._data.base_price) {
-      return;
-    }
-    this.updateData({
-      base_price: evt.event.target.value,
-      state: {
-        price: getFocusObject(evt.event.target),
-      },
+  _priceTextFieldEvent(evt) {
+    this._makeDefaultActionsOnTextField({
+      event: evt.event,
+      dataName: 'base_price',
+      stateName: 'price',
+      dataCreateFunctionByTextFieldValue: (value) => parseInt(value),
+      compareWith: this._data.base_price,
     });
   }
 
