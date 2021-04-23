@@ -27,3 +27,9 @@ sortFunctions[ViewValues.sortTypes.offers] = (a, b) => {return getOffersCost(a) 
 const getOffersCost = (tripPoint) => {
   return tripPoint.offers.reduce((acc, offer) => (acc + offer.price), 0);
 };
+
+export const bindEventListenerContext = function (fn, context, handlerType) {
+  return function (...args) {
+    return fn.call(context, handlerType, ...args);
+  };
+};
