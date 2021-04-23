@@ -10,6 +10,8 @@ export const viewEvents = {
     DESTINATION_FIELD_INPUT: 'destination-field-input',
     PRICE_FIELD_INPUT: 'proce-field-input',
     OFFERS_CLICK: 'offers-click',
+    START_DATE_INPUT: 'start-date-input',
+    END_DATE_INPUT: 'end-date-input',
   },
   type: {
     CLICK: 'click',

@@ -6,13 +6,19 @@ import { RenderPosition, getComponent, renderElement } from './utils/ui.js';
 import { generateTripPointData } from './mock/trip-point.js';
 import { ViewValues } from './constants.js';
 
-const testPoints = new Array(20).fill().map(() => generateTripPointData());
+let testPoints = new Array(20).fill().map(() => generateTripPointData());
 
 const viewItems = {
   menu: new MenuView(),
   tripInfo: new TripInfoView(testPoints),
   filters: new FiltersView(),
-  tripPresenter: new TripPresenter(getComponent(ViewValues.selectors.TRIP)),
+  tripPresenter: new TripPresenter({
+    tripContainer: getComponent(ViewValues.selectors.TRIP),
+    deletePointCallback: (point) => {
+      testPoints = testPoints.filter((p) => p.id != point.id);
+      viewItems.tripPresenter.init(testPoints);
+    },
+  }),
 };
 
 

@@ -2,7 +2,6 @@ import AbstractInteractiveElement from './abstract-interactive-element.js';
 import { viewEvents } from './view-events.js';
 import { appData } from '../app-data.js';
 import { TimeUtils } from '../utils/time.js';
-import { getFocusObject, restoreFocus } from '../utils/ui.js';
 
 const parseTripPoint = (tripPoint = {}) => {
   const date_ = new Date().toISOString();
@@ -71,7 +70,7 @@ const createDestination = (id, type, dst) => {
 
 const createDateField = (pointId, dateStr, endTimeStamp) => {
   return `<label class="visually-hidden" for="event-${endTimeStamp ? 'end' : 'start'}-time-${pointId}">${endTimeStamp ? 'To' : 'From'}</label>
-          <input class="event__input  event__input--time" id="event-${endTimeStamp ? 'end' : 'start'}-time-${pointId}" type="text" name="event-${endTimeStamp ? 'end' : 'start'}-time" value="${dateStr}">`;
+          <input class="event__input  event__input--time" id="event-${endTimeStamp ? 'end' : 'start'}-time-${pointId}" type="text" name="event-${endTimeStamp ? 'end' : 'start'}-time" value="${dateStr}" readonly>`;
 };
 
 const createDates = (id, from, to) => {
@@ -173,11 +172,13 @@ export default class TripPointEditor extends AbstractInteractiveElement {
     this._wrapAsInternalListener(this._destinationTextFieldEvent, viewEvents.uid.DESTINATION_FIELD_INPUT);
     this._wrapAsInternalListener(this._priceTextFieldEvent, viewEvents.uid.PRICE_FIELD_INPUT);
     this._wrapAsInternalListener(this._offersListClick, viewEvents.uid.OFFERS_CLICK);
+    this._wrapAsInternalListener(this._startDateTextFieldEvent, viewEvents.uid.START_DATE_INPUT);
+    this._wrapAsInternalListener(this._endDateTextFieldEvent, viewEvents.uid.END_DATE_INPUT);
   }
 
   _eventTypeListClick(evt) {
     if(evt.event.target.dataset.eventType) {
-      this.updateData({type: evt.event.target.dataset.eventType});
+      this.updateData({type: evt.event.target.dataset.eventType, offers: []});
     }
   }
 
@@ -216,6 +217,12 @@ export default class TripPointEditor extends AbstractInteractiveElement {
     });
   }
 
+  _startDateTextFieldEvent() {
+  }
+
+  _endDateTextFieldEvent() {
+  }
+
   _initHandlers() {
     const createRegEventObject = (selectorInsideParent, handlerUID, eventType = viewEvents.type.CLICK, args) => {
       return Object.assign({
@@ -231,6 +238,8 @@ export default class TripPointEditor extends AbstractInteractiveElement {
       createRegEventObject('.event__input--destination', viewEvents.uid.DESTINATION_FIELD_INPUT, viewEvents.type.KEYBOARD_BUTTON_UP),
       createRegEventObject('.event__input--price', viewEvents.uid.PRICE_FIELD_INPUT, viewEvents.type.KEYBOARD_BUTTON_UP),
       createRegEventObject('.event__available-offers', viewEvents.uid.OFFERS_CLICK),
+      createRegEventObject(`#event-start-time-${this._data.id}`, viewEvents.uid.START_DATE_INPUT, viewEvents.type.KEYBOARD_BUTTON_UP),
+      createRegEventObject(`#event-end-time-${this._data.id}`, viewEvents.uid.END_DATE_INPUT, viewEvents.type.KEYBOARD_BUTTON_UP),
     ];
     if(this._data.isEditMode) {
       events.push(createRegEventObject('.event__rollup-btn', viewEvents.uid.CLOSE_POINT_POPUP));

@@ -7,7 +7,7 @@ import { updateItem, sortFunctions } from '../utils/common.js';
 import { ViewValues } from '../constants.js';
 
 export default class TripPresenter {
-  constructor(tripContainer) {
+  constructor({tripContainer, deletePointCallback}) {
     this._tripContainer = tripContainer;
     this._sortView = new SortView();
     this._tripPointsContainerView = new TripPointsContainerView();
@@ -16,10 +16,14 @@ export default class TripPresenter {
     this._tripPointsPresenters = {};
     this._openedTripPoint = null;
     this._editClickCallback = this._editClickCallback.bind(this);
+    this._deletePointCallback = this._deletePointCallback.bind(this);
     this._closeClickCallback = this._closeClickCallback.bind(this);
     this._tripPointDataUpdatedCallback = this._tripPointDataUpdatedCallback.bind(this);
     this._sortTypeClickCallback = this._sortTypeClickCallback.bind(this);
     this._currentSortType = ViewValues.sortTypes.day;
+    this._callbacks = {
+      deletePointCallback,
+    };
   }
 
   _sortTypeClickCallback(sortType) {
@@ -37,6 +41,12 @@ export default class TripPresenter {
   _closeClickCallback(pointIptr) {
     pointIptr.setEditModeEnabled(false);
     this._openedTripPoint = null;
+  }
+
+  _deletePointCallback(pointIptr) {
+    if(this._callbacks.deletePointCallback) {
+      (this._callbacks.deletePointCallback(pointIptr.tripPointData));
+    }
   }
 
   _editClickCallback(pointIptr) {
@@ -73,6 +83,7 @@ export default class TripPresenter {
       editClickCallback: this._editClickCallback,
       closeClickCallback: this._closeClickCallback,
       updateDataCallback: this._tripPointDataUpdatedCallback,
+      deletePointCallback: this._deletePointCallback,
     });
     this._tripPointsPresenters[tripPointData.id] = pointPresenter;
     pointPresenter.init(tripPointData);
@@ -89,6 +100,8 @@ export default class TripPresenter {
 
 
   _renderTrip() {
+    this._tripContainer.textContent = '';
+    this._clearTripPoints();
     if(!this._tripPoints || !this._tripPoints.length) {
       this._renderNoPoints();
       return;
