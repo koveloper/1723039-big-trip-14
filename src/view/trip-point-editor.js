@@ -109,11 +109,16 @@ const createHeader = (tripPoint) => {
           </header>`;
 };
 
-const createOffer = (offer, id, offers) => {
+const getOfferIdFromTitle = (title) => {
+  return title.toLowerCase().replaceAll(/\s+/gm, '_');
+};
+
+const createOffer = (offer, pointId, offers) => {
   const checked = offers.find((el) => { return el.title === offer.title; });
+  const offerId = getOfferIdFromTitle(offer.title);
   return `<div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.title.toLowerCase()}-${id}" type="checkbox" name="event-offer-${offer.title.toLowerCase()}" ${checked ? 'checked' : ''}>
-            <label class="event__offer-label" for="event-offer-${offer.title.toLowerCase()}-${id}">
+            <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offerId}-${pointId}" type="checkbox" name="event-offer-${offerId}" ${checked ? 'checked' : ''}>
+            <label class="event__offer-label" for="event-offer-${offerId}-${pointId}">
               <span class="event__offer-title">${offer.title}</span>
               +€&nbsp;
               <span class="event__offer-price">${offer.price}</span>
@@ -121,11 +126,11 @@ const createOffer = (offer, id, offers) => {
           </div>`;
 };
 
-const createOffers = (id, type, offers) => {
+const createOffers = (pointId, type, offers) => {
   return `<section class="event__section  event__section--offers">
             <h3 class="event__section-title  event__section-title--offers">Offers</h3>
             <div class="event__available-offers">
-              ${appData.getOffersByTypeName(type).map((o) => createOffer(o, id, offers)).join('')}
+              ${appData.getOffersByTypeName(type).map((o) => createOffer(o, pointId, offers)).join('')}
             </div>
           </section>`;
 };
@@ -164,20 +169,25 @@ export default class TripPointEditor extends AbstractInteractiveElement {
     this._data = parseTripPoint(tripPoint);
     this._initHandlers();
     //
-    this._eventTypeListClick = this._eventTypeListClick.bind(this);
-    this.setEventListener(viewEvents.uid.EVENT_TYPE_CLICK, this._eventTypeListClick);
-    //
-    this._destinationTextFieldEvent = this._destinationTextFieldEvent.bind(this);
-    this.setEventListener(viewEvents.uid.DESTINATION_FIELD_INPUT, this._destinationTextFieldEvent);
-    //
-    this._priceTextFieldEvent = this._priceTextFieldEvent.bind(this);
-    this.setEventListener(viewEvents.uid.PRICE_FIELD_INPUT, this._priceTextFieldEvent);
+    this._wrapAsInternalListener(this._eventTypeListClick, viewEvents.uid.EVENT_TYPE_CLICK);
+    this._wrapAsInternalListener(this._destinationTextFieldEvent, viewEvents.uid.DESTINATION_FIELD_INPUT);
+    this._wrapAsInternalListener(this._priceTextFieldEvent, viewEvents.uid.PRICE_FIELD_INPUT);
+    this._wrapAsInternalListener(this._offersListClick, viewEvents.uid.OFFERS_CLICK);
+  }
+
+  _wrapAsInternalListener(func, eventUID) {
+    func = func.bind(this);
+    this.setEventListener(eventUID, func);
   }
 
   _eventTypeListClick(evt) {
     if(evt.event.target.dataset.eventType) {
       this.updateData({type: evt.event.target.dataset.eventType});
     }
+  }
+
+  _offersListClick(evt) {
+    console.log(evt);
   }
 
   _makeDefaultActionsOnTextField({event, dataName, stateName, dataCreateFunctionByTextFieldValue, compareWith} = {}) {
@@ -226,6 +236,7 @@ export default class TripPointEditor extends AbstractInteractiveElement {
       createRegEventObject('.event__type-list', viewEvents.uid.EVENT_TYPE_CLICK),
       createRegEventObject('.event__input--destination', viewEvents.uid.DESTINATION_FIELD_INPUT, viewEvents.type.KEYBOARD_BUTTON_UP),
       createRegEventObject('.event__input--price', viewEvents.uid.PRICE_FIELD_INPUT, viewEvents.type.KEYBOARD_BUTTON_UP),
+      createRegEventObject('.event__available-offers', viewEvents.uid.OFFERS_CLICK),
     ];
     if(this._data.isEditMode) {
       events.push(createRegEventObject('.event__rollup-btn', viewEvents.uid.CLOSE_POINT_POPUP));
