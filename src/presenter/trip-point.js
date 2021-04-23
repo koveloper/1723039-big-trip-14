@@ -57,6 +57,7 @@ export default class TripPointPresenter {
   }
 
   _closePointEditForm() {
+    this._tripPointEditView.tripPoint = this._tripPointData;
     if(this._callbacks.closeClickCallback) {
       this._callbacks.closeClickCallback(this);
     }

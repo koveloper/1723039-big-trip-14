@@ -6,8 +6,11 @@ export const viewEvents = {
     SAVE_POINT: 'save-point',
     DELETE_POINT: 'delete-point',
     SORT_TYPE_CLICK: 'sort-type-click',
+    EVENT_TYPE_CLICK: 'event-type-click',
+    DESTINATION_FIELD_INPUT: 'destination-field-input',
   },
   type: {
     CLICK: 'click',
+    KEYBOARD_BUTTON_UP: 'keyup',
   },
 };

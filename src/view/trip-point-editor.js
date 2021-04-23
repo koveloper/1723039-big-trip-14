@@ -32,7 +32,7 @@ const parseTripPoint = (tripPoint = {}) => {
 const createEventTypeInput = (typeTitle, id) => {
   return `<div class="event__type-item">
             <input id="event-type-${typeTitle.toLowerCase()}-${id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${typeTitle.toLowerCase()}">
-            <label class="event__type-label  event__type-label--${typeTitle.toLowerCase()}" for="event-type-${typeTitle.toLowerCase()}-${id}">${typeTitle}</label>
+            <label class="event__type-label  event__type-label--${typeTitle.toLowerCase()}" data-event-type="${typeTitle.toLowerCase()}" for="event-type-${typeTitle.toLowerCase()}-${id}">${typeTitle}</label>
           </div>`;
 };
 
@@ -54,7 +54,7 @@ const createEventTypeMenuButton = (id, type) => {
 
 const createDestinationDataList = (id) => {
   return `<datalist id="destination-list-${id}">
-            ${appData.cityList.map((c) => '<option value="' + c + '"></option>')}
+            ${appData.cityList.map((c) => '<option value="' + c.name + '"></option>')}
           </datalist>`;
 };
 
@@ -101,7 +101,7 @@ const createHeader = (tripPoint) => {
   tripPoint = parseTripPoint(tripPoint);
   return `<header class="event__header">                  
             ${createEventTypeMenuButton(tripPoint.id, tripPoint.type)}
-            ${createDestination(tripPoint.id, tripPoint.type, tripPoint.destination.name)}
+            ${createDestination(tripPoint.id, tripPoint.type, tripPoint.destination.name, tripPoint.state)}
             ${createDates(tripPoint.id, TimeUtils.convertTo_DDMMYY_HHMM(tripPoint.date_from), TimeUtils.convertTo_DDMMYY_HHMM(tripPoint.date_to))}
             ${createBasePrice(tripPoint.id, tripPoint.base_price)}
             ${createButtons(tripPoint.isEditMode)}
@@ -129,7 +129,7 @@ const createOffers = (id, type, offers) => {
           </section>`;
 };
 
-const createDescription = (description) => {
+const createDescription = (description = 'There is no information about destination point') => {
   return `<section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>
             <p class="event__destination-description">${description}</p>
@@ -140,7 +140,7 @@ const createPicture = (url) => {
   return `<img class="event__photo" src="${url}" alt="Event photo">`;
 };
 
-const createPictures = (pictures) => {
+const createPictures = (pictures = []) => {
   return `<div class="event__photos-container">
             <div class="event__photos-tape">
             ${pictures.map((p) => createPicture(p.src)).join('')}
@@ -153,14 +153,45 @@ const createDetails = (tripPoint) => {
   return `<section class="event__details">
             ${createOffers(tripPoint.id, tripPoint.type, tripPoint.offers)}
             ${createDescription(tripPoint.destination.description)}
-            ${tripPoint.isEditMode ? '' : createPictures(tripPoint.destination.pictures)}
+            ${createPictures(tripPoint.destination.pictures)}
           </section>`;
 };
 
 export default class TripPointEditor extends AbstractInteractiveElement {
   constructor(tripPoint = {}) {
     super();
-    this._tripPoint = tripPoint;
+    this._data = parseTripPoint(tripPoint);
+    this._initHandlers();
+    //
+    this._eventTypeListClick = this._eventTypeListClick.bind(this);
+    this.setEventListener(viewEvents.uid.EVENT_TYPE_CLICK, this._eventTypeListClick);
+    //
+    this._destinationKeyAction = this._destinationKeyAction.bind(this);
+    this.setEventListener(viewEvents.uid.DESTINATION_FIELD_INPUT, this._destinationKeyAction);
+  }
+
+  _eventTypeListClick(evt) {
+    if(evt.event.target.dataset.eventType) {
+      this.updateData({type: evt.event.target.dataset.eventType});
+    }
+  }
+
+  _destinationKeyAction(evt) {
+    if(evt.event.target.value === this._data.destination.name) {
+      return;
+    }
+    this.updateData({
+      destination: Object.assign({}, {name: evt.event.target.value}, appData.getCity(evt.event.target.value)),
+      state: {
+        destination: {
+          isFocusOn: true,
+          caret: [evt.event.target.selectionStart, evt.event.target.selectionEnd],
+        },
+      },
+    });
+  }
+
+  _initHandlers() {
     this._registerEventSupport({
       parent: this.getElement(),
       selectorInsideParent: '.event__save-btn',
@@ -173,7 +204,19 @@ export default class TripPointEditor extends AbstractInteractiveElement {
       handlerUID: viewEvents.uid.DELETE_POINT,
       eventType: viewEvents.type.CLICK,
     });
-    if(parseTripPoint(tripPoint).isEditMode) {
+    this._registerEventSupport({
+      parent: this.getElement(),
+      selectorInsideParent: '.event__type-list',
+      handlerUID: viewEvents.uid.EVENT_TYPE_CLICK,
+      eventType: viewEvents.type.CLICK,
+    });
+    this._registerEventSupport({
+      parent: this.getElement(),
+      selectorInsideParent: '.event__input--destination',
+      handlerUID: viewEvents.uid.DESTINATION_FIELD_INPUT,
+      eventType: viewEvents.type.KEYBOARD_BUTTON_UP,
+    });
+    if(this._data.isEditMode) {
       this._registerEventSupport({
         parent: this.getElement(),
         selectorInsideParent: '.event__rollup-btn',
@@ -183,15 +226,35 @@ export default class TripPointEditor extends AbstractInteractiveElement {
     }
   }
 
+  restoreHandlers() {
+    this._initHandlers();
+    const state = this._data.state;
+    if(state) {
+      if(state.destination) {
+        if(state.destination.isFocusOn) {
+          this.getElement().querySelector('.event__input--destination').focus();
+        }
+        if(state.destination.caret) {
+          this.getElement().querySelector('.event__input--destination').setSelectionRange(state.destination.caret[0], state.destination.caret[1]);
+        }
+      }
+      delete this._data.state;
+    }
+  }
+
   get tripPoint() {
-    return this._tripPoint;
+    return this._data;
+  }
+
+  set tripPoint(value) {
+    this.updateData(value);
   }
 
   getTemplate() {
     return `<li class="trip-events__item">
               <form class="event event--edit" action="#" method="post">
-                ${createHeader(this._tripPoint)}
-                ${createDetails(this._tripPoint)}
+                ${createHeader(this._data)}
+                ${createDetails(this._data)}
               </form>
             </li>`;
   }
