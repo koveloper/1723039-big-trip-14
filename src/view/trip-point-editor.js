@@ -2,6 +2,7 @@ import AbstractInteractiveElement from './abstract-interactive-element.js';
 import { viewEvents } from './view-events.js';
 import { appData } from '../app-data.js';
 import { TimeUtils } from '../utils/time.js';
+import { getFocusObject, restoreFocus } from '../utils/ui.js';
 
 const parseTripPoint = (tripPoint = {}) => {
   const date_ = new Date().toISOString();
@@ -179,25 +180,6 @@ export default class TripPointEditor extends AbstractInteractiveElement {
     }
   }
 
-  _getFocusObject(target) {
-    return {
-      isFocusOn: true,
-      caret: [target.selectionStart, target.selectionEnd],
-    };
-  }
-
-  _restoreFocus(target, focusObj) {
-    if(!focusObj) {
-      return;
-    }
-    if(focusObj.isFocusOn) {
-      target.focus();
-    }
-    if(focusObj.caret) {
-      target.setSelectionRange(focusObj.caret[0], focusObj.caret[1]);
-    }
-  }
-
   _destinationKeyAction(evt) {
     if(evt.event.target.value === this._data.destination.name) {
       return;
@@ -205,7 +187,7 @@ export default class TripPointEditor extends AbstractInteractiveElement {
     this.updateData({
       destination: Object.assign({}, {name: evt.event.target.value}, appData.getCity(evt.event.target.value)),
       state: {
-        destination: this._getFocusObject(evt.event.target),
+        destination: getFocusObject(evt.event.target),
       },
     });
   }
@@ -215,9 +197,9 @@ export default class TripPointEditor extends AbstractInteractiveElement {
       return;
     }
     this.updateData({
-      base_price: parseInt(evt.event.target.value),
+      base_price: evt.event.target.value,
       state: {
-        price: this._getFocusObject(evt.event.target),
+        price: getFocusObject(evt.event.target),
       },
     });
   }
@@ -235,7 +217,7 @@ export default class TripPointEditor extends AbstractInteractiveElement {
       createRegEventObject('.event__reset-btn', viewEvents.uid.DELETE_POINT),
       createRegEventObject('.event__type-list', viewEvents.uid.EVENT_TYPE_CLICK),
       createRegEventObject('.event__input--destination', viewEvents.uid.DESTINATION_FIELD_INPUT, viewEvents.type.KEYBOARD_BUTTON_UP),
-      createRegEventObject('.event__input--price', viewEvents.uid.DESTINATION_FIELD_INPUT, viewEvents.type.KEYBOARD_BUTTON_UP),
+      createRegEventObject('.event__input--price', viewEvents.uid.PRICE_FIELD_INPUT, viewEvents.type.KEYBOARD_BUTTON_UP),
     ];
     if(this._data.isEditMode) {
       events.push(createRegEventObject('.event__rollup-btn', viewEvents.uid.CLOSE_POINT_POPUP));
@@ -250,7 +232,7 @@ export default class TripPointEditor extends AbstractInteractiveElement {
     const state = this._data.state;
     if(state) {
       const inputs = ['destination', 'price'];
-      inputs.forEach((inp) => this._restoreFocus(this.getElement().querySelector(`.event__input--${inp}`), state[inp]));
+      inputs.forEach((inp) => restoreFocus(this.getElement().querySelector(`.event__input--${inp}`), state[inp]));
       delete this._data.state;
     }
   }
