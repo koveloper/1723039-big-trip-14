@@ -32,11 +32,11 @@ export default class TripPointPresenter {
     const prevEditPointView = this._tripPointEditView;
     //create view instances
     this._tripPointView = new TripPointView(tripPointData);
-    this._tripPointView.addEventListener(handlerTypes.OPEN_POINT_POPUP, this._openPointEditForm);
-    this._tripPointView.addEventListener(handlerTypes.FAVORITE_CLICK, this._favoriteClick);
+    this._tripPointView.setEventListener(handlerTypes.OPEN_POINT_POPUP, this._openPointEditForm);
+    this._tripPointView.setEventListener(handlerTypes.FAVORITE_CLICK, this._favoriteClick);
     //
     this._tripPointEditView = new TripPointEditorView(tripPointData);
-    this._tripPointEditView.addEventListener(handlerTypes.CLOSE_POINT_POPUP, this._closePointEditForm);
+    this._tripPointEditView.setEventListener(handlerTypes.CLOSE_POINT_POPUP, this._closePointEditForm);
     //in case of first call just render and return
     if(!prevPointView || !prevEditPointView) {
       renderElement(this._container, this._tripPointView);

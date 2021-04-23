@@ -17,8 +17,13 @@ export default class Sort extends AbstractViewElement {
   constructor() {
     super();
     this._sortTypeClickHandler = this._sortTypeClickHandler.bind(this);
-    this._registerHandler(handlerTypes.SORT_TYPE_CLICK, this.getElement(), 'click');
-    this.addEventListener(handlerTypes.SORT_TYPE_CLICK, this._sortTypeClickHandler);
+    this._registerEventSupport({
+      parent: this.getElement().parentElement,
+      selectorInsideParent: '.trip-events__trip-sort',
+      handlerUID: handlerTypes.SORT_TYPE_CLICK,
+      eventType: 'click',
+    });
+    this.setEventListener(handlerTypes.SORT_TYPE_CLICK, this._sortTypeClickHandler);
     this._sortTypeClickCallback = null;
     this._sortElements = [...this.getElement().querySelectorAll('.trip-sort__input')];
   }

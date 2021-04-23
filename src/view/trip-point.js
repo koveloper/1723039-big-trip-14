@@ -63,8 +63,18 @@ export default class TripPoint extends AbstractViewElement {
 
   set tripPoint(value) {
     this._tripPoint = value;
-    this._registerHandler(handlerTypes.OPEN_POINT_POPUP, this.getElement().querySelector('.event__rollup-btn'), 'click');
-    this._registerHandler(handlerTypes.FAVORITE_CLICK, this.getElement().querySelector('.event__favorite-btn'), 'click');
+    this._registerEventSupport({
+      parent: this.getElement(),
+      selectorInsideParent: '.event__rollup-btn',
+      handlerUID: handlerTypes.OPEN_POINT_POPUP,
+      eventType: 'click',
+    });
+    this._registerEventSupport({
+      parent: this.getElement(),
+      selectorInsideParent: '.event__favorite-btn',
+      handlerUID: handlerTypes.FAVORITE_CLICK,
+      eventType: 'click',
+    });
   }
 
   get tripPoint() {

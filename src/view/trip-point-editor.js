@@ -1,4 +1,4 @@
-import AbstractViewElement from './abstract-view-element.js';
+import AbstractInteractiveElement from './abstract-interactive-element.js';
 import { handlerTypes } from './handlers.js';
 import { appData } from '../app-data.js';
 import { TimeUtils } from '../utils/time.js';
@@ -157,14 +157,29 @@ const createDetails = (tripPoint) => {
           </section>`;
 };
 
-export default class TripPointEditor extends AbstractViewElement {
+export default class TripPointEditor extends AbstractInteractiveElement {
   constructor(tripPoint = {}) {
     super();
     this._tripPoint = tripPoint;
-    this._registerHandler(handlerTypes.SAVE_POINT, this.getElement().querySelector('.event__save-btn'), 'click');
-    this._registerHandler(handlerTypes.DELETE_POINT, this.getElement().querySelector('.event__reset-btn'), 'click');
+    this._registerEventSupport({
+      parent: this.getElement(),
+      selectorInsideParent: '.event__save-btn',
+      handlerUID: handlerTypes.SAVE_POINT,
+      eventType: 'click',
+    });
+    this._registerEventSupport({
+      parent: this.getElement(),
+      selectorInsideParent: '.event__reset-btn',
+      handlerUID: handlerTypes.DELETE_POINT,
+      eventType: 'click',
+    });
     if(parseTripPoint(tripPoint).isEditMode) {
-      this._registerHandler(handlerTypes.CLOSE_POINT_POPUP, this.getElement().querySelector('.event__rollup-btn'), 'click');
+      this._registerEventSupport({
+        parent: this.getElement(),
+        selectorInsideParent: '.event__rollup-btn',
+        handlerUID: handlerTypes.CLOSE_POINT_POPUP,
+        eventType: 'click',
+      });
     }
   }
 

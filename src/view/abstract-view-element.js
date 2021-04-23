@@ -12,8 +12,8 @@ export default class AbstractViewElement {
       throw new Error('Can\'t instantiate Abstract, only concrete one.');
     }
     this._element = null;
-    this._callbacks = {};
-    this._handlers = {};
+    this._events = {};
+    // this._handlers = {};
   }
 
   getTemplate() {
@@ -31,33 +31,63 @@ export default class AbstractViewElement {
     this._element = null;
   }
 
-  _handler(handlerType, evt) {
+  _handler(handlerUID, evt) {
     if(evt) {
       evt.preventDefault();
     }
-    if(this._callbacks[handlerType]) {
-      for(const f of this._callbacks[handlerType]) {
-        f({src: this, type: handlerType, event: evt});
-      }
+    if(this._events[handlerUID].listener) {
+      this._events[handlerUID].listener({src: this, eventUID: handlerUID, event: evt});
     }
   }
 
-  _registerHandler(handlerType, domElmnt, onEvent) {
-    this._unregisterHandler(arguments);
-    this._handlers[handlerType] = bindContext(this, handlerType, this._handler);
-    domElmnt.addEventListener(onEvent, this._handlers[handlerType]);
+  _createEventHandler(handlerUID, parent, selector, eventType) {
+    const eventHandler = {
+      handlerUID,
+      selector,
+      eventType,
+      parent,
+      element: parent.querySelector(selector),
+      eventHandler: bindContext(this, handlerUID, this._handler),
+      registerHandler: function() {
+        this.element.addEventListener(this.eventType, this.eventHandler);
+      },
+      unregisterHandler: function() {
+        this.element.removeEventListener(this.eventType, this.eventHandler);
+      },
+    };
+    eventHandler.registerHandler = eventHandler.registerHandler.bind(eventHandler);
+    eventHandler.unregisterHandler = eventHandler.unregisterHandler.bind(eventHandler);
+    eventHandler.registerHandler();
+    return eventHandler;
   }
 
-  _unregisterHandler(handlerType, component, onEvent) {
-    if(this._handlers[handlerType]) {
-      component.removeEventListener(onEvent, this._handlers[handlerType]);
+  _registerEventSupport({handlerUID, parent, selectorInsideParent, eventType} = {}) {
+    this._unregisterEventSupport(handlerUID);
+    this._events[handlerUID] = Object.assign(
+      {},
+      this._events[handlerUID],
+      this._createEventHandler(
+        handlerUID,
+        parent,
+        selectorInsideParent,
+        eventType,
+      ),
+    );
+  }
+
+  _unregisterEventSupport(handlerUID) {
+    if(this._events[handlerUID]) {
+      this._events[handlerUID].unregisterHandler();
     }
   }
 
-  addEventListener(handlerType, callbackFunction) {
-    if(!this._callbacks[handlerType]) {
-      this._callbacks[handlerType] = [];
-    }
-    this._callbacks[handlerType].push(callbackFunction);
+  setEventListener(handlerUID, callbackFunction) {
+    this._events[handlerUID] = Object.assign(
+      {},
+      this._events[handlerUID],
+      {
+        listener: callbackFunction,
+      },
+    );
   }
 }
