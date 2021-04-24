@@ -2,6 +2,8 @@ import AbstractInteractiveElement from './abstract-interactive-element.js';
 import { viewEvents } from './view-events.js';
 import { appData } from '../app-data.js';
 import { TimeUtils } from '../utils/time.js';
+import flatpickr from 'flatpickr';
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 const parseTripPoint = (tripPoint = {}) => {
   const date_ = new Date().toISOString();
