@@ -12,13 +12,13 @@ export const TimeUtils = {
     return dayjs(isoTimeStampString).format('YYYY-MM-DD');
   },
   convertTo_YYYYMMDD_HHMM: (isoTimeStampString) => {
-    return dayjs(isoTimeStampString).format('YYYY-MM-DDThh:mm');
+    return dayjs(isoTimeStampString).format('YYYY-MM-DDTHH:mm');
   },
   convertTo_DDMMYY_HHMM: (isoTimeStampString) => {
-    return dayjs(isoTimeStampString).format('DD/MM/YY hh:mm');
+    return dayjs(isoTimeStampString).format('DD/MM/YY HH:mm');
   },
   convertTo_HHMM: (isoTimeStampString) => {
-    return dayjs(isoTimeStampString).format('hh:mm');
+    return dayjs(isoTimeStampString).format('HH:mm');
   },
   getDiff: (isoDateStrFrom, isoDateStrTo) => {
     const from = dayjs(isoDateStrFrom);
