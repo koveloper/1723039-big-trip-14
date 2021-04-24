@@ -168,14 +168,27 @@ export default class TripPointEditor extends AbstractInteractiveElement {
   constructor(tripPoint = {}) {
     super();
     this._data = parseTripPoint(tripPoint);
-    this._initHandlers();
+    this._calendar = null;
+    this._init();
+    //
+    this._dateChanged = this._dateChanged.bind(this);
+    this._calendarClosed = this._calendarClosed.bind(this);
     //
     this._wrapAsInternalListener(this._eventTypeListClick, viewEvents.uid.EVENT_TYPE_CLICK);
     this._wrapAsInternalListener(this._destinationTextFieldEvent, viewEvents.uid.DESTINATION_FIELD_INPUT);
     this._wrapAsInternalListener(this._priceTextFieldEvent, viewEvents.uid.PRICE_FIELD_INPUT);
     this._wrapAsInternalListener(this._offersListClick, viewEvents.uid.OFFERS_CLICK);
-    this._wrapAsInternalListener(this._startDateTextFieldEvent, viewEvents.uid.START_DATE_INPUT);
-    this._wrapAsInternalListener(this._endDateTextFieldEvent, viewEvents.uid.END_DATE_INPUT);
+    this._wrapAsInternalListener(this._dateTextFieldClick,
+      viewEvents.uid.START_DATE_CLICK,
+      viewEvents.uid.END_DATE_CLICK,
+    );
+  }
+
+  _initCalendar() {
+    if(this._calendar) {
+      this._calendar.destroy();
+      this._calendar = null;
+    }
   }
 
   _eventTypeListClick(evt) {
@@ -219,13 +232,55 @@ export default class TripPointEditor extends AbstractInteractiveElement {
     });
   }
 
-  _startDateTextFieldEvent() {
+  _showCalendar({selector, date, minDate, maxDate}) {
+    if(!this._calendar) {
+      this._calendar = flatpickr(this.getElement().querySelector(selector), {
+        dateFormat: 'd/m/y H:i',
+        enableTime: true,
+        time_24hr: true,
+        onClose: this._calendarClosed,
+      });
+    } else {
+      this._calendar.input = this.getElement().querySelector(selector);
+    }
+    //clear callback function to prevent event callback after setDate call
+    this._calendar.set('onChange', null);
+    this._calendar.setDate(date, true);
+    this._calendar.set('onChange', this._dateChanged);
+    this._calendar.set('minDate', minDate);
+    this._calendar.set('maxDate', maxDate);
+    this._calendar._dateCache = null;
+    this._calendar.open();
   }
 
-  _endDateTextFieldEvent() {
+  _calendarClosed() {
+    if(!this._calendar._dateCache) {
+      return;
+    }
+    const update = {};
+    if(this._calendar.config.minDate) { //date-to
+      update.date_to = this._calendar._dateCache;
+    }
+    if(this._calendar.config.maxDate) { //date-from
+      update.date_from = this._calendar._dateCache;
+    }
+    this._calendar._dateCache = null;
+    this.updateData(update);
   }
 
-  _initHandlers() {
+  _dateChanged([userDate]) {
+    this._calendar._dateCache = userDate.toISOString();
+  }
+
+  _dateTextFieldClick(evt) {
+    const selector = `#event-${evt.eventUID === viewEvents.uid.START_DATE_CLICK ? 'start': 'end'}-time-${this._data.id}`;
+    const date = Date.parse(evt.eventUID === viewEvents.uid.START_DATE_CLICK ? this._data.date_from : this._data.date_to);
+    const minDate = evt.eventUID === viewEvents.uid.START_DATE_CLICK ? null : Date.parse(this._data.date_from);
+    const maxDate = evt.eventUID === viewEvents.uid.END_DATE_CLICK ? null : Date.parse(this._data.date_to);
+    this._showCalendar({selector, date, minDate, maxDate});
+  }
+
+  _init() {
     const createRegEventObject = (selectorInsideParent, handlerUID, eventType = viewEvents.type.CLICK, args) => {
       return Object.assign({
         selectorInsideParent,
@@ -242,6 +297,8 @@ export default class TripPointEditor extends AbstractInteractiveElement {
       createRegEventObject('.event__available-offers', viewEvents.uid.OFFERS_CLICK),
       createRegEventObject(`#event-start-time-${this._data.id}`, viewEvents.uid.START_DATE_INPUT, viewEvents.type.KEYBOARD_BUTTON_UP),
       createRegEventObject(`#event-end-time-${this._data.id}`, viewEvents.uid.END_DATE_INPUT, viewEvents.type.KEYBOARD_BUTTON_UP),
+      createRegEventObject(`#event-start-time-${this._data.id}`, viewEvents.uid.START_DATE_CLICK),
+      createRegEventObject(`#event-end-time-${this._data.id}`, viewEvents.uid.END_DATE_CLICK),
     ];
     if(this._data.isEditMode) {
       events.push(createRegEventObject('.event__rollup-btn', viewEvents.uid.CLOSE_POINT_POPUP));
@@ -249,10 +306,11 @@ export default class TripPointEditor extends AbstractInteractiveElement {
     events.forEach((evt) => {
       this._registerEventSupport(Object.assign({parent: this.getElement()}, evt));
     });
+    this._initCalendar();
   }
 
   restoreHandlers() {
-    this._initHandlers();
+    this._init();
     this._restoreDefaultTextFields(this._data.state, ['destination', 'price']);
     delete this._data.state;
   }
