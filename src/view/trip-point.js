@@ -3,7 +3,7 @@ import { viewEvents } from './view-events.js';
 import { TimeUtils } from '../utils/time.js';
 
 const createDate = (from, to) => {
-  return `<time class="event__date" datetime="${TimeUtils.convertTo_YYYYMMDD(from)}">${TimeUtils.convertTo_MonthDay(to)}</time>`;
+  return `<time class="event__date" datetime="${TimeUtils.convertTo_YYYYMMDD(from)}">${TimeUtils.convertTo_MMMDD(to)}</time>`;
 };
 
 const createType = (type) => {
