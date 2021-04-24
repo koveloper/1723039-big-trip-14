@@ -12,6 +12,8 @@ export const viewEvents = {
     OFFERS_CLICK: 'offers-click',
     START_DATE_INPUT: 'start-date-input',
     END_DATE_INPUT: 'end-date-input',
+    START_DATE_CLICK: 'start-date-click',
+    END_DATE_CLICK: 'end-date-click',
   },
   type: {
     CLICK: 'click',
