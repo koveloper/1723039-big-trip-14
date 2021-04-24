@@ -10,9 +10,9 @@ export default class AbstractInteractiveElement extends AbstractViewElement {
     this._events = {};
   }
 
-  _wrapAsInternalListener(func, eventUID) {
+  _wrapAsInternalListener(func, ...eventUID) {
     func = func.bind(this);
-    this.setEventListener(eventUID, func);
+    eventUID.forEach((uid) => this.setEventListener(uid, func));
   }
 
   _performDefaultCallbackOnTextField({event, dataName, stateName, dataCreateFunctionByTextFieldValue, compareWith} = {}) {
