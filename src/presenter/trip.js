@@ -2,28 +2,24 @@ import SortView from '../view/sort.js';
 import TripPointPresenter from './trip-point.js';
 import TripPointsContainerView from '../view/trip-points-container.js';
 import TripPointsContainerEmptyView from '../view/trip-points-container-empty.js';
+import { ModelEvent } from '../model/model-events.js';
 import { renderElement } from '../utils/ui.js';
-import { updateItem, sortFunctions } from '../utils/common.js';
+import { sortFunctions } from '../utils/common.js';
 import { ViewValues } from '../constants.js';
 
 export default class TripPresenter {
-  constructor({tripContainer, deletePointCallback}) {
+  constructor({tripContainer, model}) {
     this._tripContainer = tripContainer;
     this._sortView = new SortView();
     this._tripPointsContainerView = new TripPointsContainerView();
     this._noPointsView = new TripPointsContainerEmptyView();
     this._tripPoints = [];
     this._tripPointsPresenters = {};
-    this._openedTripPoint = null;
-    this._editClickCallback = this._editClickCallback.bind(this);
-    this._deletePointCallback = this._deletePointCallback.bind(this);
-    this._closeClickCallback = this._closeClickCallback.bind(this);
-    this._tripPointDataUpdatedCallback = this._tripPointDataUpdatedCallback.bind(this);
+    this._modelCallback = this._modelCallback.bind(this);
     this._sortTypeClickCallback = this._sortTypeClickCallback.bind(this);
     this._currentSortType = ViewValues.sortTypes.day;
-    this._callbacks = {
-      deletePointCallback,
-    };
+    this._model = model;
+    this._model.addCallback(this._modelCallback);
   }
 
   _sortTypeClickCallback(sortType) {
@@ -38,33 +34,39 @@ export default class TripPresenter {
     this._sortView.setSortType(sortType);
   }
 
-  _closeClickCallback(pointIptr) {
-    pointIptr.setEditModeEnabled(false);
-    this._openedTripPoint = null;
-  }
-
-  _deletePointCallback(pointIptr) {
-    if(this._callbacks.deletePointCallback) {
-      (this._callbacks.deletePointCallback(pointIptr.tripPointData));
+  _modelCallback(evt) {
+    switch(evt.type) {
+      case ModelEvent.UPDATE_TRIP_POINT:
+        this._updateTripPointPresenterData(evt.data);
+        break;
+      case ModelEvent.UPDATE_TRIP:
+        this.init(evt.data);
+        break;
+      default:
+        break;
     }
   }
 
-  _editClickCallback(pointIptr) {
-    if(this._openedTripPoint) {
-      this._openedTripPoint.setEditModeEnabled(false);
+  _updateTripPointPresenterData(data) {
+    if(data.id in this._tripPointsPresenters) {
+      this._tripPointsPresenters[data.id].init(data);
     }
-    this._openedTripPoint = pointIptr;
-    pointIptr.setEditModeEnabled(true);
-  }
-
-  _tripPointDataUpdatedCallback(pointPresenterIptr, updatedPointData) {
-    this._tripPoints = updateItem(this._tripPoints, updatedPointData);
-    pointPresenterIptr.init(updatedPointData);
   }
 
   init(tripPoints) {
     this._tripPoints = tripPoints.slice();
     this._renderTrip();
+  }
+
+  _renderTrip() {
+    this._tripContainer.textContent = '';
+    this._clearTripPoints();
+    if(!this._tripPoints || !this._tripPoints.length) {
+      this._renderNoPoints();
+      return;
+    }
+    this._renderSort();
+    this._renderTripPoints();
   }
 
   _renderSort() {
@@ -80,10 +82,7 @@ export default class TripPresenter {
   _renderTripPoint(tripPointData) {
     const pointPresenter = new TripPointPresenter({
       containerForTripPoints: this._tripPointsContainerView,
-      editClickCallback: this._editClickCallback,
-      closeClickCallback: this._closeClickCallback,
-      updateDataCallback: this._tripPointDataUpdatedCallback,
-      deletePointCallback: this._deletePointCallback,
+      model: this._model,
     });
     this._tripPointsPresenters[tripPointData.id] = pointPresenter;
     pointPresenter.init(tripPointData);
@@ -96,17 +95,5 @@ export default class TripPresenter {
   _clearTripPoints() {
     Object.values(this._tripPointsPresenters).forEach((presenter) => presenter.destroy());
     this._tripPointsPresenters = {};
-  }
-
-
-  _renderTrip() {
-    this._tripContainer.textContent = '';
-    this._clearTripPoints();
-    if(!this._tripPoints || !this._tripPoints.length) {
-      this._renderNoPoints();
-      return;
-    }
-    this._renderSort();
-    this._renderTripPoints();
   }
 }

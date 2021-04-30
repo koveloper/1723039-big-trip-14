@@ -15,6 +15,19 @@ export const updateItem = (items, update) => {
   ];
 };
 
+export const deleteItem = (items, toDelete) => {
+  const index = items.findIndex((item) => item.id === toDelete.id);
+
+  if (index === -1) {
+    return items;
+  }
+
+  return [
+    ...items.slice(0, index),
+    ...items.slice(index + 1),
+  ];
+};
+
 export const sortFunctions = {
 
 };
