@@ -2,7 +2,7 @@ import AbstractInteractiveElement from './abstract-interactive-element.js';
 import { viewEvents } from './view-events.js';
 import { TimeUtils } from '../utils/time.js';
 
-const createDate = (from, to) => {
+const createDate = (from) => {
   return `<time class="event__date" datetime="${TimeUtils.convertTo_YYYYMMDD(from)}">${TimeUtils.convertTo_MMMDD(from)}</time>`;
 };
 
@@ -84,7 +84,7 @@ export default class TripPoint extends AbstractInteractiveElement {
   getTemplate() {
     return `<li class="trip-events__item">
               <div class="event">
-                ${createDate(this.tripPoint.date_from, this.tripPoint.date_to)}
+                ${createDate(this.tripPoint.date_from)}
                 ${createType(this.tripPoint.type)}
                 ${createDestinationTitle(this.tripPoint.destination.name)}
                 ${createShedule(this.tripPoint.date_from, this.tripPoint.date_to)}                
