@@ -7,8 +7,8 @@ import { sortFunctions } from '../utils/common.js';
 import { ViewValues } from '../constants.js';
 
 export default class TripPresenter {
-  constructor({tripContainer, model}) {
-    this._tripContainer = tripContainer;
+  constructor({container, model}) {
+    this._tripContainer = container;
     this._sortView = new SortView();
     this._tripPointsContainerView = new TripPointsContainerView();
     this._noPointsView = new TripPointsContainerEmptyView();

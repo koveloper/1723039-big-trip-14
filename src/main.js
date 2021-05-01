@@ -15,7 +15,7 @@ const viewItems = {
   tripInfo: new TripInfoView(pointsModel.getTripPoints()),
   filters: new FiltersView(),
   tripPresenter: new TripPresenter({
-    tripContainer: getComponent(ViewValues.selectors.TRIP),
+    container: getComponent(ViewValues.selectors.TRIP),
     model: pointsModel,
   }),
 };
