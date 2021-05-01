@@ -25,7 +25,7 @@ const renderApp = () => {
   renderElement(getComponent(ViewValues.selectors.MENU), viewItems.menu);
   renderElement(getComponent(ViewValues.selectors.INFO), viewItems.tripInfo, RenderPosition.AFTERBEGIN);
   renderElement(getComponent(ViewValues.selectors.FILTERS), viewItems.filters);
-  viewItems.tripPresenter.init(pointsModel.getTripPoints());
+  viewItems.tripPresenter.init();
 };
 
 renderApp();

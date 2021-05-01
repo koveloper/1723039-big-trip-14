@@ -2,6 +2,7 @@ import TripPointEditorView from '../view/trip-point-editor.js';
 import TripPointView from '../view/trip-point.js';
 import { viewEvents } from '../view/view-events.js';
 import { renderElement, toggleView, removeView } from '../utils/ui.js';
+import { ViewValues } from '../constants.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -86,12 +87,11 @@ export default class TripPointPresenter {
   }
 
   _deletePointCallback() {
-    this.destroy();
-    this._model.deleteTripPoint(this._tripPointData);
+    this._model.deleteTripPoint(ViewValues.updateType.MAJOR, this._tripPointData);
   }
 
   _commitUpdate(updatedObjectPart) {
-    this._model.updateTripPoint(Object.assign({}, this._tripPointData, updatedObjectPart));
+    this._model.updateTripPoint(ViewValues.updateType.PATCH, Object.assign({}, this._tripPointData, updatedObjectPart));
   }
 
   destroy() {
