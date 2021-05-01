@@ -55,4 +55,9 @@ export const ViewValues = {
       isInMotion: false,
     },
   ],
+  updateType: {
+    PATCH: 'PATCH',
+    MINOR: 'MINOR',
+    MAJOR: 'MAJOR',
+  },
 };
