@@ -42,6 +42,9 @@ export const toggleView = (container, from, to) => {
 };
 
 export const removeView = (component) => {
+  if(!component) {
+    return;
+  }
   if (!(component instanceof AbstractViewElement)) {
     throw new Error('Can remove only ViewElement');
   }
