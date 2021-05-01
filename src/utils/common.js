@@ -1,33 +1,6 @@
 import { ViewValues } from '../constants.js';
 import { TimeUtils } from './time.js';
 
-export const updateItem = (items, update) => {
-  const index = items.findIndex((item) => item.id === update.id);
-
-  if (index === -1) {
-    return items;
-  }
-
-  return [
-    ...items.slice(0, index),
-    update,
-    ...items.slice(index + 1),
-  ];
-};
-
-export const deleteItem = (items, toDelete) => {
-  const index = items.findIndex((item) => item.id === toDelete.id);
-
-  if (index === -1) {
-    return items;
-  }
-
-  return [
-    ...items.slice(0, index),
-    ...items.slice(index + 1),
-  ];
-};
-
 export const sortFunctions = {
 
 };

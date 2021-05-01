@@ -19,7 +19,7 @@ export default class TripPresenter {
     this._sortTypeClickCallback = this._sortTypeClickCallback.bind(this);
     this._currentSortType = ViewValues.sortTypes.day;
     this._model = model;
-    this._model.addCallback(this._modelCallback);
+    this._model.addObserver(this._handleModelEvent);
   }
 
   _sortTypeClickCallback(sortType) {
@@ -34,7 +34,7 @@ export default class TripPresenter {
     this._sortView.setSortType(sortType);
   }
 
-  _modelCallback(evt) {
+  _handleModelEvent(evt) {
     switch(evt.type) {
       case ModelEvent.UPDATE_TRIP_POINT:
         this._updateTripPointPresenterData(evt.data);
