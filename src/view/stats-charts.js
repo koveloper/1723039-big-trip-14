@@ -12,6 +12,8 @@ export const createDefaultChart = ({ctx, formatter, title, labels, data} = {}) =
         backgroundColor: '#ffffff',
         hoverBackgroundColor: '#ffffff',
         anchor: 'start',
+        minBarLength: 50,
+        barThickness: 44,
       }],
     },
     options: {
@@ -44,7 +46,6 @@ export const createDefaultChart = ({ctx, formatter, title, labels, data} = {}) =
             display: false,
             drawBorder: false,
           },
-          barThickness: 44,
         }],
         xAxes: [{
           ticks: {
@@ -55,7 +56,6 @@ export const createDefaultChart = ({ctx, formatter, title, labels, data} = {}) =
             display: false,
             drawBorder: false,
           },
-          minBarLength: 50,
         }],
       },
       legend: {
