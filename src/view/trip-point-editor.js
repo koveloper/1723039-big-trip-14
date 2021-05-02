@@ -28,6 +28,7 @@ const parseTripPoint = (tripPoint = {}) => {
     date_to,
     isFavorite,
     isEditMode: id !== 'new',
+    isDestinationExists: CityRules.getCity(destination.name) ? true: false,
   };
 };
 
@@ -93,8 +94,8 @@ const createBasePrice = (id, value) => {
           </div>`;
 };
 
-const createButtons = (isEditMode) => {
-  return `<button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+const createButtons = (isEditMode, isDestinationExists) => {
+  return `<button class="event__save-btn  btn  btn--blue" type="submit" ${isDestinationExists ? '' : 'disabled'}>Save</button>
           <button class="event__reset-btn" type="reset">${isEditMode ? 'Delete' : 'Cancel'}</button>`
     + (isEditMode ? '<button class="event__rollup-btn" type="button"><span class="visually-hidden">Open event</span></button>' : '');
 };
@@ -106,7 +107,7 @@ const createHeader = (tripPoint) => {
             ${createDestination(tripPoint.id, tripPoint.type, tripPoint.destination.name, tripPoint.state)}
             ${createDates(tripPoint.id, TimeUtils.convertTo_DDMMYY_HHMM(tripPoint.date_from), TimeUtils.convertTo_DDMMYY_HHMM(tripPoint.date_to))}
             ${createBasePrice(tripPoint.id, tripPoint.base_price)}
-            ${createButtons(tripPoint.isEditMode)}
+            ${createButtons(tripPoint.isEditMode, tripPoint.isDestinationExists)}
           </header>`;
 };
 
@@ -227,7 +228,7 @@ export default class TripPointEditor extends AbstractInteractiveElement {
       event: evt.event,
       dataName: 'base_price',
       stateName: 'price',
-      dataCreateFunctionByTextFieldValue: (value) => parseInt(value),
+      dataCreateFunctionByTextFieldValue: (value) => isNaN(parseInt(value)) ? '' : parseInt(value),
       compareWith: this._data.base_price,
     });
   }
