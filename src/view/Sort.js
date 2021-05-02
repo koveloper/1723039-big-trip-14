@@ -9,8 +9,8 @@ const createSortTemplate = (title = '', checked) => {
           </div>`;
 };
 
-const createSortTemplates = () => {
-  return SortRules.getSortTypes().map((title, index) => { return createSortTemplate(title, !index); }).join('');
+const createSortTemplates = (selectedSortType) => {
+  return SortRules.getSortTypes().map((title) => { return createSortTemplate(title, title === selectedSortType); }).join('');
 };
 
 export default class Sort extends AbstractInteractiveElement {
@@ -23,6 +23,7 @@ export default class Sort extends AbstractInteractiveElement {
       handlerUID: viewEvents.uid.SORT_TYPE_CLICK,
       eventType: viewEvents.type.CLICK,
     });
+    this._currentSortType = SortRules.getSortTypes()[0];
     this.setEventListener(viewEvents.uid.SORT_TYPE_CLICK, this._sortTypeClickHandler);
     this._sortTypeClickCallback = null;
     this._sortElements = [...this.getElement().querySelectorAll('.trip-sort__input')];
@@ -36,6 +37,7 @@ export default class Sort extends AbstractInteractiveElement {
     if(!SortRules.getSortTypes().find((t) => t === type)) {
       return;
     }
+    this._currentSortType = type;
     this._sortElements.forEach((el) => {el.removeAttribute('checked');});
     this._sortElements.find((el) => el.value === ('sort-' + type)).setAttribute('checked', true);
   }
@@ -48,7 +50,7 @@ export default class Sort extends AbstractInteractiveElement {
 
   getTemplate() {
     return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
-              ${createSortTemplates()}            
+              ${createSortTemplates(this._currentSortType)}            
             </form>`;
   }
 }
