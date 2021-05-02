@@ -32,7 +32,7 @@ export const TimeUtils = {
     }];
     let result = '';
     if(dayDiff) {
-      result += dayDiff.toLocaleString(...formatterArgs) + 'D ';
+      result += dayDiff.toLocaleString(Object.assign({}, ...formatterArgs, {minimumIntegerDigits: 1})) + 'D ';
     }
     if(result.length || hourDiff) {
       result += hourDiff.toLocaleString(...formatterArgs) + 'H ';
@@ -44,6 +44,9 @@ export const TimeUtils = {
   },
   getDuration: (isoDateStrFrom, isoDateStrTo) => {
     return [dayjs(isoDateStrFrom).format('MMM DD'), dayjs(isoDateStrTo).format('MMM DD')];
+  },
+  getDurationInMilliseconds: (isoDateStrFrom, isoDateStrTo) => {
+    return Math.abs(dayjs(isoDateStrTo) - dayjs(isoDateStrFrom));
   },
   compare: (isoDateStrA, isoDateStrB) => {
     return dayjs(isoDateStrA).diff(dayjs(isoDateStrB));
