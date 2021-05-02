@@ -1,4 +1,4 @@
-import SortView from '../view/sort.js';
+import SortView from '../view/sort-menu.js';
 import TripPointPresenter from './trip-point.js';
 import TripPointsContainerView from '../view/trip-points-container.js';
 import TripPointsContainerEmptyView from '../view/trip-points-container-empty.js';

@@ -1,4 +1,4 @@
-import FiltersView from '../view/filters.js';
+import FiltersView from '../view/filters-menu.js';
 import { renderElement, removeView } from '../utils/ui.js';
 import { FiltersRules } from '../app-data.js';
 import { ViewValues } from '../constants.js';
