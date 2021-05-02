@@ -48,11 +48,11 @@ export const TimeUtils = {
   compare: (isoDateStrA, isoDateStrB) => {
     return dayjs(isoDateStrA).diff(dayjs(isoDateStrB));
   },
-  isInFuture: (isoDateStr) => {
-    return dayjs().diff(dayjs(isoDateStr));
-  },
   isInPast: (isoDateStr) => {
-    return dayjs(isoDateStr).diff(dayjs());
+    return dayjs().diff(dayjs(isoDateStr)) >= 0;
+  },
+  isInFuture: (isoDateStr) => {
+    return dayjs(isoDateStr).diff(dayjs()) >= 0;
   },
   compareTime: (isoDateStrA, isoDateStrB) => {
     const a = dayjs(isoDateStrA);
