@@ -39,6 +39,16 @@ export default class TripPresenter {
     this._renderTrip();
   }
 
+  setVisible(isVisible) {
+    if(isVisible) {
+      this._sortView.getElement().classList.remove('visually-hidden');
+      this._tripPointsContainerView.getElement().classList.remove('visually-hidden');
+    } else {
+      this._sortView.getElement().classList.add('visually-hidden');
+      this._tripPointsContainerView.getElement().classList.add('visually-hidden');
+    }
+  }
+
   _handleSortTypeClick(sortType) {
     if(this._currentSortType === sortType) {
       return;
