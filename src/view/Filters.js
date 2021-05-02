@@ -27,6 +27,7 @@ export default class Filters extends AbstractInteractiveElement {
       return;
     }
     if(this._selectedFilter === null) {
+      this._selectedFilter = filter;
       this._registerEventSupport({
         parent: this.getElement().parentElement,
         selectorInsideParent: '.trip-filters',
