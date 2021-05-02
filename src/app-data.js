@@ -77,10 +77,10 @@ const getOffersCost = (tripPoint) => {
 const sortTypes = Object.values(ViewValues.sortTypes);
 const sortFunctions = {
   [ViewValues.sortTypes.DAY]: (a, b) => TimeUtils.compare(a.date_from, b.date_from),
-  [ViewValues.sortTypes.EVENT]: (a, b) => a.destination.name.localeCompare(b.destination.name),
-  [ViewValues.sortTypes.TIME]: (a, b) => TimeUtils.compareTime(a.date_from, b.date_from),
-  [ViewValues.sortTypes.PRICE]: (a, b) => { return a.base_price - b.base_price; },
-  [ViewValues.sortTypes.OFFERS]: (a, b) => { return getOffersCost(a) - getOffersCost(b); },
+  [ViewValues.sortTypes.EVENT]: (a, b) => a.type.localeCompare(b.type),
+  [ViewValues.sortTypes.TIME]: (a, b) => TimeUtils.compare(a.date_from, a.date_to) - TimeUtils.compare(b.date_from, b.date_to),
+  [ViewValues.sortTypes.PRICE]: (a, b) => { return b.base_price - a.base_price; },
+  [ViewValues.sortTypes.OFFERS]: (a, b) => { return getOffersCost(b) - getOffersCost(a); },
 };
 
 export const SortRules = {
