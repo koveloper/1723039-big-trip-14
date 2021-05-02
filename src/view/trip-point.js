@@ -1,5 +1,5 @@
 import AbstractInteractiveElement from './abstract-interactive-element.js';
-import { viewEvents } from './view-events.js';
+import { ViewEvents } from './view-events.js';
 import { TimeUtils } from '../utils/time.js';
 
 const createDate = (from) => {
@@ -66,14 +66,14 @@ export default class TripPoint extends AbstractInteractiveElement {
     this._registerEventSupport({
       parent: this.getElement(),
       selectorInsideParent: '.event__rollup-btn',
-      handlerUID: viewEvents.uid.OPEN_POINT_POPUP,
-      eventType: viewEvents.type.CLICK,
+      handlerUID: ViewEvents.uid.OPEN_POINT_POPUP,
+      eventType: ViewEvents.type.CLICK,
     });
     this._registerEventSupport({
       parent: this.getElement(),
       selectorInsideParent: '.event__favorite-btn',
-      handlerUID: viewEvents.uid.FAVORITE_CLICK,
-      eventType: viewEvents.type.CLICK,
+      handlerUID: ViewEvents.uid.FAVORITE_CLICK,
+      eventType: ViewEvents.type.CLICK,
     });
   }
 

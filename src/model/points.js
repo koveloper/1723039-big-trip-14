@@ -1,4 +1,5 @@
 import Observer from '../utils/observer.js';
+import { nanoid } from 'nanoid';
 
 export default class PointsModel extends Observer {
   constructor() {
@@ -43,5 +44,14 @@ export default class PointsModel extends Observer {
     ];
 
     this._notify(updateType);
+  }
+
+  addTripPoint(updateType, tripPointData) {
+    if(!tripPointData) {
+      return;
+    }
+    const newPoint = Object.assign(tripPointData, {id: nanoid()});
+    this._tripPoints.push(newPoint);
+    this._notify(updateType, newPoint);
   }
 }

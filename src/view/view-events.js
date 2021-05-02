@@ -1,4 +1,4 @@
-export const viewEvents = {
+export const ViewEvents = {
   uid: {
     OPEN_POINT_POPUP: 'open-point-popup',
     CLOSE_POINT_POPUP: 'close-point-popup',

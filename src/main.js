@@ -32,7 +32,6 @@ const viewItems = {
   }),
 };
 
-
 const renderApp = () => {
   renderElement(getComponent(ViewValues.selectors.MENU), viewItems.menu);
   viewItems.headerPresenter.init();
@@ -42,3 +41,8 @@ const renderApp = () => {
 };
 
 renderApp();
+
+
+getComponent(ViewValues.selectors.INFO).querySelector('.trip-main__event-add-btn').onclick = () => {
+  viewItems.tripPresenter.setAddNewPointMode(true);
+};

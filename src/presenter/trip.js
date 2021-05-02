@@ -2,9 +2,11 @@ import SortView from '../view/sort.js';
 import TripPointPresenter from './trip-point.js';
 import TripPointsContainerView from '../view/trip-points-container.js';
 import TripPointsContainerEmptyView from '../view/trip-points-container-empty.js';
-import { renderElement } from '../utils/ui.js';
+import TripPointEditor from '../view/trip-point-editor.js';
+import { renderElement, RenderPosition, removeView } from '../utils/ui.js';
 import { SortRules, FiltersRules } from '../app-data.js';
 import { ViewValues } from '../constants.js';
+import { ViewEvents } from '../view/view-events.js';
 
 export default class TripPresenter {
   constructor({container, tripPointsModel, filtersModel}) {
@@ -12,15 +14,25 @@ export default class TripPresenter {
     this._sortView = new SortView();
     this._tripPointsContainerView = new TripPointsContainerView();
     this._noPointsView = new TripPointsContainerEmptyView();
+    this._addNewPointView = new TripPointEditor();
+    this._currentSortType = ViewValues.sortTypes.DAY;
     this._tripPointsPresenters = {};
+
     this._handleTripPointsModelEvent = this._handleTripPointsModelEvent.bind(this);
     this._handleFiltersModelEvent = this._handleFiltersModelEvent.bind(this);
     this._handleSortTypeClick = this._handleSortTypeClick.bind(this);
-    this._currentSortType = ViewValues.sortTypes.DAY;
+    this._closeNewPointFormCallback = this._closeNewPointFormCallback.bind(this);
+    this._addNewPointCallback = this._addNewPointCallback.bind(this);
+
     this._tripPointsModel = tripPointsModel;
     this._tripPointsModel.addObserver(this._handleTripPointsModelEvent);
+
     this._filtersModel = filtersModel;
     this._filtersModel.addObserver(this._handleFiltersModelEvent);
+
+    this._addNewPointView.setEventListener(ViewEvents.uid.DELETE_POINT, this._closeNewPointFormCallback);
+    this._addNewPointView.setEventListener(ViewEvents.uid.SAVE_POINT, this._addNewPointCallback);
+    this.setEditModeEnabled = this.setAddNewPointMode;
   }
 
   init() {
@@ -103,5 +115,26 @@ export default class TripPresenter {
     });
     this._tripPointsPresenters[tripPointData.id] = pointPresenter;
     pointPresenter.init(tripPointData);
+  }
+
+  setAddNewPointMode(enabled) {
+    this._addNewPointView.tripPoint = undefined;
+    removeView(this._addNewPointView);
+    TripPointPresenter.setExternalEditModeTripPoint(null);
+    if(enabled) {
+      Object.values(this._tripPointsPresenters).forEach((presenter) => presenter.setEditModeEnabled(false));
+      renderElement(this._tripPointsContainerView, this._addNewPointView, RenderPosition.AFTERBEGIN);
+      this._addNewPointView.restoreHandlers();
+      TripPointPresenter.setExternalEditModeTripPoint(this);
+    }
+  }
+
+  _closeNewPointFormCallback() {
+    this.setAddNewPointMode(false);
+  }
+
+  _addNewPointCallback() {
+    this._tripPointsModel.addTripPoint(ViewValues.updateType.MINOR, this._addNewPointView.tripPoint);
+    this.setAddNewPointMode(false);
   }
 }

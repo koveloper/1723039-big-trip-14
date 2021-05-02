@@ -1,6 +1,6 @@
 import AbstractInteractiveElement from './abstract-interactive-element.js';
 import { SortRules } from '../app-data.js';
-import { viewEvents } from './view-events.js';
+import { ViewEvents } from './view-events.js';
 
 const createSortTemplate = (title = '', checked) => {
   return `<div class="trip-sort__item  trip-sort__item--${title}">
@@ -20,11 +20,11 @@ export default class Sort extends AbstractInteractiveElement {
     this._registerEventSupport({
       parent: this.getElement().parentElement,
       selectorInsideParent: '.trip-events__trip-sort',
-      handlerUID: viewEvents.uid.SORT_TYPE_CLICK,
-      eventType: viewEvents.type.CLICK,
+      handlerUID: ViewEvents.uid.SORT_TYPE_CLICK,
+      eventType: ViewEvents.type.CLICK,
     });
     this._currentSortType = SortRules.getSortTypes()[0];
-    this.setEventListener(viewEvents.uid.SORT_TYPE_CLICK, this._sortTypeClickHandler);
+    this.setEventListener(ViewEvents.uid.SORT_TYPE_CLICK, this._sortTypeClickHandler);
     this._sortTypeClickCallback = null;
     this._sortElements = [...this.getElement().querySelectorAll('.trip-sort__input')];
   }

@@ -1,5 +1,5 @@
 import AbstractInteractiveElement from './abstract-interactive-element.js';
-import { viewEvents } from './view-events.js';
+import { ViewEvents } from './view-events.js';
 
 const createFilter = (title, checked) => {
   const idMix = title.toLowerCase();
@@ -31,10 +31,10 @@ export default class Filters extends AbstractInteractiveElement {
       this._registerEventSupport({
         parent: this.getElement().parentElement,
         selectorInsideParent: '.trip-filters',
-        handlerUID: viewEvents.uid.FILTER_TYPE_CHANGE,
-        eventType: viewEvents.type.ONCHANGE,
+        handlerUID: ViewEvents.uid.FILTER_TYPE_CHANGE,
+        eventType: ViewEvents.type.ONCHANGE,
       });
-      this.setEventListener(viewEvents.uid.FILTER_TYPE_CHANGE, this._filterTypeClickHandler);
+      this.setEventListener(ViewEvents.uid.FILTER_TYPE_CHANGE, this._filterTypeClickHandler);
     }
     this._selectedFilter = filter;
   }

@@ -1,5 +1,5 @@
 import AbstractInteractiveElement from './abstract-interactive-element.js';
-import { viewEvents } from './view-events.js';
+import { ViewEvents } from './view-events.js';
 import { CityRules, TripPointRules } from '../app-data.js';
 import { TimeUtils } from '../utils/time.js';
 import flatpickr from 'flatpickr';
@@ -9,10 +9,10 @@ const parseTripPoint = (tripPoint = {}) => {
   const date_ = new Date().toISOString();
   const {
     id = 'new',
-    type = TripPointRules.getPointTypesByIndex(0).type,
+    type = TripPointRules.getPointTypeByIndex(0).type,
     destination = CityRules.getCityByIndex(0),
     offers = [],
-    base_price = '',
+    base_price = 0,
     date_from = date_,
     date_to = date_,
     isFavorite = false,
@@ -175,13 +175,13 @@ export default class TripPointEditor extends AbstractInteractiveElement {
     this._dateChanged = this._dateChanged.bind(this);
     this._calendarClosed = this._calendarClosed.bind(this);
     //
-    this._wrapAsInternalListener(this._eventTypeListClick, viewEvents.uid.EVENT_TYPE_CLICK);
-    this._wrapAsInternalListener(this._destinationTextFieldEvent, viewEvents.uid.DESTINATION_FIELD_INPUT);
-    this._wrapAsInternalListener(this._priceTextFieldEvent, viewEvents.uid.PRICE_FIELD_INPUT);
-    this._wrapAsInternalListener(this._offersListClick, viewEvents.uid.OFFERS_CLICK);
+    this._wrapAsInternalListener(this._eventTypeListClick, ViewEvents.uid.EVENT_TYPE_CLICK);
+    this._wrapAsInternalListener(this._destinationTextFieldEvent, ViewEvents.uid.DESTINATION_FIELD_INPUT);
+    this._wrapAsInternalListener(this._priceTextFieldEvent, ViewEvents.uid.PRICE_FIELD_INPUT);
+    this._wrapAsInternalListener(this._offersListClick, ViewEvents.uid.OFFERS_CLICK);
     this._wrapAsInternalListener(this._dateTextFieldClick,
-      viewEvents.uid.START_DATE_CLICK,
-      viewEvents.uid.END_DATE_CLICK,
+      ViewEvents.uid.START_DATE_CLICK,
+      ViewEvents.uid.END_DATE_CLICK,
     );
   }
 
@@ -274,15 +274,15 @@ export default class TripPointEditor extends AbstractInteractiveElement {
   }
 
   _dateTextFieldClick(evt) {
-    const selector = `#event-${evt.eventUID === viewEvents.uid.START_DATE_CLICK ? 'start': 'end'}-time-${this._data.id}`;
-    const date = Date.parse(evt.eventUID === viewEvents.uid.START_DATE_CLICK ? this._data.date_from : this._data.date_to);
-    const minDate = evt.eventUID === viewEvents.uid.START_DATE_CLICK ? null : Date.parse(this._data.date_from);
-    const maxDate = evt.eventUID === viewEvents.uid.END_DATE_CLICK ? null : Date.parse(this._data.date_to);
+    const selector = `#event-${evt.eventUID === ViewEvents.uid.START_DATE_CLICK ? 'start': 'end'}-time-${this._data.id}`;
+    const date = Date.parse(evt.eventUID === ViewEvents.uid.START_DATE_CLICK ? this._data.date_from : this._data.date_to);
+    const minDate = evt.eventUID === ViewEvents.uid.START_DATE_CLICK ? null : Date.parse(this._data.date_from);
+    const maxDate = evt.eventUID === ViewEvents.uid.END_DATE_CLICK ? null : Date.parse(this._data.date_to);
     this._showCalendar({selector, date, minDate, maxDate});
   }
 
   _init() {
-    const createRegEventObject = (selectorInsideParent, handlerUID, eventType = viewEvents.type.CLICK, args) => {
+    const createRegEventObject = (selectorInsideParent, handlerUID, eventType = ViewEvents.type.CLICK, args) => {
       return Object.assign({
         selectorInsideParent,
         handlerUID,
@@ -290,19 +290,19 @@ export default class TripPointEditor extends AbstractInteractiveElement {
       }, args);
     };
     const events = [
-      createRegEventObject('.event__save-btn', viewEvents.uid.SAVE_POINT),
-      createRegEventObject('.event__reset-btn', viewEvents.uid.DELETE_POINT),
-      createRegEventObject('.event__type-list', viewEvents.uid.EVENT_TYPE_CLICK),
-      createRegEventObject('.event__input--destination', viewEvents.uid.DESTINATION_FIELD_INPUT, viewEvents.type.KEYBOARD_BUTTON_UP),
-      createRegEventObject('.event__input--price', viewEvents.uid.PRICE_FIELD_INPUT, viewEvents.type.KEYBOARD_BUTTON_UP),
-      createRegEventObject('.event__available-offers', viewEvents.uid.OFFERS_CLICK),
-      createRegEventObject(`#event-start-time-${this._data.id}`, viewEvents.uid.START_DATE_INPUT, viewEvents.type.KEYBOARD_BUTTON_UP),
-      createRegEventObject(`#event-end-time-${this._data.id}`, viewEvents.uid.END_DATE_INPUT, viewEvents.type.KEYBOARD_BUTTON_UP),
-      createRegEventObject(`#event-start-time-${this._data.id}`, viewEvents.uid.START_DATE_CLICK),
-      createRegEventObject(`#event-end-time-${this._data.id}`, viewEvents.uid.END_DATE_CLICK),
+      createRegEventObject('.event__save-btn', ViewEvents.uid.SAVE_POINT),
+      createRegEventObject('.event__reset-btn', ViewEvents.uid.DELETE_POINT),
+      createRegEventObject('.event__type-list', ViewEvents.uid.EVENT_TYPE_CLICK),
+      createRegEventObject('.event__input--destination', ViewEvents.uid.DESTINATION_FIELD_INPUT, ViewEvents.type.KEYBOARD_BUTTON_UP),
+      createRegEventObject('.event__input--price', ViewEvents.uid.PRICE_FIELD_INPUT, ViewEvents.type.KEYBOARD_BUTTON_UP),
+      createRegEventObject('.event__available-offers', ViewEvents.uid.OFFERS_CLICK),
+      createRegEventObject(`#event-start-time-${this._data.id}`, ViewEvents.uid.START_DATE_INPUT, ViewEvents.type.KEYBOARD_BUTTON_UP),
+      createRegEventObject(`#event-end-time-${this._data.id}`, ViewEvents.uid.END_DATE_INPUT, ViewEvents.type.KEYBOARD_BUTTON_UP),
+      createRegEventObject(`#event-start-time-${this._data.id}`, ViewEvents.uid.START_DATE_CLICK),
+      createRegEventObject(`#event-end-time-${this._data.id}`, ViewEvents.uid.END_DATE_CLICK),
     ];
     if(this._data.isEditMode) {
-      events.push(createRegEventObject('.event__rollup-btn', viewEvents.uid.CLOSE_POINT_POPUP));
+      events.push(createRegEventObject('.event__rollup-btn', ViewEvents.uid.CLOSE_POINT_POPUP));
     }
     events.forEach((evt) => {
       this._registerEventSupport(Object.assign({parent: this.getElement()}, evt));
@@ -320,8 +320,9 @@ export default class TripPointEditor extends AbstractInteractiveElement {
     return this._data;
   }
 
-  set tripPoint(value) {
-    this.updateData(value);
+  set tripPoint(value = {}) {
+    // this._data = ;
+    this.updateData(parseTripPoint(value));
   }
 
   getTemplate() {
