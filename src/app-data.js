@@ -58,8 +58,8 @@ export const TripPointRules = {
 const filters = Object.values(ViewValues.filters);
 const filtersFunctions = {
   [ViewValues.filters.EVERYTHING]: () => true,
-  [ViewValues.filters.FUTURE]: (point) => TimeUtils.isInFuture(point.date_from),
-  [ViewValues.filters.PAST]: (point) => TimeUtils.isInPast(point.date_from),
+  [ViewValues.filters.FUTURE]: (point) => TimeUtils.isInFuture(point.date_from) || TimeUtils.isCurrent(point.date_from, point.date_to),
+  [ViewValues.filters.PAST]: (point) => TimeUtils.isInPast(point.date_to) || TimeUtils.isCurrent(point.date_from, point.date_to),
 };
 
 export const FiltersRules = {
