@@ -3,21 +3,24 @@ import TripPointPresenter from './trip-point.js';
 import TripPointsContainerView from '../view/trip-points-container.js';
 import TripPointsContainerEmptyView from '../view/trip-points-container-empty.js';
 import { renderElement } from '../utils/ui.js';
-import { SortRules } from '../app-data.js';
+import { SortRules, FiltersRules } from '../app-data.js';
 import { ViewValues } from '../constants.js';
 
 export default class TripPresenter {
-  constructor({container, model}) {
+  constructor({container, tripPointsModel, filtersModel}) {
     this._tripContainer = container;
     this._sortView = new SortView();
     this._tripPointsContainerView = new TripPointsContainerView();
     this._noPointsView = new TripPointsContainerEmptyView();
     this._tripPointsPresenters = {};
-    this._handleModelEvent = this._handleModelEvent.bind(this);
+    this._handleTripPointsModelEvent = this._handleTripPointsModelEvent.bind(this);
+    this._handleFiltersModelEvent = this._handleFiltersModelEvent.bind(this);
     this._handleSortTypeClick = this._handleSortTypeClick.bind(this);
     this._currentSortType = ViewValues.sortTypes.DAY;
-    this._model = model;
-    this._model.addObserver(this._handleModelEvent);
+    this._tripPointsModel = tripPointsModel;
+    this._tripPointsModel.addObserver(this._handleTripPointsModelEvent);
+    this._filtersModel = filtersModel;
+    this._filtersModel.addObserver(this._handleFiltersModelEvent);
   }
 
   init() {
@@ -30,11 +33,15 @@ export default class TripPresenter {
     }
     //cache sort type and call render
     this._currentSortType = sortType;
-    this._sortView.setSortType(sortType);
     this._renderTrip();
   }
 
-  _handleModelEvent(evt) {
+  _handleFiltersModelEvent() {
+    this._currentSortType = ViewValues.sortTypes.DAY;
+    this._renderTrip();
+  }
+
+  _handleTripPointsModelEvent(evt) {
     switch(evt.type) {
       case ViewValues.updateType.PATCH:
         this._updateTripPointPresenterData(evt.data);
@@ -57,7 +64,9 @@ export default class TripPresenter {
   }
 
   _getTripPoints() {
-    return this._model.getTripPoints().slice().sort(SortRules.getSortFunction(this._currentSortType));
+    return this._tripPointsModel.getTripPoints().slice()
+      .filter(FiltersRules.getFilterFunction(this._filtersModel.getFilterType()))
+      .sort(SortRules.getSortFunction(this._currentSortType));
   }
 
   _clearTripPoints() {
@@ -77,6 +86,7 @@ export default class TripPresenter {
   }
 
   _renderSort() {
+    this._sortView.setSortType(this._currentSortType);
     renderElement(this._tripContainer, this._sortView);
     this._sortView.setSortTypeClickCallback(this._handleSortTypeClick);
   }
@@ -89,7 +99,7 @@ export default class TripPresenter {
   _renderTripPoint(tripPointData) {
     const pointPresenter = new TripPointPresenter({
       containerForTripPoints: this._tripPointsContainerView,
-      model: this._model,
+      model: this._tripPointsModel,
     });
     this._tripPointsPresenters[tripPointData.id] = pointPresenter;
     pointPresenter.init(tripPointData);

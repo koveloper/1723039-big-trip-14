@@ -27,7 +27,8 @@ const viewItems = {
   }),
   tripPresenter: new TripPresenter({
     container: getComponent(ViewValues.selectors.TRIP),
-    model: models.points,
+    tripPointsModel: models.points,
+    filtersModel: models.filters,
   }),
 };
 

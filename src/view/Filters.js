@@ -9,8 +9,8 @@ const createFilter = (title, checked) => {
           </div>`;
 };
 
-const createFilters = (filerTypes) => {
-  return filerTypes.map((f, i) => createFilter(f, !i)).join('');
+const createFilters = (filerTypes, selectedFilter) => {
+  return filerTypes.map((f) => createFilter(f, selectedFilter === f)).join('');
 };
 
 export default class Filters extends AbstractInteractiveElement {
@@ -18,19 +18,29 @@ export default class Filters extends AbstractInteractiveElement {
     super();
     this._filterTypeChangeCallback = filterTypeChangeCallback;
     this._filerTypes = filerTypes;
+    this._selectedFilter = null;
     this._filterTypeClickHandler = this._filterTypeClickHandler.bind(this);
-    this._registerEventSupport({
-      parent: this.getElement().parentElement,
-      selectorInsideParent: '.trip-filters',
-      handlerUID: viewEvents.uid.FILTER_TYPE_CHANGE,
-      eventType: viewEvents.type.ONCHANGE,
-    });
-    this.setEventListener(viewEvents.uid.FILTER_TYPE_CHANGE, this._filterTypeClickHandler);
+  }
+
+  init(filter) {
+    if(!filter) {
+      return;
+    }
+    if(this._selectedFilter === null) {
+      this._registerEventSupport({
+        parent: this.getElement().parentElement,
+        selectorInsideParent: '.trip-filters',
+        handlerUID: viewEvents.uid.FILTER_TYPE_CHANGE,
+        eventType: viewEvents.type.ONCHANGE,
+      });
+      this.setEventListener(viewEvents.uid.FILTER_TYPE_CHANGE, this._filterTypeClickHandler);
+    }
+    this._selectedFilter = filter;
   }
 
   getTemplate() {
     return `<form class="trip-filters" action="#" method="get">
-              ${createFilters(this._filerTypes)}
+              ${createFilters(this._filerTypes, this._selectedFilter)}
               <button class="visually-hidden" type="submit">Accept filter</button>
             </form>`;
   }

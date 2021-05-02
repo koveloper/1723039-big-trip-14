@@ -1,6 +1,7 @@
 import FiltersView from '../view/filters.js';
 import { renderElement, removeView } from '../utils/ui.js';
 import { FiltersRules } from '../app-data.js';
+import { ViewValues } from '../constants.js';
 
 export default class FiltersPresenter {
   constructor({container, model}) {
@@ -13,7 +14,6 @@ export default class FiltersPresenter {
   }
 
   _handleModelEvent() {
-    // this.init();
   }
 
   init() {
@@ -22,11 +22,12 @@ export default class FiltersPresenter {
       filerTypes: FiltersRules.getFilters(),
       filterTypeChangeCallback: this._handleFilterTypeChangeFromView,
     });
+    this._view.init(this._model.getFilterType());
     renderElement(this._container, this._view);
   }
 
   _handleFilterTypeChangeFromView(filterType) {
-    console.log(filterType);
+    this._model.setFilterType(ViewValues.updateType.MINOR, filterType);
   }
 
   destroy() {
