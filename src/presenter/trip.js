@@ -89,7 +89,7 @@ export default class TripPresenter {
   _renderTrip() {
     this._clearTripPoints();
     const points = this._getTripPoints();
-    if(!points.length) {
+    if(!points.length && this._filtersModel.getFilterType() === ViewValues.filters.EVERYTHING) {
       renderElement(this._tripContainer, this._noPointsView);
       return;
     }
