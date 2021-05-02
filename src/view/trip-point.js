@@ -1,9 +1,9 @@
-import AbstractViewElement from './abstract-view-element.js';
-import { handlerTypes } from './handlers.js';
+import AbstractInteractiveElement from './abstract-interactive-element.js';
+import { viewEvents } from './view-events.js';
 import { TimeUtils } from '../utils/time.js';
 
 const createDate = (from, to) => {
-  return `<time class="event__date" datetime="${TimeUtils.convertTo_YYYYMMDD(from)}">${TimeUtils.convertTo_MonthDay(to)}</time>`;
+  return `<time class="event__date" datetime="${TimeUtils.convertTo_YYYYMMDD(from)}">${TimeUtils.convertTo_MMMDD(to)}</time>`;
 };
 
 const createType = (type) => {
@@ -55,7 +55,7 @@ const createFavoriteButton = (isFavorite) => {
           </button>`;
 };
 
-export default class TripPoint extends AbstractViewElement {
+export default class TripPoint extends AbstractInteractiveElement {
   constructor(tripPoint) {
     super();
     this.tripPoint = tripPoint;
@@ -63,8 +63,18 @@ export default class TripPoint extends AbstractViewElement {
 
   set tripPoint(value) {
     this._tripPoint = value;
-    this._registerHandler(handlerTypes.OPEN_POINT_POPUP, this.getElement().querySelector('.event__rollup-btn'), 'click');
-    this._registerHandler(handlerTypes.FAVORITE_CLICK, this.getElement().querySelector('.event__favorite-btn'), 'click');
+    this._registerEventSupport({
+      parent: this.getElement(),
+      selectorInsideParent: '.event__rollup-btn',
+      handlerUID: viewEvents.uid.OPEN_POINT_POPUP,
+      eventType: viewEvents.type.CLICK,
+    });
+    this._registerEventSupport({
+      parent: this.getElement(),
+      selectorInsideParent: '.event__favorite-btn',
+      handlerUID: viewEvents.uid.FAVORITE_CLICK,
+      eventType: viewEvents.type.CLICK,
+    });
   }
 
   get tripPoint() {

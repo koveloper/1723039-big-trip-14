@@ -4,10 +4,10 @@ import { TimeUtils } from '../utils/time.js';
 const createDateLimits = (from, to) => {
   let inner = '';
   if (from && to) {
-    const dateLimits = TimeUtils.getDateDiff(from, to);
+    const dateLimits = TimeUtils.getDuration(from, to);
     inner = `${dateLimits[0]}&nbsp;&mdash;&nbsp;${dateLimits[1]}`;
   } else if (from) {
-    inner = TimeUtils.convertTo_MonthDay(from);
+    inner = TimeUtils.convertTo_MMMDD(from);
   }
   return `<p class="trip-info__dates">${inner}</p>`;
 };

@@ -1,6 +1,6 @@
 import TripPointEditorView from '../view/trip-point-editor.js';
 import TripPointView from '../view/trip-point.js';
-import { handlerTypes } from '../view/handlers.js';
+import { viewEvents } from '../view/view-events.js';
 import { renderElement, toggleView, removeView } from '../utils/ui.js';
 
 const Mode = {
@@ -8,21 +8,22 @@ const Mode = {
   EDITING: 'EDITING',
 };
 
+let _editModeTripPoint = null;
+
 export default class TripPointPresenter {
-  constructor({containerForTripPoints, editClickCallback, closeClickCallback, updateDataCallback} = {}) {
+
+  constructor({containerForTripPoints, model} = {}) {
     this._container = containerForTripPoints;
     this._tripPointData = null;
     this._tripPointView = null;
     this._tripPointEditView = null;
-    this._closePointEditForm = this._closePointEditForm.bind(this);
-    this._openPointEditForm = this._openPointEditForm.bind(this);
-    this._favoriteClick = this._favoriteClick.bind(this);
-    this._callbacks = {
-      editClickCallback,
-      closeClickCallback,
-      updateDataCallback,
-    };
+    this._openEditFormCallback = this._openEditFormCallback.bind(this);
+    this._favoriteClickCallback = this._favoriteClickCallback.bind(this);
+    this._closeEditFormCallback = this._closeEditFormCallback.bind(this);
+    this._savePointChangesCallback = this._savePointChangesCallback.bind(this);
+    this._deletePointCallback = this._deletePointCallback.bind(this);
     this._mode = Mode.DEFAULT;
+    this._model = model;
   }
 
   init(tripPointData) {
@@ -32,11 +33,13 @@ export default class TripPointPresenter {
     const prevEditPointView = this._tripPointEditView;
     //create view instances
     this._tripPointView = new TripPointView(tripPointData);
-    this._tripPointView.addEventListener(handlerTypes.OPEN_POINT_POPUP, this._openPointEditForm);
-    this._tripPointView.addEventListener(handlerTypes.FAVORITE_CLICK, this._favoriteClick);
+    this._tripPointView.setEventListener(viewEvents.uid.OPEN_POINT_POPUP, this._openEditFormCallback);
+    this._tripPointView.setEventListener(viewEvents.uid.FAVORITE_CLICK, this._favoriteClickCallback);
     //
     this._tripPointEditView = new TripPointEditorView(tripPointData);
-    this._tripPointEditView.addEventListener(handlerTypes.CLOSE_POINT_POPUP, this._closePointEditForm);
+    this._tripPointEditView.setEventListener(viewEvents.uid.CLOSE_POINT_POPUP, this._closeEditFormCallback);
+    this._tripPointEditView.setEventListener(viewEvents.uid.SAVE_POINT, this._savePointChangesCallback);
+    this._tripPointEditView.setEventListener(viewEvents.uid.DELETE_POINT, this._deletePointCallback);
     //in case of first call just render and return
     if(!prevPointView || !prevEditPointView) {
       renderElement(this._container, this._tripPointView);
@@ -51,31 +54,44 @@ export default class TripPointPresenter {
   }
 
   setEditModeEnabled(enabled) {
+    if(_editModeTripPoint && this !== _editModeTripPoint) {
+      _editModeTripPoint.setEditModeEnabled(false);
+    }
     const from = enabled ? this._tripPointView : this._tripPointEditView;
     const to = enabled ? this._tripPointEditView : this._tripPointView;
     toggleView(this._container, from, to);
-  }
-
-  _closePointEditForm() {
-    if(this._callbacks.closeClickCallback) {
-      this._callbacks.closeClickCallback(this);
+    if(enabled) {
+      _editModeTripPoint = this;
+    } else {
+      _editModeTripPoint = null;
     }
   }
 
-  _openPointEditForm() {
-    if(this._callbacks.editClickCallback) {
-      this._callbacks.editClickCallback(this);
-    }
+  _closeEditFormCallback() {
+    this._tripPointEditView.tripPoint = this._tripPointData;
+    this.setEditModeEnabled(false);
   }
 
-  _favoriteClick() {
+  _openEditFormCallback() {
+    this.setEditModeEnabled(true);
+  }
+
+  _favoriteClickCallback() {
     this._commitUpdate({isFavorite: !this._tripPointData.isFavorite});
   }
 
+  _savePointChangesCallback() {
+    this._commitUpdate(this._tripPointEditView.tripPoint);
+    this.setEditModeEnabled(false);
+  }
+
+  _deletePointCallback() {
+    this.destroy();
+    this._model.deleteTripPoint(this._tripPointData);
+  }
+
   _commitUpdate(updatedObjectPart) {
-    if(this._callbacks.updateDataCallback) {
-      this._callbacks.updateDataCallback(this, Object.assign({}, this._tripPointData, updatedObjectPart));
-    }
+    this._model.updateTripPoint(Object.assign({}, this._tripPointData, updatedObjectPart));
   }
 
   destroy() {

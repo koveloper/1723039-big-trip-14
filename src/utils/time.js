@@ -1,60 +1,72 @@
+import dayjs from 'dayjs';
+
 export const TimeUtils = {
 
-  convertTo_MonthDay: (isoTimeStampString) => {
-    return new Date(Date.parse(isoTimeStampString)).toLocaleString('en', {month: 'short', day: '2-digit'});
+  convertTo_MMMDD: (isoTimeStampString) => {
+    return dayjs(isoTimeStampString).format('MMM DD');
+  },
+  convertTo_MMDD: (isoTimeStampString) => {
+    return dayjs(isoTimeStampString).format('MM DD');
   },
   convertTo_YYYYMMDD: (isoTimeStampString) => {
-    return isoTimeStampString.split('T')[0];
+    return dayjs(isoTimeStampString).format('YYYY-MM-DD');
   },
   convertTo_YYYYMMDD_HHMM: (isoTimeStampString) => {
-    return isoTimeStampString.slice(0, -8);
+    return dayjs(isoTimeStampString).format('YYYY-MM-DDTHH:mm');
   },
   convertTo_DDMMYY_HHMM: (isoTimeStampString) => {
-    return new Date(Date.parse(isoTimeStampString)).toLocaleString('en', {day: '2-digit', month: '2-digit', year: '2-digit'}) + ' ' + new Date(Date.parse(isoTimeStampString)).toLocaleString('en', {hour12: false, hour: '2-digit', minute: '2-digit'});
+    return dayjs(isoTimeStampString).format('DD/MM/YY HH:mm');
   },
   convertTo_HHMM: (isoTimeStampString) => {
-    return isoTimeStampString.slice(-13, -8);
+    return dayjs(isoTimeStampString).format('HH:mm');
   },
   getDiff: (isoDateStrFrom, isoDateStrTo) => {
-    const diffInSeconds = Math.abs(Date.parse(isoDateStrTo) - Date.parse(isoDateStrFrom)) / 1000;
-    if(diffInSeconds > (3600 * 24)) {
-      return `${Math.floor(diffInSeconds / (3600 * 24))}D ${Math.floor((diffInSeconds % (3600 * 24)) / 3600)}h`;
-    } else if(diffInSeconds > 3600) {
-      return `${Math.floor(diffInSeconds / 3600)}h ${Math.floor((diffInSeconds % 3600) / 60)}m`;
-    } else {
-      return `${Math.floor(diffInSeconds / 60)}m`;
+    const from = dayjs(isoDateStrFrom);
+    const to = dayjs(isoDateStrTo);
+    const dayDiff = Math.abs(to.diff(from, 'd'));
+    const hourDiff = Math.abs(to.diff(from, 'h')) % 24;
+    const minDiff = Math.abs(to.diff(from, 'm')) % 60;
+    const formatterArgs = ['en-US', {
+      minimumIntegerDigits: 2,
+      useGrouping: false,
+    }];
+    let result = '';
+    if(dayDiff) {
+      result += dayDiff.toLocaleString(...formatterArgs) + 'D ';
     }
+    if(result.length || hourDiff) {
+      result += hourDiff.toLocaleString(...formatterArgs) + 'H ';
+    }
+    if(result.length || minDiff) {
+      result += minDiff.toLocaleString(...formatterArgs) + 'M ';
+    }
+    return result;
   },
-  getDateDiff: (isoDateStrFrom, isoDateStrTo) => {
-    const from = new Date(Date.parse(isoDateStrFrom)).toLocaleString('en', {month: 'short', day: '2-digit'});
-    const to = new Date(Date.parse(isoDateStrTo)).toLocaleString('en', {month: 'short', day: '2-digit'});
-    if(from === to) {
-      return from;
-    }
-    return [from, to.slice(0, 3) === from.slice(0, 3) ? to.slice(3) : to];
+  getDuration: (isoDateStrFrom, isoDateStrTo) => {
+    return [dayjs(isoDateStrFrom).format('MMM DD'), dayjs(isoDateStrTo).format('MMM DD')];
   },
   compare: (isoDateStrA, isoDateStrB) => {
-    return Date.parse(isoDateStrA) - Date.parse(isoDateStrB);
+    return dayjs(isoDateStrA).diff(dayjs(isoDateStrB));
   },
   compareTime: (isoDateStrA, isoDateStrB) => {
-    const a = new Date(Date.parse(isoDateStrA));
-    const b = new Date(Date.parse(isoDateStrB));
-    if(a.getUTCHours() > b.getUTCHours()) {
+    const a = dayjs(isoDateStrA);
+    const b = dayjs(isoDateStrB);
+    if(a.hour() > b.hour()) {
       return 1;
     }
-    if(a.getUTCHours() < b.getUTCHours()) {
+    if(a.hour() < b.hour()) {
       return -1;
     }
-    if(a.getUTCMinutes() > b.getUTCMinutes()) {
+    if(a.minute() > b.minute()) {
       return 1;
     }
-    if(a.getUTCMinutes() < b.getUTCMinutes()) {
+    if(a.minute() < b.minute()) {
       return -1;
     }
-    if(a.getUTCSeconds() > b.getUTCSeconds()) {
+    if(a.second() > b.second()) {
       return 1;
     }
-    if(a.getUTCSeconds() < b.getUTCSeconds()) {
+    if(a.second() < b.second()) {
       return -1;
     }
     return 0;

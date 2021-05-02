@@ -1,5 +1,5 @@
-// import { TRIP_POINT_TYPES, CITY_LIST, AVAILABLE_OFFERS_MAP } from '../structures.js';
 import { appData } from '../app-data.js';
+import { nanoid } from 'nanoid';
 
 const generateRandomInt = (a = 0, b = 1) => {
   const min = Math.ceil(Math.min(a, b));
@@ -58,9 +58,8 @@ const generatePictures = () => {
   return arr;
 };
 
-let pointId = 0;
 const generatePointId = () => {
-  return pointId++;
+  return nanoid();
 };
 
 const generateWordSequence = (maxWords) => {
@@ -91,6 +90,7 @@ const generateFavorite = () => {
       offers.push({
         title: generateRandomWord(7 + generateRandomInt(-2, 6)),
         price: generateRandomInt(1, 15) * 10,
+        id: nanoid(),
       });
     }
     appData.setOffersByTypeName(tripPointType.type, offers);
