@@ -40,6 +40,9 @@ const viewItems = {
     container: getComponent(ViewValues.selectors.TRIP),
     tripPointsModel: models.points,
     filtersModel: models.filters,
+    switchToTableModeCallback: () => {
+      menuCallback(ViewValues.uiViewType.TABLE);
+    },
   }),
 };
 

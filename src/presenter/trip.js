@@ -9,7 +9,7 @@ import { ViewValues } from '../constants.js';
 import { ViewEvents } from '../view/view-events.js';
 
 export default class TripPresenter {
-  constructor({container, tripPointsModel, filtersModel}) {
+  constructor({container, tripPointsModel, filtersModel, switchToTableModeCallback}) {
     this._tripContainer = container;
     this._sortView = new SortView();
     this._tripPointsContainerView = new TripPointsContainerView();
@@ -17,6 +17,7 @@ export default class TripPresenter {
     this._addNewPointView = new TripPointEditor();
     this._currentSortType = ViewValues.sortTypes.DAY;
     this._tripPointsPresenters = {};
+    this._switchToTableModeCallback = switchToTableModeCallback;
 
     this._handleTripPointsModelEvent = this._handleTripPointsModelEvent.bind(this);
     this._handleFiltersModelEvent = this._handleFiltersModelEvent.bind(this);
@@ -136,6 +137,9 @@ export default class TripPresenter {
       renderElement(this._tripPointsContainerView, this._addNewPointView, RenderPosition.AFTERBEGIN);
       this._addNewPointView.restoreHandlers();
       TripPointPresenter.setExternalEditModeTripPoint(this);
+      if(this._sortView.getElement().classList.contains('visually-hidden') && this._switchToTableModeCallback) {
+        this._switchToTableModeCallback();
+      }
     }
   }
 
