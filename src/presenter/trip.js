@@ -3,7 +3,7 @@ import TripPointPresenter from './trip-point.js';
 import TripPointsContainerView from '../view/trip-points-container.js';
 import TripPointsContainerEmptyView from '../view/trip-points-container-empty.js';
 import { renderElement } from '../utils/ui.js';
-import { sortFunctions } from '../utils/common.js';
+import { SortRules } from '../app-data.js';
 import { ViewValues } from '../constants.js';
 
 export default class TripPresenter {
@@ -15,7 +15,7 @@ export default class TripPresenter {
     this._tripPointsPresenters = {};
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleSortTypeClick = this._handleSortTypeClick.bind(this);
-    this._currentSortType = ViewValues.sortTypes.day;
+    this._currentSortType = ViewValues.sortTypes.DAY;
     this._model = model;
     this._model.addObserver(this._handleModelEvent);
   }
@@ -57,7 +57,7 @@ export default class TripPresenter {
   }
 
   _getTripPoints() {
-    return this._model.getTripPoints().slice().sort(sortFunctions[this._currentSortType]);
+    return this._model.getTripPoints().slice().sort(SortRules.getSortFunction(this._currentSortType));
   }
 
   _clearTripPoints() {

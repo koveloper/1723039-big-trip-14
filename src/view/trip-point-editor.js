@@ -1,6 +1,6 @@
 import AbstractInteractiveElement from './abstract-interactive-element.js';
 import { viewEvents } from './view-events.js';
-import { appData } from '../app-data.js';
+import { CityRules, TripPointRules } from '../app-data.js';
 import { TimeUtils } from '../utils/time.js';
 import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
@@ -9,8 +9,8 @@ const parseTripPoint = (tripPoint = {}) => {
   const date_ = new Date().toISOString();
   const {
     id = 'new',
-    type = appData.pointTypes[0].type,
-    destination = appData.cityList[0],
+    type = TripPointRules.getPointTypesByIndex(0).type,
+    destination = CityRules.getCityByIndex(0),
     offers = [],
     base_price = '',
     date_from = date_,
@@ -48,7 +48,7 @@ const createEventTypeMenuButton = (id, type) => {
             <div class="event__type-list">
               <fieldset class="event__type-group">
                 <legend class="visually-hidden">Event type</legend>
-                ${appData.pointTypes.map((t) => createEventTypeInput(t.title, id)).join('')}
+                ${TripPointRules.getPointTypes().map((t) => createEventTypeInput(t.title, id)).join('')}
               </fieldset>
             </div>
           </div>`;
@@ -56,14 +56,14 @@ const createEventTypeMenuButton = (id, type) => {
 
 const createDestinationDataList = (id) => {
   return `<datalist id="destination-list-${id}">
-            ${appData.cityList.map((c) => '<option value="' + c.name + '"></option>')}
+            ${CityRules.getCityList().map((c) => '<option value="' + c.name + '"></option>')}
           </datalist>`;
 };
 
 const createDestination = (id, type, dst) => {
   return `<div class="event__field-group  event__field-group--destination">
             <label class="event__label  event__type-output" for="event-destination-${id}">
-              ${appData.getPointTypeByTypeName(type).title}
+              ${TripPointRules.getPointTypeByTypeName(type).title}
             </label>
             <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${dst}" list="destination-list-${id}">
             ${createDestinationDataList(id)}
@@ -131,7 +131,7 @@ const createOffers = (pointId, type, offers) => {
   return `<section class="event__section  event__section--offers">
             <h3 class="event__section-title  event__section-title--offers">Offers</h3>
             <div class="event__available-offers">
-              ${appData.getOffersByTypeName(type).map((o) => createOffer(o, pointId, offers)).join('')}
+              ${TripPointRules.getOffersByTypeName(type).map((o) => createOffer(o, pointId, offers)).join('')}
             </div>
           </section>`;
 };
@@ -200,7 +200,7 @@ export default class TripPointEditor extends AbstractInteractiveElement {
   _offersListClick(evt) {
     if(evt.event.target.dataset.offerId) {
       const filter = (off) => getOfferIdFromTitle(off.title) === evt.event.target.dataset.offerId;
-      const offerInModel = appData.getOffersByTypeName(this._data.type).find(filter);
+      const offerInModel = TripPointRules.getOffersByTypeName(this._data.type).find(filter);
       const offerInData = this._data.offers.find(filter);
       let offers = this._data.offers.slice();
       if(offerInData) {
@@ -217,7 +217,7 @@ export default class TripPointEditor extends AbstractInteractiveElement {
       event: evt.event,
       dataName: 'destination',
       stateName: 'destination',
-      dataCreateFunctionByTextFieldValue: (value) => Object.assign({}, {name: value}, appData.getCity(value)),
+      dataCreateFunctionByTextFieldValue: (value) => Object.assign({}, {name: value}, CityRules.getCity(value)),
       compareWith: this._data.destination.name,
     });
   }

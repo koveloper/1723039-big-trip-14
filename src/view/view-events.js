@@ -14,9 +14,11 @@ export const viewEvents = {
     END_DATE_INPUT: 'end-date-input',
     START_DATE_CLICK: 'start-date-click',
     END_DATE_CLICK: 'end-date-click',
+    FILTER_TYPE_CHANGE: 'filter-type-change',
   },
   type: {
     CLICK: 'click',
+    ONCHANGE: 'change',
     KEYBOARD_BUTTON_UP: 'keyup',
   },
 };

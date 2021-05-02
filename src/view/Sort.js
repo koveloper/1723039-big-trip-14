@@ -1,5 +1,5 @@
 import AbstractInteractiveElement from './abstract-interactive-element.js';
-import { appData } from '../app-data.js';
+import { SortRules } from '../app-data.js';
 import { viewEvents } from './view-events.js';
 
 const createSortTemplate = (title = '', checked) => {
@@ -10,7 +10,7 @@ const createSortTemplate = (title = '', checked) => {
 };
 
 const createSortTemplates = () => {
-  return appData.sortTypes.map((title, index) => { return createSortTemplate(title, !index); }).join('');
+  return SortRules.getSortTypes().map((title, index) => { return createSortTemplate(title, !index); }).join('');
 };
 
 export default class Sort extends AbstractInteractiveElement {
@@ -33,7 +33,7 @@ export default class Sort extends AbstractInteractiveElement {
   }
 
   setSortType(type) {
-    if(!appData.sortTypes.find((t) => t === type)) {
+    if(!SortRules.getSortTypes().find((t) => t === type)) {
       return;
     }
     this._sortElements.forEach((el) => {el.removeAttribute('checked');});
