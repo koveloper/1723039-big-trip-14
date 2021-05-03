@@ -52,11 +52,8 @@ const renderApp = () => {
   viewItems.headerPresenter.init();
   viewItems.filtersPresenter.init();
   viewItems.statisticsPresenter.init();
-
-  // renderElement(getComponent(ViewValues.selectors.BODY_CONTAINER), viewItems.statistics);
   viewItems.tripPresenter.init();
   menuCallback(ViewValues.uiViewType.TABLE);
-
 };
 
 renderApp();
