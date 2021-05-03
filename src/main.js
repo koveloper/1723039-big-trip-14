@@ -60,5 +60,5 @@ renderApp();
 
 
 getComponent(ViewValues.selectors.INFO).querySelector('.trip-main__event-add-btn').addEventListener('click', () => {
-  viewItems.tripPresenter.setAddNewPointMode(true);
+  viewItems.tripPresenter.setAddNewPointMode();
 });

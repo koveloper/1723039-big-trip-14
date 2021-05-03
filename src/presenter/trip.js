@@ -14,7 +14,7 @@ export default class TripPresenter {
     this._sortView = new SortView();
     this._tripPointsContainerView = new TripPointsContainerView();
     this._noPointsView = new TripPointsContainerEmptyView();
-    this._addNewPointView = new TripPointEditor();
+    this._newPointView = new TripPointEditor();
     this._currentSortType = ViewValues.sortTypes.DAY;
     this._tripPointsPresenters = {};
     this._switchToTableModeCallback = switchToTableModeCallback;
@@ -23,8 +23,8 @@ export default class TripPresenter {
     this._handleTripPointsModelEvent = this._handleTripPointsModelEvent.bind(this);
     this._handleFiltersModelEvent = this._handleFiltersModelEvent.bind(this);
     this._handleSortTypeClick = this._handleSortTypeClick.bind(this);
-    this._closeNewPointFormCallback = this._closeNewPointFormCallback.bind(this);
-    this._addNewPointCallback = this._addNewPointCallback.bind(this);
+    this._handleCloseNewPointButtonClick = this._handleCloseNewPointButtonClick.bind(this);
+    this._handleAddNewPointButtonClick = this._handleAddNewPointButtonClick.bind(this);
 
     this._handleOpenEditFormEvent = this._handleOpenEditFormEvent.bind(this);
     this._handleCloseEditFormEvent = this._handleCloseEditFormEvent.bind(this);
@@ -35,9 +35,8 @@ export default class TripPresenter {
     this._filtersModel = filtersModel;
     this._filtersModel.addObserver(this._handleFiltersModelEvent);
 
-    this._addNewPointView.setEventListener(ViewEvents.uid.DELETE_POINT, this._closeNewPointFormCallback);
-    this._addNewPointView.setEventListener(ViewEvents.uid.SAVE_POINT, this._addNewPointCallback);
-    this.setEditModeEnabled = this.setAddNewPointMode;
+    this._newPointView.setEventListener(ViewEvents.uid.DELETE_POINT, this._handleCloseNewPointButtonClick);
+    this._newPointView.setEventListener(ViewEvents.uid.SAVE_POINT, this._handleAddNewPointButtonClick);
   }
 
   init() {
@@ -63,6 +62,9 @@ export default class TripPresenter {
   }
 
   _handleCloseEditFormEvent(pointIptr) {
+    if(!pointIptr) {
+      return;
+    }
     this._currentEditForm = null;
     pointIptr.setEditModeEnabled(false);
   }
@@ -147,28 +149,25 @@ export default class TripPresenter {
     pointPresenter.init(tripPointData);
   }
 
-  setAddNewPointMode(enabled) {
-    this._addNewPointView.tripPoint = undefined;
-    removeView(this._addNewPointView);
-    if(this._currentEditForm) {
-      this._handleCloseEditFormEvent(this._currentEditForm);
-    }
-    if(enabled) {
-      renderElement(this._tripPointsContainerView, this._addNewPointView, RenderPosition.AFTERBEGIN);
-      this._addNewPointView.restoreHandlers();
-      this._currentEditForm = this;
-      if(this._sortView.getElement().classList.contains('visually-hidden') && this._switchToTableModeCallback) {
-        this._switchToTableModeCallback();
-      }
+  setAddNewPointMode() {
+    this._handleCloseEditFormEvent(this._currentEditForm);
+    renderElement(this._tripPointsContainerView, this._newPointView, RenderPosition.AFTERBEGIN);
+    this._newPointView.restoreHandlers();
+    this._newPointView.setEditModeEnabled = () => this._handleCloseNewPointButtonClick();
+    this._currentEditForm = this._newPointView;
+    if(this._sortView.getElement().classList.contains('visually-hidden') && this._switchToTableModeCallback) {
+      this._switchToTableModeCallback();
     }
   }
 
-  _closeNewPointFormCallback() {
-    this.setAddNewPointMode(false);
+  _handleCloseNewPointButtonClick() {
+    removeView(this._newPointView);
+    this._newPointView.tripPoint = undefined;
+    this._currentEditForm = null;
   }
 
-  _addNewPointCallback() {
-    this._tripPointsModel.addTripPoint(ViewValues.updateType.MINOR, this._addNewPointView.tripPoint);
-    this.setAddNewPointMode(false);
+  _handleAddNewPointButtonClick() {
+    this._tripPointsModel.addTripPoint(ViewValues.updateType.MINOR, this._newPointView.tripPoint);
+    this._handleCloseNewPointButtonClick();
   }
 }
