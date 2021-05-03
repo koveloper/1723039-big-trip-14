@@ -62,6 +62,6 @@ const renderApp = () => {
 renderApp();
 
 
-getComponent(ViewValues.selectors.INFO).querySelector('.trip-main__event-add-btn').onclick = () => {
+getComponent(ViewValues.selectors.INFO).querySelector('.trip-main__event-add-btn').addEventListener('click', () => {
   viewItems.tripPresenter.setAddNewPointMode(true);
-};
+});
