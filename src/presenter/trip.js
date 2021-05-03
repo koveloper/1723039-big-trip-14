@@ -1,47 +1,69 @@
-import SortView from '../view/sort.js';
+import SortView from '../view/sort-menu.js';
 import TripPointPresenter from './trip-point.js';
 import TripPointsContainerView from '../view/trip-points-container.js';
 import TripPointsContainerEmptyView from '../view/trip-points-container-empty.js';
-import { ModelEvent } from '../model/model-events.js';
-import { renderElement } from '../utils/ui.js';
-import { sortFunctions } from '../utils/common.js';
+import TripPointEditor from '../view/trip-point-editor.js';
+import { renderElement, RenderPosition, removeView } from '../utils/ui.js';
+import { SortRules, FiltersRules } from '../app-data.js';
 import { ViewValues } from '../constants.js';
+import { ViewEvents } from '../view/view-events.js';
 
 export default class TripPresenter {
-  constructor({tripContainer, model}) {
-    this._tripContainer = tripContainer;
+  constructor({container, tripPointsModel, filtersModel}) {
+    this._tripContainer = container;
     this._sortView = new SortView();
     this._tripPointsContainerView = new TripPointsContainerView();
     this._noPointsView = new TripPointsContainerEmptyView();
-    this._tripPoints = [];
+    this._addNewPointView = new TripPointEditor();
+    this._currentSortType = ViewValues.sortTypes.DAY;
     this._tripPointsPresenters = {};
-    this._modelCallback = this._modelCallback.bind(this);
-    this._sortTypeClickCallback = this._sortTypeClickCallback.bind(this);
-    this._currentSortType = ViewValues.sortTypes.day;
-    this._model = model;
-    this._model.addCallback(this._modelCallback);
+
+    this._handleTripPointsModelEvent = this._handleTripPointsModelEvent.bind(this);
+    this._handleFiltersModelEvent = this._handleFiltersModelEvent.bind(this);
+    this._handleSortTypeClick = this._handleSortTypeClick.bind(this);
+    this._closeNewPointFormCallback = this._closeNewPointFormCallback.bind(this);
+    this._addNewPointCallback = this._addNewPointCallback.bind(this);
+
+    this._tripPointsModel = tripPointsModel;
+    this._tripPointsModel.addObserver(this._handleTripPointsModelEvent);
+
+    this._filtersModel = filtersModel;
+    this._filtersModel.addObserver(this._handleFiltersModelEvent);
+
+    this._addNewPointView.setEventListener(ViewEvents.uid.DELETE_POINT, this._closeNewPointFormCallback);
+    this._addNewPointView.setEventListener(ViewEvents.uid.SAVE_POINT, this._addNewPointCallback);
+    this.setEditModeEnabled = this.setAddNewPointMode;
   }
 
-  _sortTypeClickCallback(sortType) {
+  init() {
+    this._renderTrip();
+  }
+
+  _handleSortTypeClick(sortType) {
     if(this._currentSortType === sortType) {
       return;
     }
-    //make sort and render
-    this._tripPoints = this._tripPoints.slice().sort(sortFunctions[sortType]);
-    this._clearTripPoints();
-    this._renderTripPoints();
+    //cache sort type and call render
     this._currentSortType = sortType;
-    this._sortView.setSortType(sortType);
+    this._renderTrip();
   }
 
-  _modelCallback(evt) {
+  _handleFiltersModelEvent() {
+    this._currentSortType = ViewValues.sortTypes.DAY;
+    this._renderTrip();
+  }
+
+  _handleTripPointsModelEvent(evt) {
     switch(evt.type) {
-      case ModelEvent.UPDATE_TRIP_POINT:
+      case ViewValues.updateType.PATCH:
         this._updateTripPointPresenterData(evt.data);
         break;
-      case ModelEvent.UPDATE_TRIP:
-        this.init(evt.data);
+
+      case ViewValues.updateType.MINOR:
+      case ViewValues.updateType.MAJOR:
+        this._renderTrip();
         break;
+
       default:
         break;
     }
@@ -53,47 +75,66 @@ export default class TripPresenter {
     }
   }
 
-  init(tripPoints) {
-    this._tripPoints = tripPoints.slice();
-    this._renderTrip();
-  }
-
-  _renderTrip() {
-    this._tripContainer.textContent = '';
-    this._clearTripPoints();
-    if(!this._tripPoints || !this._tripPoints.length) {
-      this._renderNoPoints();
-      return;
-    }
-    this._renderSort();
-    this._renderTripPoints();
-  }
-
-  _renderSort() {
-    renderElement(this._tripContainer, this._sortView);
-    this._sortView.setSortTypeClickCallback(this._sortTypeClickCallback);
-  }
-
-  _renderTripPoints() {
-    renderElement(this._tripContainer, this._tripPointsContainerView);
-    this._tripPoints.forEach((point) => {this._renderTripPoint(point);});
-  }
-
-  _renderTripPoint(tripPointData) {
-    const pointPresenter = new TripPointPresenter({
-      containerForTripPoints: this._tripPointsContainerView,
-      model: this._model,
-    });
-    this._tripPointsPresenters[tripPointData.id] = pointPresenter;
-    pointPresenter.init(tripPointData);
-  }
-
-  _renderNoPoints() {
-    renderElement(this._tripContainer, this._noPointsView);
+  _getTripPoints() {
+    return this._tripPointsModel.getTripPoints().slice()
+      .filter(FiltersRules.getFilterFunction(this._filtersModel.getFilterType()))
+      .sort(SortRules.getSortFunction(this._currentSortType));
   }
 
   _clearTripPoints() {
     Object.values(this._tripPointsPresenters).forEach((presenter) => presenter.destroy());
     this._tripPointsPresenters = {};
+  }
+
+  _renderTrip() {
+    this._clearTripPoints();
+    const points = this._getTripPoints();
+    if(!points.length && this._filtersModel.getFilterType() === ViewValues.filters.EVERYTHING) {
+      renderElement(this._tripContainer, this._noPointsView);
+      return;
+    }
+    this._renderSort();
+    this._renderTripPoints(points);
+  }
+
+  _renderSort() {
+    this._sortView.setSortType(this._currentSortType);
+    renderElement(this._tripContainer, this._sortView);
+    this._sortView.setSortTypeClickCallback(this._handleSortTypeClick);
+  }
+
+  _renderTripPoints(points) {
+    renderElement(this._tripContainer, this._tripPointsContainerView);
+    points.forEach((point) => {this._renderTripPoint(point);});
+  }
+
+  _renderTripPoint(tripPointData) {
+    const pointPresenter = new TripPointPresenter({
+      containerForTripPoints: this._tripPointsContainerView,
+      model: this._tripPointsModel,
+    });
+    this._tripPointsPresenters[tripPointData.id] = pointPresenter;
+    pointPresenter.init(tripPointData);
+  }
+
+  setAddNewPointMode(enabled) {
+    this._addNewPointView.tripPoint = undefined;
+    removeView(this._addNewPointView);
+    TripPointPresenter.setExternalEditModeTripPoint(null);
+    if(enabled) {
+      Object.values(this._tripPointsPresenters).forEach((presenter) => presenter.setEditModeEnabled(false));
+      renderElement(this._tripPointsContainerView, this._addNewPointView, RenderPosition.AFTERBEGIN);
+      this._addNewPointView.restoreHandlers();
+      TripPointPresenter.setExternalEditModeTripPoint(this);
+    }
+  }
+
+  _closeNewPointFormCallback() {
+    this.setAddNewPointMode(false);
+  }
+
+  _addNewPointCallback() {
+    this._tripPointsModel.addTripPoint(ViewValues.updateType.MINOR, this._addNewPointView.tripPoint);
+    this.setAddNewPointMode(false);
   }
 }

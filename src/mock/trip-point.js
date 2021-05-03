@@ -1,4 +1,4 @@
-import { appData } from '../app-data.js';
+import { TripPointRules, CityRules } from '../app-data.js';
 import { nanoid } from 'nanoid';
 
 const generateRandomInt = (a = 0, b = 1) => {
@@ -8,11 +8,11 @@ const generateRandomInt = (a = 0, b = 1) => {
 };
 
 const generatePointType = () => {
-  return appData.pointTypes[generateRandomInt(appData.pointTypes.length)];
+  return TripPointRules.getPointTypes()[generateRandomInt(TripPointRules.getPointTypes().length)];
 };
 
 const generateCity = () => {
-  return appData.cityList[generateRandomInt(appData.cityList.length)];
+  return CityRules.getCityList()[generateRandomInt(CityRules.getCityList().length)];
 };
 
 const generateRandomWord = (wordSize) => {
@@ -25,7 +25,7 @@ const generateRandomWord = (wordSize) => {
 
 const generateOffers = (pointType) => {
   const opts = [];
-  const offers = appData.getOffersByTypeName(pointType);
+  const offers = TripPointRules.getOffersByTypeName(pointType);
   const offset = generateRandomInt(0, offers.length);
   const size = generateRandomInt(0, offers.length);
   for(let i = 0; i < size; i++) {
@@ -74,6 +74,7 @@ let lastDate = null;
 const generateDate = (maxDiffInDays = 1) => {
   if(lastDate === null) {
     lastDate = new Date();
+    lastDate = new Date(lastDate.getTime() - (generateRandomInt(0, 40 * 24 * 3600 * 1000)));
   }
   lastDate = new Date(lastDate.getTime() + (generateRandomInt(1800, maxDiffInDays * 24 * 3600 * 1000)));
   return lastDate.toISOString();
@@ -84,7 +85,7 @@ const generateFavorite = () => {
 };
 
 (() => {
-  for(const tripPointType of appData.pointTypes) {
+  for(const tripPointType of TripPointRules.getPointTypes()) {
     const offers = [];
     for(let i = 0; i < generateRandomInt(2, 6); i++) {
       offers.push({
@@ -93,7 +94,7 @@ const generateFavorite = () => {
         id: nanoid(),
       });
     }
-    appData.setOffersByTypeName(tripPointType.type, offers);
+    TripPointRules.setOffersByTypeName(tripPointType.type, offers);
   }
 })();
 
@@ -109,7 +110,7 @@ const generateFavorite = () => {
     'London',
   ];
   for(const city of cities) {
-    appData.addCity({
+    CityRules.addCity({
       name: city,
       description: generateDescription(),
       pictures: generatePictures(),

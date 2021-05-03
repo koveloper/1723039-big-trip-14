@@ -1,9 +1,9 @@
 import AbstractInteractiveElement from './abstract-interactive-element.js';
-import { viewEvents } from './view-events.js';
+import { ViewEvents } from './view-events.js';
 import { TimeUtils } from '../utils/time.js';
 
-const createDate = (from, to) => {
-  return `<time class="event__date" datetime="${TimeUtils.convertTo_YYYYMMDD(from)}">${TimeUtils.convertTo_MMMDD(to)}</time>`;
+const createDate = (from) => {
+  return `<time class="event__date" datetime="${TimeUtils.convertTo_YYYYMMDD(from)}">${TimeUtils.convertTo_MMMDD(from)}</time>`;
 };
 
 const createType = (type) => {
@@ -66,14 +66,14 @@ export default class TripPoint extends AbstractInteractiveElement {
     this._registerEventSupport({
       parent: this.getElement(),
       selectorInsideParent: '.event__rollup-btn',
-      handlerUID: viewEvents.uid.OPEN_POINT_POPUP,
-      eventType: viewEvents.type.CLICK,
+      handlerUID: ViewEvents.uid.OPEN_POINT_POPUP,
+      eventType: ViewEvents.type.CLICK,
     });
     this._registerEventSupport({
       parent: this.getElement(),
       selectorInsideParent: '.event__favorite-btn',
-      handlerUID: viewEvents.uid.FAVORITE_CLICK,
-      eventType: viewEvents.type.CLICK,
+      handlerUID: ViewEvents.uid.FAVORITE_CLICK,
+      eventType: ViewEvents.type.CLICK,
     });
   }
 
@@ -84,7 +84,7 @@ export default class TripPoint extends AbstractInteractiveElement {
   getTemplate() {
     return `<li class="trip-events__item">
               <div class="event">
-                ${createDate(this.tripPoint.date_from, this.tripPoint.date_to)}
+                ${createDate(this.tripPoint.date_from)}
                 ${createType(this.tripPoint.type)}
                 ${createDestinationTitle(this.tripPoint.destination.name)}
                 ${createShedule(this.tripPoint.date_from, this.tripPoint.date_to)}                

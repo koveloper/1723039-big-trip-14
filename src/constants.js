@@ -5,17 +5,17 @@ export const ViewValues = {
     FILTERS: '.trip-controls__filters',
     TRIP: '.trip-events',
   },
-  filters: [
-    'Everything',
-    'Future',
-    'Past',
-  ],
+  filters: {
+    EVERYTHING: 'Everything',
+    FUTURE: 'Future',
+    PAST: 'Past',
+  },
   sortTypes: {
-    day: 'day',
-    event: 'event',
-    time: 'time',
-    price: 'price',
-    offers: 'offers',
+    DAY: 'day',
+    EVENT: 'event',
+    TIME: 'time',
+    PRICE: 'price',
+    OFFERS: 'offers',
   },
   pointTypes: [
     {
@@ -55,4 +55,9 @@ export const ViewValues = {
       isInMotion: false,
     },
   ],
+  updateType: {
+    PATCH: 'PATCH',
+    MINOR: 'MINOR',
+    MAJOR: 'MAJOR',
+  },
 };

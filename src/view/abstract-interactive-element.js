@@ -1,7 +1,12 @@
 import AbstractViewElement from './abstract-view-element.js';
 import { toggleView } from '../utils/ui.js';
-import { bindEventListenerContext } from '../utils/common.js';
 import { restoreFocus, getFocusObject } from '../utils/ui.js';
+
+const bindEventListenerContext = function (fn, context, handlerType) {
+  return function (...args) {
+    return fn.call(context, handlerType, ...args);
+  };
+};
 
 export default class AbstractInteractiveElement extends AbstractViewElement {
 

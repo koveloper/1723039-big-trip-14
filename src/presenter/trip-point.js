@@ -1,7 +1,8 @@
 import TripPointEditorView from '../view/trip-point-editor.js';
 import TripPointView from '../view/trip-point.js';
-import { viewEvents } from '../view/view-events.js';
+import { ViewEvents } from '../view/view-events.js';
 import { renderElement, toggleView, removeView } from '../utils/ui.js';
+import { ViewValues } from '../constants.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -26,6 +27,10 @@ export default class TripPointPresenter {
     this._model = model;
   }
 
+  static setExternalEditModeTripPoint(value) {
+    _editModeTripPoint = value;
+  }
+
   init(tripPointData) {
     this._tripPointData = tripPointData;
     //cache previous view instances
@@ -33,13 +38,13 @@ export default class TripPointPresenter {
     const prevEditPointView = this._tripPointEditView;
     //create view instances
     this._tripPointView = new TripPointView(tripPointData);
-    this._tripPointView.setEventListener(viewEvents.uid.OPEN_POINT_POPUP, this._openEditFormCallback);
-    this._tripPointView.setEventListener(viewEvents.uid.FAVORITE_CLICK, this._favoriteClickCallback);
+    this._tripPointView.setEventListener(ViewEvents.uid.OPEN_POINT_POPUP, this._openEditFormCallback);
+    this._tripPointView.setEventListener(ViewEvents.uid.FAVORITE_CLICK, this._favoriteClickCallback);
     //
     this._tripPointEditView = new TripPointEditorView(tripPointData);
-    this._tripPointEditView.setEventListener(viewEvents.uid.CLOSE_POINT_POPUP, this._closeEditFormCallback);
-    this._tripPointEditView.setEventListener(viewEvents.uid.SAVE_POINT, this._savePointChangesCallback);
-    this._tripPointEditView.setEventListener(viewEvents.uid.DELETE_POINT, this._deletePointCallback);
+    this._tripPointEditView.setEventListener(ViewEvents.uid.CLOSE_POINT_POPUP, this._closeEditFormCallback);
+    this._tripPointEditView.setEventListener(ViewEvents.uid.SAVE_POINT, this._savePointChangesCallback);
+    this._tripPointEditView.setEventListener(ViewEvents.uid.DELETE_POINT, this._deletePointCallback);
     //in case of first call just render and return
     if(!prevPointView || !prevEditPointView) {
       renderElement(this._container, this._tripPointView);
@@ -64,11 +69,11 @@ export default class TripPointPresenter {
       _editModeTripPoint = this;
     } else {
       _editModeTripPoint = null;
+      this._tripPointEditView.tripPoint = this._tripPointData;
     }
   }
 
   _closeEditFormCallback() {
-    this._tripPointEditView.tripPoint = this._tripPointData;
     this.setEditModeEnabled(false);
   }
 
@@ -86,12 +91,11 @@ export default class TripPointPresenter {
   }
 
   _deletePointCallback() {
-    this.destroy();
-    this._model.deleteTripPoint(this._tripPointData);
+    this._model.deleteTripPoint(ViewValues.updateType.MAJOR, this._tripPointData);
   }
 
   _commitUpdate(updatedObjectPart) {
-    this._model.updateTripPoint(Object.assign({}, this._tripPointData, updatedObjectPart));
+    this._model.updateTripPoint(ViewValues.updateType.PATCH, Object.assign({}, this._tripPointData, updatedObjectPart));
   }
 
   destroy() {

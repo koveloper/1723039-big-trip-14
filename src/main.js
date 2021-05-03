@@ -1,33 +1,48 @@
 import MenuView from './view/menu.js';
-import TripInfoView from './view/trip-info.js';
-import FiltersView from './view/filters.js';
+import HeaderPresenter from './presenter/header.js';
+import FiltersPresenter from './presenter/filters.js';
 import TripPresenter from './presenter/trip.js';
-import Model from './model/model.js';
-import { RenderPosition, getComponent, renderElement } from './utils/ui.js';
+import PointsModel from './model/points.js';
+import FiltersModel from './model/filters.js';
+import { getComponent, renderElement } from './utils/ui.js';
 import { generateTripPointData } from './mock/trip-point.js';
 import { ViewValues } from './constants.js';
 
-const model = new Model();
-model.setTripPoints(new Array(20).fill().map(() => generateTripPointData()));
+const models = {
+  points: new PointsModel(),
+  filters: new FiltersModel(),
+};
+
+models.points.setTripPoints(new Array(20).fill().map(() => generateTripPointData()));
 
 const viewItems = {
   menu: new MenuView(),
-  tripInfo: new TripInfoView(model.getTripPoints()),
-  filters: new FiltersView(),
+  headerPresenter: new HeaderPresenter({
+    container: getComponent(ViewValues.selectors.INFO),
+    model: models.points,
+  }),
+  filtersPresenter: new FiltersPresenter({
+    container: getComponent(ViewValues.selectors.FILTERS),
+    model: models.filters,
+  }),
   tripPresenter: new TripPresenter({
-    tripContainer: getComponent(ViewValues.selectors.TRIP),
-    model,
+    container: getComponent(ViewValues.selectors.TRIP),
+    tripPointsModel: models.points,
+    filtersModel: models.filters,
   }),
 };
 
-
 const renderApp = () => {
   renderElement(getComponent(ViewValues.selectors.MENU), viewItems.menu);
-  renderElement(getComponent(ViewValues.selectors.INFO), viewItems.tripInfo, RenderPosition.AFTERBEGIN);
-  renderElement(getComponent(ViewValues.selectors.FILTERS), viewItems.filters);
-  viewItems.tripPresenter.init(model.getTripPoints());
+  viewItems.headerPresenter.init();
+  viewItems.filtersPresenter.init();
+  // renderElement(getComponent(ViewValues.selectors.FILTERS), viewItems.filters);
+  viewItems.tripPresenter.init();
 };
 
 renderApp();
 
 
+getComponent(ViewValues.selectors.INFO).querySelector('.trip-main__event-add-btn').onclick = () => {
+  viewItems.tripPresenter.setAddNewPointMode(true);
+};
