@@ -9,7 +9,7 @@ import { ViewValues } from '../constants.js';
 import { ViewEvents } from '../view/view-events.js';
 
 export default class TripPresenter {
-  constructor({container, tripPointsModel, filtersModel}) {
+  constructor({container, tripPointsModel, filtersModel, switchToTableModeCallback}) {
     this._tripContainer = container;
     this._sortView = new SortView();
     this._tripPointsContainerView = new TripPointsContainerView();
@@ -17,12 +17,17 @@ export default class TripPresenter {
     this._addNewPointView = new TripPointEditor();
     this._currentSortType = ViewValues.sortTypes.DAY;
     this._tripPointsPresenters = {};
+    this._switchToTableModeCallback = switchToTableModeCallback;
+    this._currentEditForm = null;
 
     this._handleTripPointsModelEvent = this._handleTripPointsModelEvent.bind(this);
     this._handleFiltersModelEvent = this._handleFiltersModelEvent.bind(this);
     this._handleSortTypeClick = this._handleSortTypeClick.bind(this);
     this._closeNewPointFormCallback = this._closeNewPointFormCallback.bind(this);
     this._addNewPointCallback = this._addNewPointCallback.bind(this);
+
+    this._handleOpenEditFormEvent = this._handleOpenEditFormEvent.bind(this);
+    this._handleCloseEditFormEvent = this._handleCloseEditFormEvent.bind(this);
 
     this._tripPointsModel = tripPointsModel;
     this._tripPointsModel.addObserver(this._handleTripPointsModelEvent);
@@ -37,6 +42,29 @@ export default class TripPresenter {
 
   init() {
     this._renderTrip();
+  }
+
+  setVisible(isVisible) {
+    if(isVisible) {
+      this._sortView.getElement().classList.remove('visually-hidden');
+      this._tripPointsContainerView.getElement().classList.remove('visually-hidden');
+    } else {
+      this._sortView.getElement().classList.add('visually-hidden');
+      this._tripPointsContainerView.getElement().classList.add('visually-hidden');
+    }
+  }
+
+  _handleOpenEditFormEvent(pointIptr) {
+    if(this._currentEditForm) {
+      this._currentEditForm.setEditModeEnabled(false);
+    }
+    this._currentEditForm = pointIptr;
+    pointIptr.setEditModeEnabled(true);
+  }
+
+  _handleCloseEditFormEvent(pointIptr) {
+    this._currentEditForm = null;
+    pointIptr.setEditModeEnabled(false);
   }
 
   _handleSortTypeClick(sortType) {
@@ -112,6 +140,8 @@ export default class TripPresenter {
     const pointPresenter = new TripPointPresenter({
       containerForTripPoints: this._tripPointsContainerView,
       model: this._tripPointsModel,
+      openEditFormCallback: this._handleOpenEditFormEvent,
+      closeEditFormCallback: this._handleCloseEditFormEvent,
     });
     this._tripPointsPresenters[tripPointData.id] = pointPresenter;
     pointPresenter.init(tripPointData);
@@ -120,12 +150,16 @@ export default class TripPresenter {
   setAddNewPointMode(enabled) {
     this._addNewPointView.tripPoint = undefined;
     removeView(this._addNewPointView);
-    TripPointPresenter.setExternalEditModeTripPoint(null);
+    if(this._currentEditForm) {
+      this._handleCloseEditFormEvent(this._currentEditForm);
+    }
     if(enabled) {
-      Object.values(this._tripPointsPresenters).forEach((presenter) => presenter.setEditModeEnabled(false));
       renderElement(this._tripPointsContainerView, this._addNewPointView, RenderPosition.AFTERBEGIN);
       this._addNewPointView.restoreHandlers();
-      TripPointPresenter.setExternalEditModeTripPoint(this);
+      this._currentEditForm = this;
+      if(this._sortView.getElement().classList.contains('visually-hidden') && this._switchToTableModeCallback) {
+        this._switchToTableModeCallback();
+      }
     }
   }
 

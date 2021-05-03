@@ -4,6 +4,7 @@ export const ViewValues = {
     INFO: '.trip-main',
     FILTERS: '.trip-controls__filters',
     TRIP: '.trip-events',
+    BODY_CONTAINER: '.page-main > .page-body__container',
   },
   filters: {
     EVERYTHING: 'Everything',
@@ -59,5 +60,9 @@ export const ViewValues = {
     PATCH: 'PATCH',
     MINOR: 'MINOR',
     MAJOR: 'MAJOR',
+  },
+  uiViewType: {
+    STATS: 'STATS',
+    TABLE: 'TABLE',
   },
 };

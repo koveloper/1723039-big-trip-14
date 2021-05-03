@@ -12,7 +12,7 @@ const generatePointType = () => {
 };
 
 const generateCity = () => {
-  return CityRules.getCityList()[generateRandomInt(CityRules.getCityList().length)];
+  return CityRules.getCityList()[generateRandomInt(0, CityRules.getCityList().length)];
 };
 
 const generateRandomWord = (wordSize) => {
@@ -102,12 +102,12 @@ const generateFavorite = () => {
   const cities = [
     'Washington',
     'New York',
-    'Chicago',
-    'Miami',
-    'Oslo',
-    'Milan',
-    'Porto',
-    'London',
+    // 'Chicago',
+    // 'Miami',
+    // 'Oslo',
+    // 'Milan',
+    // 'Porto',
+    // 'London',
   ];
   for(const city of cities) {
     CityRules.addCity({
