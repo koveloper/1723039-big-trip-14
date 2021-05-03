@@ -9,27 +9,27 @@ const Mode = {
   EDITING: 'EDITING',
 };
 
-let _editModeTripPoint = null;
-
 export default class TripPointPresenter {
 
-  constructor({containerForTripPoints, model} = {}) {
+  constructor({containerForTripPoints, model, openEditFormCallback, closeEditFormCallback} = {}) {
     this._container = containerForTripPoints;
     this._tripPointData = null;
     this._tripPointView = null;
     this._tripPointEditView = null;
-    this._openEditFormCallback = this._openEditFormCallback.bind(this);
-    this._favoriteClickCallback = this._favoriteClickCallback.bind(this);
-    this._closeEditFormCallback = this._closeEditFormCallback.bind(this);
-    this._savePointChangesCallback = this._savePointChangesCallback.bind(this);
-    this._deletePointCallback = this._deletePointCallback.bind(this);
+    this._openEditFormCallback = openEditFormCallback;
+    this._closeEditFormCallback = closeEditFormCallback;
+    this._handleOpenEditFormButtonClick = this._handleOpenEditFormButtonClick.bind(this);
+    this._handleFavoriteButtonClick = this._handleFavoriteButtonClick.bind(this);
+    this._handleCloseEditFormButtonClick = this._handleCloseEditFormButtonClick.bind(this);
+    this._handleSavePointChangesButtonClick = this._handleSavePointChangesButtonClick.bind(this);
+    this._handleDeletePointButtonClick = this._handleDeletePointButtonClick.bind(this);
     this._mode = Mode.DEFAULT;
     this._model = model;
   }
 
-  static setExternalEditModeTripPoint(value) {
-    _editModeTripPoint = value;
-  }
+  // static setExternalEditModeTripPoint(value) {
+  //   _editModeTripPoint = value;
+  // }
 
   init(tripPointData) {
     this._tripPointData = tripPointData;
@@ -38,13 +38,13 @@ export default class TripPointPresenter {
     const prevEditPointView = this._tripPointEditView;
     //create view instances
     this._tripPointView = new TripPointView(tripPointData);
-    this._tripPointView.setEventListener(ViewEvents.uid.OPEN_POINT_POPUP, this._openEditFormCallback);
-    this._tripPointView.setEventListener(ViewEvents.uid.FAVORITE_CLICK, this._favoriteClickCallback);
+    this._tripPointView.setEventListener(ViewEvents.uid.OPEN_POINT_POPUP, this._handleOpenEditFormButtonClick);
+    this._tripPointView.setEventListener(ViewEvents.uid.FAVORITE_CLICK, this._handleFavoriteButtonClick);
     //
     this._tripPointEditView = new TripPointEditorView(tripPointData);
-    this._tripPointEditView.setEventListener(ViewEvents.uid.CLOSE_POINT_POPUP, this._closeEditFormCallback);
-    this._tripPointEditView.setEventListener(ViewEvents.uid.SAVE_POINT, this._savePointChangesCallback);
-    this._tripPointEditView.setEventListener(ViewEvents.uid.DELETE_POINT, this._deletePointCallback);
+    this._tripPointEditView.setEventListener(ViewEvents.uid.CLOSE_POINT_POPUP, this._handleCloseEditFormButtonClick);
+    this._tripPointEditView.setEventListener(ViewEvents.uid.SAVE_POINT, this._handleSavePointChangesButtonClick);
+    this._tripPointEditView.setEventListener(ViewEvents.uid.DELETE_POINT, this._handleDeletePointButtonClick);
     //in case of first call just render and return
     if(!prevPointView || !prevEditPointView) {
       renderElement(this._container, this._tripPointView);
@@ -59,38 +59,36 @@ export default class TripPointPresenter {
   }
 
   setEditModeEnabled(enabled) {
-    if(_editModeTripPoint && this !== _editModeTripPoint) {
-      _editModeTripPoint.setEditModeEnabled(false);
-    }
     const from = enabled ? this._tripPointView : this._tripPointEditView;
     const to = enabled ? this._tripPointEditView : this._tripPointView;
     toggleView(this._container, from, to);
-    if(enabled) {
-      _editModeTripPoint = this;
-    } else {
-      _editModeTripPoint = null;
+    if(!enabled) {
       this._tripPointEditView.tripPoint = this._tripPointData;
     }
   }
 
-  _closeEditFormCallback() {
-    this.setEditModeEnabled(false);
+  _handleCloseEditFormButtonClick() {
+    if(this._closeEditFormCallback) {
+      this._closeEditFormCallback(this);
+    }
   }
 
-  _openEditFormCallback() {
-    this.setEditModeEnabled(true);
+  _handleOpenEditFormButtonClick() {
+    if(this._openEditFormCallback) {
+      this._openEditFormCallback(this);
+    }
   }
 
-  _favoriteClickCallback() {
+  _handleFavoriteButtonClick() {
     this._commitUpdate({isFavorite: !this._tripPointData.isFavorite});
   }
 
-  _savePointChangesCallback() {
+  _handleSavePointChangesButtonClick() {
     this._commitUpdate(this._tripPointEditView.tripPoint);
     this.setEditModeEnabled(false);
   }
 
-  _deletePointCallback() {
+  _handleDeletePointButtonClick() {
     this._model.deleteTripPoint(ViewValues.updateType.MAJOR, this._tripPointData);
   }
 
