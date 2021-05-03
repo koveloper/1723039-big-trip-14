@@ -5,14 +5,27 @@ import FiltersPresenter from './presenter/filters.js';
 import TripPresenter from './presenter/trip.js';
 import PointsModel from './model/points.js';
 import FiltersModel from './model/filters.js';
-import { getComponent, renderElement } from './utils/ui.js';
-import { generateTripPointData } from './mock/trip-point.js';
-import { ViewValues } from './constants.js';
+import Api from './api.js';
+import {getComponent, renderElement} from './utils/ui.js';
+import {generateTripPointData} from './mock/trip-point.js';
+import {ViewValues} from './constants.js';
 
 const models = {
   points: new PointsModel(),
   filters: new FiltersModel(),
 };
+
+const AUTHORIZATION = 'Basic KMh6KWDNNVywmlOMihTM';
+const END_POINT = 'https://14.ecmascript.pages.academy/big-trip';
+const api = new Api(END_POINT, AUTHORIZATION);
+
+api.getTripPoints().then(() => {
+  // console.log(points);
+  // Есть проблема: cтруктура объекта похожа, но некоторые ключи называются иначе,
+  // а ещё на сервере используется snake_case, а у нас camelCase.
+  // Можно, конечно, переписать часть нашего клиентского приложения, но зачем?
+  // Есть вариант получше - паттерн "Адаптер"
+});
 
 models.points.setTripPoints(new Array(20).fill().map(() => generateTripPointData()));
 
