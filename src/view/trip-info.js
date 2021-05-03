@@ -13,8 +13,17 @@ const createDateLimits = (from, to) => {
 };
 
 const createMainInfo = (tripPointsArray = []) => {
+  let cities = tripPointsArray.reduce((acc, tripPoint) => {
+    if(acc.length == 0 || acc[acc.length - 1] !== tripPoint.destination.name) {
+      acc.push(tripPoint.destination.name);
+    }
+    return acc;
+  }, []);
+  if(cities.length > 5) {
+    cities = [cities[0], '...' ,cities[cities.length - 1]];
+  }
   return `<div class="trip-info__main">
-            <h1 class="trip-info__title">${tripPointsArray.map((tp) => tp.destination.name).join(' &mdash; ')}</h1>
+            <h1 class="trip-info__title">${cities.join(' &mdash; ')}</h1>
             ${tripPointsArray.length ? createDateLimits(tripPointsArray[0].date_from, tripPointsArray[tripPointsArray.length - 1].date_to)  : ''}            
           </div>`;
 };
