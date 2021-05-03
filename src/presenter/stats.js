@@ -10,6 +10,7 @@ export default class StatisticsPresenter {
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._model.addObserver(this._handleModelEvent);
     this._view = null;
+    this._isVisible = false;
   }
 
   _handleModelEvent() {
@@ -17,9 +18,15 @@ export default class StatisticsPresenter {
   }
 
   setVisible(isVisible) {
+    this._isVisible = isVisible;
     if(isVisible) {
+      if(!this._view) {
+        this.init();
+      }
       this._view.getElement().classList.remove('visually-hidden');
-    } else {
+      return;
+    }
+    if(this._view && this._view.getElement()) {
       this._view.getElement().classList.add('visually-hidden');
     }
   }
@@ -30,6 +37,9 @@ export default class StatisticsPresenter {
   }
 
   init() {
+    if(!this._isVisible) {
+      return;
+    }
     this.destroy();
     this._view = new StatisticsView();
     renderElement(this._container, this._view);
