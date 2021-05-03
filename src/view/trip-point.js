@@ -3,7 +3,7 @@ import { ViewEvents } from './view-events.js';
 import { TimeUtils } from '../utils/time.js';
 
 const createDate = (from) => {
-  return `<time class="event__date" datetime="${TimeUtils.convertTo_YYYYMMDD(from)}">${TimeUtils.convertTo_MMMDD(from)}</time>`;
+  return `<time class="event__date" datetime="${TimeUtils.convertToYYYYMMDD(from)}">${TimeUtils.convertToMMMDD(from)}</time>`;
 };
 
 const createType = (type) => {
@@ -17,9 +17,9 @@ const createDestinationTitle = (name) => {
 const createShedule = (from, to) => {
   return `<div class="event__schedule">
             <p class="event__time">
-              <time class="event__start-time" datetime="${TimeUtils.convertTo_YYYYMMDD_HHMM(from)}">${TimeUtils.convertTo_HHMM(from)}</time>
+              <time class="event__start-time" datetime="${TimeUtils.convertToYYYYMMDDHHMM(from)}">${TimeUtils.convertToHHMM(from)}</time>
               —
-              <time class="event__end-time" datetime="${TimeUtils.convertTo_YYYYMMDD_HHMM(to)}">${TimeUtils.convertTo_HHMM(to)}</time>
+              <time class="event__end-time" datetime="${TimeUtils.convertToYYYYMMDDHHMM(to)}">${TimeUtils.convertToHHMM(to)}</time>
             </p>
             <p class="event__duration">${TimeUtils.getDiff(from, to)}</p>
           </div>`;
@@ -84,11 +84,11 @@ export default class TripPoint extends AbstractInteractiveElement {
   getTemplate() {
     return `<li class="trip-events__item">
               <div class="event">
-                ${createDate(this.tripPoint.date_from)}
+                ${createDate(this.tripPoint.dateFrom)}
                 ${createType(this.tripPoint.type)}
                 ${createDestinationTitle(this.tripPoint.destination.name)}
-                ${createShedule(this.tripPoint.date_from, this.tripPoint.date_to)}                
-                ${createBasePrice(this.tripPoint.base_price)}                
+                ${createShedule(this.tripPoint.dateFrom, this.tripPoint.dateTo)}                
+                ${createBasePrice(this.tripPoint.basePrice)}                
                 ${createOffers(this.tripPoint.offers)}                
                 ${createFavoriteButton(this.tripPoint.isFavorite)}
                 <button class="event__rollup-btn" type="button">

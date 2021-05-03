@@ -12,9 +12,9 @@ const parseTripPoint = (tripPoint = {}) => {
     type = TripPointRules.getPointTypeByIndex(0).type,
     destination = CityRules.getCityByIndex(0),
     offers = [],
-    base_price = 0,
-    date_from = date_,
-    date_to = date_,
+    basePrice = 0,
+    dateFrom = date_,
+    dateTo = date_,
     isFavorite = false,
   } = tripPoint;
 
@@ -23,9 +23,9 @@ const parseTripPoint = (tripPoint = {}) => {
     type,
     destination,
     offers,
-    base_price,
-    date_from,
-    date_to,
+    basePrice,
+    dateFrom,
+    dateTo,
     isFavorite,
     isEditMode: id !== 'new',
     isDestinationExists: CityRules.getCity(destination.name) ? true: false,
@@ -105,7 +105,7 @@ const createHeader = (tripPoint) => {
   return `<header class="event__header">                  
             ${createEventTypeMenuButton(tripPoint.id, tripPoint.type)}
             ${createDestination(tripPoint.id, tripPoint.type, tripPoint.destination.name, tripPoint.state)}
-            ${createDates(tripPoint.id, TimeUtils.convertTo_DDMMYY_HHMM(tripPoint.date_from), TimeUtils.convertTo_DDMMYY_HHMM(tripPoint.date_to))}
+            ${createDates(tripPoint.id, TimeUtils.convertToDDMMYYHHMM(tripPoint.date_from), TimeUtils.convertToDDMMYYHHMM(tripPoint.date_to))}
             ${createBasePrice(tripPoint.id, tripPoint.base_price)}
             ${createButtons(tripPoint.isEditMode, tripPoint.isDestinationExists)}
           </header>`;
@@ -238,7 +238,7 @@ export default class TripPointEditor extends AbstractInteractiveElement {
       this._calendar = flatpickr(this.getElement().querySelector(selector), {
         dateFormat: 'd/m/y H:i',
         enableTime: true,
-        time_24hr: true,
+        'time_24hr': true,
         onClose: this._calendarClosed,
       });
     } else {
@@ -260,10 +260,10 @@ export default class TripPointEditor extends AbstractInteractiveElement {
     }
     const update = {};
     if(this._calendar.config.minDate) { //date-to
-      update.date_to = this._calendar._dateCache;
+      update.dateTo = this._calendar._dateCache;
     }
     if(this._calendar.config.maxDate) { //date-from
-      update.date_from = this._calendar._dateCache;
+      update.dateFrom = this._calendar._dateCache;
     }
     this._calendar._dateCache = null;
     this.updateData(update);

@@ -1,7 +1,7 @@
 import StatisticsView from '../view/stats.js';
-import { renderElement, removeView } from '../utils/ui.js';
-import { TimeUtils } from '../utils/time.js';
-import { ViewValues } from '../constants.js';
+import {renderElement, removeView} from '../utils/ui.js';
+import {TimeUtils} from '../utils/time.js';
+import {ViewValues} from '../constants.js';
 
 export default class StatisticsPresenter {
   constructor({container, model}) {
@@ -19,25 +19,27 @@ export default class StatisticsPresenter {
 
   setVisible(isVisible) {
     this._isVisible = isVisible;
-    if(isVisible) {
-      if(!this._view) {
+    if (isVisible) {
+      if (!this._view) {
         this.init();
       }
       this._view.getElement().classList.remove('visually-hidden');
       return;
     }
-    if(this._view && this._view.getElement()) {
+    if (this._view && this._view.getElement()) {
       this._view.getElement().classList.add('visually-hidden');
     }
   }
 
   _createSortedObject(obj) {
-    const sortedArray = Object.entries(obj).sort((o1, o2) => o2[1] - o1[1]).map((el) => {return {[el[0]]: el[1]};});
+    const sortedArray = Object.entries(obj).sort((o1, o2) => o2[1] - o1[1]).map((el) => {
+      return {[el[0]]: el[1]};
+    });
     return Object.assign({}, ...sortedArray);
   }
 
   init() {
-    if(!this._isVisible) {
+    if (!this._isVisible) {
       return;
     }
     this.destroy();

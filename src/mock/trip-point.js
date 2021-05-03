@@ -125,9 +125,9 @@ export const generateTripPointData = () => {
     type,
     destination: generateCity(),
     offers: generateOffers(type),
-    base_price: generateRandomInt(1, 150) * 10,
-    date_from: generateDate(5),
-    date_to: generateDate(2),
+    basePrice: generateRandomInt(1, 150) * 10,
+    dateFrom: generateDate(5),
+    dateTo: generateDate(2),
     isFavorite: generateFavorite(),
   };
 };
