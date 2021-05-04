@@ -24,6 +24,10 @@ export const ViewValues = {
       isInMotion: true,
     },
     {
+      name: 'Bus',
+      isInMotion: true,
+    },
+    {
       name: 'Train',
       isInMotion: true,
     },
@@ -60,6 +64,7 @@ export const ViewValues = {
     PATCH: 'PATCH',
     MINOR: 'MINOR',
     MAJOR: 'MAJOR',
+    INIT: 'INIT',
   },
   uiViewType: {
     STATS: 'STATS',
