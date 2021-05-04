@@ -58,8 +58,8 @@ export const TripPointRules = {
 const filters = Object.values(ViewValues.filters);
 const filtersFunctions = {
   [ViewValues.filters.EVERYTHING]: () => true,
-  [ViewValues.filters.FUTURE]: (point) => TimeUtils.isInFuture(point.date_from) || TimeUtils.isCurrent(point.date_from, point.date_to),
-  [ViewValues.filters.PAST]: (point) => TimeUtils.isInPast(point.date_to) || TimeUtils.isCurrent(point.date_from, point.date_to),
+  [ViewValues.filters.FUTURE]: (point) => TimeUtils.isInFuture(point.dateFrom) || TimeUtils.isCurrent(point.dateFrom, point.dateTo),
+  [ViewValues.filters.PAST]: (point) => TimeUtils.isInPast(point.dateTo) || TimeUtils.isCurrent(point.dateFrom, point.dateTo),
 };
 
 export const FiltersRules = {
@@ -76,10 +76,10 @@ const getOffersCost = (tripPoint) => {
 };
 const sortTypes = Object.values(ViewValues.sortTypes);
 const sortFunctions = {
-  [ViewValues.sortTypes.DAY]: (a, b) => TimeUtils.compare(a.date_from, b.date_from),
+  [ViewValues.sortTypes.DAY]: (a, b) => TimeUtils.compare(a.dateFrom, b.dateFrom),
   [ViewValues.sortTypes.EVENT]: (a, b) => a.type.localeCompare(b.type),
-  [ViewValues.sortTypes.TIME]: (a, b) => TimeUtils.compare(a.date_from, a.date_to) - TimeUtils.compare(b.date_from, b.date_to),
-  [ViewValues.sortTypes.PRICE]: (a, b) => { return b.base_price - a.base_price; },
+  [ViewValues.sortTypes.TIME]: (a, b) => TimeUtils.compare(a.dateFrom, a.dateTo) - TimeUtils.compare(b.dateFrom, b.dateTo),
+  [ViewValues.sortTypes.PRICE]: (a, b) => { return b.basePrice - a.basePrice; },
   [ViewValues.sortTypes.OFFERS]: (a, b) => { return getOffersCost(b) - getOffersCost(a); },
 };
 
