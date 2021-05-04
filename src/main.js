@@ -1,4 +1,4 @@
-import MenuView from './view/menu.js';
+import MenuView from './view/top-menu.js';
 import StatisticsPresenter from './presenter/stats.js';
 import HeaderPresenter from './presenter/header.js';
 import FiltersPresenter from './presenter/filters.js';
@@ -7,7 +7,6 @@ import PointsModel from './model/points.js';
 import FiltersModel from './model/filters.js';
 import Api from './api.js';
 import { getComponent, renderElement } from './utils/ui.js';
-import { generateTripPointData } from './mock/trip-point.js';
 import { ViewValues } from './constants.js';
 import { CityRules, TripPointRules } from './app-data.js';
 
@@ -51,8 +50,6 @@ const viewItems = {
 };
 
 const renderApp = () => {
-  renderElement(getComponent(ViewValues.selectors.MENU), viewItems.menu);
-  viewItems.menu.init();
   viewItems.headerPresenter.init();
   viewItems.filtersPresenter.init();
   viewItems.statisticsPresenter.init();
@@ -67,6 +64,8 @@ const initApp = () => {
   });
 };
 
+initApp();
+
 api.getDestinations()
   .then((cityList) => {
     cityList.forEach((city) => CityRules.addCity(city));
@@ -76,6 +75,10 @@ api.getDestinations()
     return api.getTripPoints();
   }).then((points) => {
     models.points.setTripPoints(points);
-    initApp();
+    models.filters.init();
+    renderElement(getComponent(ViewValues.selectors.MENU), viewItems.menu);
+    viewItems.menu.init();
+  }).catch(() => {
+    models.points.commitError();
   });
 

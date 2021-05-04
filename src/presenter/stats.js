@@ -1,11 +1,12 @@
+import AbstractPresenter from './abstract-presenter.js';
 import StatisticsView from '../view/stats.js';
-import {renderElement, removeView} from '../utils/ui.js';
-import {TimeUtils} from '../utils/time.js';
-import {ViewValues} from '../constants.js';
+import { removeView } from '../utils/ui.js';
+import { TimeUtils } from '../utils/time.js';
+import { ViewValues } from '../constants.js';
 
-export default class StatisticsPresenter {
+export default class StatisticsPresenter extends AbstractPresenter {
   constructor({container, model}) {
-    this._container = container;
+    super(container);
     this._model = model;
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._model.addObserver(this._handleModelEvent);
@@ -19,7 +20,14 @@ export default class StatisticsPresenter {
     this._isUpdateCharts = true;
   }
 
-  _handleModelEvent() {
+  _handleModelEvent(evt) {
+    if(evt.type === ViewValues.updateType.ERROR) {
+      return;
+    }
+    if(evt.type === ViewValues.updateType.INIT) {
+      this.setLoading(false);
+      return;
+    }
     this._isUpdateCharts = true;
     this.init();
   }
@@ -60,12 +68,12 @@ export default class StatisticsPresenter {
   }
 
   init() {
-    if (!this._isVisible) {
+    if (!this._isVisible || this.isLoading()) {
       return;
     }
     this.destroy();
     this._view = new StatisticsView();
-    renderElement(this._container, this._view);
+    this._renderView(this._view);
     //
     this._initChartData();
     this._view.createMoneyChart(this._createSortedObject(this._chartData.money));

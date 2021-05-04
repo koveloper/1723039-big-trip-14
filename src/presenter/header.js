@@ -1,23 +1,35 @@
+import AbstractPresenter from './abstract-presenter.js';
 import TripInfoView from '../view/trip-info.js';
-import { RenderPosition, renderElement, removeView } from '../utils/ui.js';
+import { RenderPosition, removeView } from '../utils/ui.js';
+import { ViewValues } from '../constants.js';
 
-export default class HeaderPresenter {
+export default class HeaderPresenter extends AbstractPresenter {
   constructor({container, model}) {
-    this._headerContainer = container;
+    super(container);
     this._model = model;
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._model.addObserver(this._handleModelEvent);
     this._view = null;
   }
 
-  _handleModelEvent() {
+  _handleModelEvent(evt) {
+    if(evt.type === ViewValues.updateType.ERROR) {
+      return;
+    }
+    if(evt.type === ViewValues.updateType.INIT) {
+      this.setLoading(false);
+      return;
+    }
     this.init();
   }
 
   init() {
+    if(this.isLoading()) {
+      return;
+    }
     this.destroy();
     this._view = new TripInfoView(this._model.getTripPoints().slice());
-    renderElement(this._headerContainer, this._view, RenderPosition.AFTERBEGIN);
+    this._renderView(this._view, RenderPosition.AFTERBEGIN);
   }
 
   destroy() {
