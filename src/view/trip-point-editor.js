@@ -106,7 +106,7 @@ const createHeader = (tripPoint) => {
             ${createEventTypeMenuButton(tripPoint.id, tripPoint.type)}
             ${createDestination(tripPoint.id, tripPoint.type, tripPoint.destination.name, tripPoint.state)}
             ${createDates(tripPoint.id, TimeUtils.convertToDDMMYYHHMM(tripPoint.date_from), TimeUtils.convertToDDMMYYHHMM(tripPoint.date_to))}
-            ${createBasePrice(tripPoint.id, tripPoint.base_price)}
+            ${createBasePrice(tripPoint.id, tripPoint.basePrice)}
             ${createButtons(tripPoint.isEditMode, tripPoint.isDestinationExists)}
           </header>`;
 };
@@ -226,10 +226,10 @@ export default class TripPointEditor extends AbstractInteractiveElement {
   _priceTextFieldEvent(evt) {
     this._performDefaultCallbackOnTextField({
       event: evt.event,
-      dataName: 'base_price',
+      dataName: 'basePrice',
       stateName: 'price',
       dataCreateFunctionByTextFieldValue: (value) => isNaN(parseInt(value)) ? '' : parseInt(value),
-      compareWith: this._data.base_price,
+      compareWith: this._data.basePrice,
     });
   }
 
