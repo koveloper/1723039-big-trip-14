@@ -8,6 +8,10 @@ export default class FiltersModel extends Observer {
     this._currentFilterType = ViewValues.filters.EVERYTHING;
   }
 
+  init() {
+    this._notify(ViewValues.updateType.INIT);
+  }
+
   setFilterType(updateType, filterType) {
     this._currentFilterType = filterType;
     this._notify(updateType, filterType);

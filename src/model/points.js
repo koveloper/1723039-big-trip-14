@@ -1,5 +1,6 @@
 import Observer from '../utils/observer.js';
 import { nanoid } from 'nanoid';
+import { ViewValues } from '../constants.js';
 
 export default class PointsModel extends Observer {
   constructor() {
@@ -9,6 +10,11 @@ export default class PointsModel extends Observer {
 
   setTripPoints(pointsArr) {
     this._tripPoints = pointsArr.slice();
+    this._notify(ViewValues.updateType.INIT);
+  }
+
+  commitError() {
+    this._notify(ViewValues.updateType.ERROR);
   }
 
   getTripPoints() {
