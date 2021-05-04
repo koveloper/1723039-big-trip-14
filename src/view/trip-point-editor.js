@@ -105,7 +105,7 @@ const createHeader = (tripPoint) => {
   return `<header class="event__header">                  
             ${createEventTypeMenuButton(tripPoint.id, tripPoint.type)}
             ${createDestination(tripPoint.id, tripPoint.type, tripPoint.destination.name, tripPoint.state)}
-            ${createDates(tripPoint.id, TimeUtils.convertToDDMMYYHHMM(tripPoint.date_from), TimeUtils.convertToDDMMYYHHMM(tripPoint.date_to))}
+            ${createDates(tripPoint.id, TimeUtils.convertToDDMMYYHHMM(tripPoint.dateFrom), TimeUtils.convertToDDMMYYHHMM(tripPoint.dateTo))}
             ${createBasePrice(tripPoint.id, tripPoint.basePrice)}
             ${createButtons(tripPoint.isEditMode, tripPoint.isDestinationExists)}
           </header>`;
