@@ -29,20 +29,16 @@ export default class Api {
   }
 
   getTripPoints() {
-    return this._request({url: 'points'})
-      .then(Api.toJSON)
-      .then(Api.adaptToFront);
+    return this._request({url: 'points'});
   }
 
-  //   updateTask(task) {
-  //     return this._load({
-  //       url: `tasks/${task.id}`,
-  //       method: Method.PUT,
-  //       body: JSON.stringify(task),
-  //       headers: new Headers({'Content-Type': 'application/json'}),
-  //     })
-  //       .then(Api.toJSON);
-  //   }
+  getDestinations() {
+    return this._request({url: 'destinations'});
+  }
+
+  getOffers() {
+    return this._request({url: 'offers'});
+  }
 
   _request({
     url,
@@ -57,6 +53,8 @@ export default class Api {
       {method, body, headers},
     )
       .then(Api.checkStatus)
+      .then(Api.toJSON)
+      .then(Api.adaptToFront)
       .catch(Api.catchError);
   }
 
