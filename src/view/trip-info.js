@@ -42,7 +42,7 @@ export default class TripInfo extends AbstractViewElement {
 
   getTemplate() {
     const totalCost = this._tripPointsArray.reduce((acc, tp) => {
-      return acc + tp.base_price + tp.offers.reduce((med, offer) => {
+      return acc + tp.basePrice + tp.offers.reduce((med, offer) => {
         return med + offer.price;
       }, 0);
     }, 0);
