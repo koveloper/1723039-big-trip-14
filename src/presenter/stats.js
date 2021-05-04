@@ -11,16 +11,23 @@ export default class StatisticsPresenter {
     this._model.addObserver(this._handleModelEvent);
     this._view = null;
     this._isVisible = false;
+    this._chartData = {
+      type: {},
+      money: {},
+      time: {},
+    };
+    this._isUpdateCharts = true;
   }
 
   _handleModelEvent() {
+    this._isUpdateCharts = true;
     this.init();
   }
 
   setVisible(isVisible) {
     this._isVisible = isVisible;
     if (isVisible) {
-      if (!this._view) {
+      if (!this._view || this._isUpdateCharts) {
         this.init();
       }
       this._view.getElement().classList.remove('visually-hidden');
@@ -38,6 +45,20 @@ export default class StatisticsPresenter {
     return Object.assign({}, ...sortedArray);
   }
 
+  _initChartData() {
+    ViewValues.pointTypes.forEach((pType) => {
+      this._chartData.type[pType.name.toUpperCase()] = this._model.getTripPoints().reduce((cnt, tripPoint) => {
+        return cnt + (tripPoint.type.toUpperCase() === pType.name.toUpperCase() ? 1 : 0);
+      }, 0);
+      this._chartData.money[pType.name.toUpperCase()] = this._model.getTripPoints().reduce((cnt, tripPoint) => {
+        return cnt + (tripPoint.type.toUpperCase() === pType.name.toUpperCase() ? tripPoint.basePrice : 0);
+      }, 0);
+      this._chartData.time[pType.name.toUpperCase()] = this._model.getTripPoints().reduce((cnt, tripPoint) => {
+        return cnt + (tripPoint.type.toUpperCase() === pType.name.toUpperCase() ? TimeUtils.getDurationInMilliseconds(tripPoint.dateFrom, tripPoint.dateTo) : 0);
+      }, 0);
+    });
+  }
+
   init() {
     if (!this._isVisible) {
       return;
@@ -46,24 +67,11 @@ export default class StatisticsPresenter {
     this._view = new StatisticsView();
     renderElement(this._container, this._view);
     //
-    const typeChart = {};
-    const moneyChart = {};
-    const timeChart = {};
-
-    ViewValues.pointTypes.forEach((pType) => {
-      typeChart[pType.name.toUpperCase()] = this._model.getTripPoints().reduce((cnt, tripPoint) => {
-        return cnt + (tripPoint.type.toUpperCase() === pType.name.toUpperCase() ? 1 : 0);
-      }, 0);
-      moneyChart[pType.name.toUpperCase()] = this._model.getTripPoints().reduce((cnt, tripPoint) => {
-        return cnt + (tripPoint.type.toUpperCase() === pType.name.toUpperCase() ? tripPoint.base_price : 0);
-      }, 0);
-      timeChart[pType.name.toUpperCase()] = this._model.getTripPoints().reduce((cnt, tripPoint) => {
-        return cnt + (tripPoint.type.toUpperCase() === pType.name.toUpperCase() ? TimeUtils.getDurationInMilliseconds(tripPoint.date_from, tripPoint.date_to) : 0);
-      }, 0);
-    });
-    this._view.createMoneyChart(this._createSortedObject(moneyChart));
-    this._view.createTypeChart(this._createSortedObject(typeChart));
-    this._view.createTimeChart(this._createSortedObject(timeChart));
+    this._initChartData();
+    this._view.createMoneyChart(this._createSortedObject(this._chartData.money));
+    this._view.createTypeChart(this._createSortedObject(this._chartData.type));
+    this._view.createTimeChart(this._createSortedObject(this._chartData.time));
+    this._isUpdateCharts = false;
   }
 
   destroy() {
