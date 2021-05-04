@@ -6,9 +6,10 @@ import TripPresenter from './presenter/trip.js';
 import PointsModel from './model/points.js';
 import FiltersModel from './model/filters.js';
 import Api from './api.js';
-import {getComponent, renderElement} from './utils/ui.js';
-import {generateTripPointData} from './mock/trip-point.js';
-import {ViewValues} from './constants.js';
+import { getComponent, renderElement } from './utils/ui.js';
+import { generateTripPointData } from './mock/trip-point.js';
+import { ViewValues } from './constants.js';
+import { CityRules, TripPointRules } from './app-data.js';
 
 const models = {
   points: new PointsModel(),
@@ -18,16 +19,6 @@ const models = {
 const AUTHORIZATION = 'Basic KMh6KWDNNVywmlOMihTM';
 const END_POINT = 'https://14.ecmascript.pages.academy/big-trip';
 const api = new Api(END_POINT, AUTHORIZATION);
-
-api.getTripPoints().then(() => {
-  // console.log(points);
-  // Есть проблема: cтруктура объекта похожа, но некоторые ключи называются иначе,
-  // а ещё на сервере используется snake_case, а у нас camelCase.
-  // Можно, конечно, переписать часть нашего клиентского приложения, но зачем?
-  // Есть вариант получше - паттерн "Адаптер"
-});
-
-models.points.setTripPoints(new Array(20).fill().map(() => generateTripPointData()));
 
 const menuCallback = (uiType) => {
   viewItems.menu.setUiViewType(uiType);
@@ -69,9 +60,22 @@ const renderApp = () => {
   menuCallback(ViewValues.uiViewType.TABLE);
 };
 
-renderApp();
+const initApp = () => {
+  renderApp();
+  getComponent(ViewValues.selectors.INFO).querySelector('.trip-main__event-add-btn').addEventListener('click', () => {
+    viewItems.tripPresenter.setAddNewPointMode();
+  });
+};
 
+api.getDestinations()
+  .then((cityList) => {
+    cityList.forEach((city) => CityRules.addCity(city));
+    return api.getOffers();
+  }).then((offers) => {
+    offers.forEach((offer) => TripPointRules.setOffersByTypeName(offer.type, offer.offers));
+    return api.getTripPoints();
+  }).then((points) => {
+    models.points.setTripPoints(points);
+    initApp();
+  });
 
-getComponent(ViewValues.selectors.INFO).querySelector('.trip-main__event-add-btn').addEventListener('click', () => {
-  viewItems.tripPresenter.setAddNewPointMode();
-});
