@@ -18,6 +18,11 @@ export const ViewValues = {
     PRICE: 'price',
     OFFERS: 'offers',
   },
+  loadStates: {
+    LOADING: 'LOADING',
+    LOAD_DONE: 'LOAD_DONE',
+    ERROR: 'ERROR',
+  },
   pointTypes: [
     {
       name: 'Taxi',
@@ -65,6 +70,7 @@ export const ViewValues = {
     MINOR: 'MINOR',
     MAJOR: 'MAJOR',
     INIT: 'INIT',
+    ERROR: 'ERROR',
   },
   uiViewType: {
     STATS: 'STATS',
