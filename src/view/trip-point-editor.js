@@ -205,7 +205,7 @@ export default class TripPointEditor extends AbstractInteractiveElement {
       const offerInData = this._data.offers.find(filter);
       let offers = this._data.offers.slice();
       if(offerInData) {
-        offers = offers.filter((off) => getOfferIdFromTitle(off.title) !== offerInData.title);
+        offers = offers.filter((off) => off.title !== offerInData.title);
       } else {
         offers.push(offerInModel);
       }
