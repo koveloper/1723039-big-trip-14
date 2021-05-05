@@ -35,7 +35,7 @@ export default class PointsModel extends Observer {
           updatedPoint,
           ...this._tripPoints.slice(index + 1),
         ];
-        this._notify(updateType, tripPointData);
+        this._notify(updateType, updatedPoint);
       }).catch(() => {
 
       });
@@ -60,8 +60,12 @@ export default class PointsModel extends Observer {
     if (!tripPointData) {
       return;
     }
-    const newPoint = Object.assign(tripPointData, {id: nanoid()});
-    this._tripPoints.push(newPoint);
-    this._notify(updateType, newPoint);
+    this._api.addTripPoint(Object.assign({}, tripPointData))
+      .then((newPoint) => {
+        this._tripPoints.push(newPoint);
+        this._notify(updateType, newPoint);
+      }).catch(() => {
+
+      });
   }
 }

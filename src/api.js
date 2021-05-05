@@ -39,6 +39,16 @@ export default class Api {
     });
   }
 
+  addTripPoint(tripPoint) {
+    delete tripPoint.id;
+    return this._request({
+      url: 'points',
+      body: Api.adaptToBack(tripPoint),
+      method: Method.POST,
+      headers: new Headers({'Content-Type': 'application/json'}),
+    });
+  }
+
   getTripPoints() {
     return this._request({url: 'points'});
   }
@@ -60,10 +70,9 @@ export default class Api {
     headers.append('Authorization', this._authorization);
 
     return fetch(
-        `${this._endPoint}/${url}`,
-        {method, body, headers},
-    )
-      .then(Api.checkStatus)
+      `${this._endPoint}/${url}`,
+      {method, body, headers},
+    ).then(Api.checkStatus)
       .then(Api.toJSON)
       .then(Api.adaptToFront)
       .catch(Api.catchError);
