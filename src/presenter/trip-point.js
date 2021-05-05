@@ -23,13 +23,11 @@ export default class TripPointPresenter {
     this._handleCloseEditFormButtonClick = this._handleCloseEditFormButtonClick.bind(this);
     this._handleSavePointChangesButtonClick = this._handleSavePointChangesButtonClick.bind(this);
     this._handleDeletePointButtonClick = this._handleDeletePointButtonClick.bind(this);
+    this._handleModelEvent = this._handleModelEvent.bind(this);
     this._mode = Mode.DEFAULT;
     this._model = model;
+    this._model.addObserver(this._handleModelEvent);
   }
-
-  // static setExternalEditModeTripPoint(value) {
-  //   _editModeTripPoint = value;
-  // }
 
   init(tripPointData) {
     this._tripPointData = tripPointData;
@@ -56,6 +54,12 @@ export default class TripPointPresenter {
     // remove old view instances
     removeView(prevPointView);
     removeView(prevEditPointView);
+  }
+
+  _handleModelEvent(evt) {
+    if (evt.type === ViewValues.updateType.PATCH && evt.data.id === this._tripPointData.id) {
+      this.setEditModeEnabled(false);
+    }
   }
 
   setEditModeEnabled(enabled) {
@@ -85,7 +89,6 @@ export default class TripPointPresenter {
 
   _handleSavePointChangesButtonClick() {
     this._commitUpdate(this._tripPointEditView.tripPoint);
-    this.setEditModeEnabled(false);
   }
 
   _handleDeletePointButtonClick() {

@@ -19,13 +19,24 @@ const AdapterRools = {
 
 const AdapterRoolsReversed = {};
 
-Object.keys(AdapterRools).forEach((backendKey) => AdapterRoolsReversed[AdapterRools[backendKey]] = backendKey);
+Object.keys(AdapterRools).forEach((backendKey) => {
+  AdapterRoolsReversed[AdapterRools[backendKey]] = backendKey;
+});
 
 export default class Api {
 
   constructor(endPoint, authorization) {
     this._endPoint = endPoint;
     this._authorization = authorization;
+  }
+
+  updateTripPoint(tripPoint) {
+    return this._request({
+      url: `points/${tripPoint.id}`,
+      body: Api.adaptToBack(tripPoint),
+      method: Method.PUT,
+      headers: new Headers({'Content-Type': 'application/json'}),
+    });
   }
 
   getTripPoints() {
@@ -49,8 +60,8 @@ export default class Api {
     headers.append('Authorization', this._authorization);
 
     return fetch(
-      `${this._endPoint}/${url}`,
-      {method, body, headers},
+        `${this._endPoint}/${url}`,
+        {method, body, headers},
     )
       .then(Api.checkStatus)
       .then(Api.toJSON)
@@ -68,15 +79,17 @@ export default class Api {
     return response;
   }
 
-  static _changeKeys(jsonObj, keysToChange) {
-    if(Array.isArray(jsonObj)) {
-      for(let i = 0; i < jsonObj.length; i++) {
-        jsonObj[i] = Api._changeKeys(jsonObj[i], keysToChange);
+  static _changeKeys(initJsonObj, keysToChange) {
+    if (Array.isArray(initJsonObj)) {
+      const jsonObj = [];
+      for (let i = 0; i < initJsonObj.length; i++) {
+        jsonObj[i] = Api._changeKeys(initJsonObj[i], keysToChange);
       }
       return jsonObj;
     }
+    const jsonObj = Object.assign({}, initJsonObj);
     Object.keys(keysToChange).forEach((key) => {
-      if(key in jsonObj) {
+      if (key in jsonObj) {
         jsonObj[keysToChange[key]] = jsonObj[key];
         delete jsonObj[key];
       }
@@ -89,7 +102,7 @@ export default class Api {
   }
 
   static adaptToBack(jsonObj) {
-    return Api._changeKeys(jsonObj, AdapterRoolsReversed);
+    return JSON.stringify(Api._changeKeys(jsonObj, AdapterRoolsReversed));
   }
 
   static toJSON(response) {

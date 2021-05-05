@@ -1,6 +1,6 @@
 import AbstractInteractiveElement from './abstract-interactive-element.js';
-import { SortRules } from '../app-data.js';
-import { ViewEvents } from './view-events.js';
+import {SortRules} from '../app-data.js';
+import {ViewEvents} from './view-events.js';
 
 const createSortTemplate = (title = '', checked) => {
   return `<div class="trip-sort__item  trip-sort__item--${title}">
@@ -10,7 +10,9 @@ const createSortTemplate = (title = '', checked) => {
 };
 
 const createSortTemplates = (selectedSortType) => {
-  return SortRules.getSortTypes().map((title) => { return createSortTemplate(title, title === selectedSortType); }).join('');
+  return SortRules.getSortTypes().map((title) => {
+    return createSortTemplate(title, title === selectedSortType);
+  }).join('');
 };
 
 export default class Sort extends AbstractInteractiveElement {
@@ -34,16 +36,18 @@ export default class Sort extends AbstractInteractiveElement {
   }
 
   setSortType(type) {
-    if(!SortRules.getSortTypes().find((t) => t === type)) {
+    if (!SortRules.getSortTypes().find((t) => t === type)) {
       return;
     }
     this._currentSortType = type;
-    this._sortElements.forEach((el) => {el.removeAttribute('checked');});
+    this._sortElements.forEach((el) => {
+      el.removeAttribute('checked');
+    });
     this._sortElements.find((el) => el.value === ('sort-' + type)).setAttribute('checked', true);
   }
 
   _sortTypeClickHandler(evt) {
-    if(evt.event.target.dataset.sortType && this._sortTypeClickCallback) {
+    if (evt.event.target.dataset.sortType && this._sortTypeClickCallback) {
       this._sortTypeClickCallback(evt.event.target.dataset.sortType);
     }
   }

@@ -1,11 +1,12 @@
 import Observer from '../utils/observer.js';
-import { nanoid } from 'nanoid';
-import { ViewValues } from '../constants.js';
+import {nanoid} from 'nanoid';
+import {ViewValues} from '../constants.js';
 
 export default class PointsModel extends Observer {
-  constructor() {
+  constructor(api) {
     super();
     this._tripPoints = [];
+    this._api = api;
   }
 
   setTripPoints(pointsArr) {
@@ -27,14 +28,17 @@ export default class PointsModel extends Observer {
     if (index === -1) {
       throw new Error('Trip point is not exists');
     }
+    this._api.updateTripPoint(tripPointData)
+      .then((updatedPoint) => {
+        this._tripPoints = [
+          ...this._tripPoints.slice(0, index),
+          updatedPoint,
+          ...this._tripPoints.slice(index + 1),
+        ];
+        this._notify(updateType, tripPointData);
+      }).catch(() => {
 
-    this._tripPoints = [
-      ...this._tripPoints.slice(0, index),
-      tripPointData,
-      ...this._tripPoints.slice(index + 1),
-    ];
-
-    this._notify(updateType, tripPointData);
+      });
   }
 
   deleteTripPoint(updateType, tripPointForDelete) {
@@ -53,7 +57,7 @@ export default class PointsModel extends Observer {
   }
 
   addTripPoint(updateType, tripPointData) {
-    if(!tripPointData) {
+    if (!tripPointData) {
       return;
     }
     const newPoint = Object.assign(tripPointData, {id: nanoid()});

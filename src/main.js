@@ -6,18 +6,18 @@ import TripPresenter from './presenter/trip.js';
 import PointsModel from './model/points.js';
 import FiltersModel from './model/filters.js';
 import Api from './api.js';
-import { getComponent, renderElement } from './utils/ui.js';
-import { ViewValues } from './constants.js';
-import { CityRules, TripPointRules } from './app-data.js';
-
-const models = {
-  points: new PointsModel(),
-  filters: new FiltersModel(),
-};
+import {getComponent, renderElement} from './utils/ui.js';
+import {ViewValues} from './constants.js';
+import {CityRules, TripPointRules} from './app-data.js';
 
 const AUTHORIZATION = 'Basic KMh6KWDNNVywmlOMihTM';
 const END_POINT = 'https://14.ecmascript.pages.academy/big-trip';
 const api = new Api(END_POINT, AUTHORIZATION);
+
+const models = {
+  points: new PointsModel(api),
+  filters: new FiltersModel(),
+};
 
 const menuCallback = (uiType) => {
   viewItems.menu.setUiViewType(uiType);

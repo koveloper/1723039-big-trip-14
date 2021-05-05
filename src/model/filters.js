@@ -1,5 +1,5 @@
 import Observer from '../utils/observer.js';
-import { ViewValues } from '../constants.js';
+import {ViewValues} from '../constants.js';
 
 export default class FiltersModel extends Observer {
 

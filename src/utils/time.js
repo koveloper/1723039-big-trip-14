@@ -31,13 +31,13 @@ export const TimeUtils = {
       useGrouping: false,
     }];
     let result = '';
-    if(dayDiff) {
+    if (dayDiff) {
       result += dayDiff.toLocaleString(Object.assign({}, ...formatterArgs, {minimumIntegerDigits: 1})) + 'D ';
     }
-    if(result.length || hourDiff) {
+    if (result.length || hourDiff) {
       result += hourDiff.toLocaleString(...formatterArgs) + 'H ';
     }
-    if(result.length || minDiff) {
+    if (result.length || minDiff) {
       result += minDiff.toLocaleString(...formatterArgs) + 'M ';
     }
     return result;
@@ -63,27 +63,27 @@ export const TimeUtils = {
     const current = dayjs();
     const max = Math.max(from, to, current);
     const min = Math.min(from, to, current);
-    return min == from && max == to;
+    return min === from && max === to;
   },
   compareTime: (isoDateStrA, isoDateStrB) => {
     const a = dayjs(isoDateStrA);
     const b = dayjs(isoDateStrB);
-    if(a.hour() > b.hour()) {
+    if (a.hour() > b.hour()) {
       return 1;
     }
-    if(a.hour() < b.hour()) {
+    if (a.hour() < b.hour()) {
       return -1;
     }
-    if(a.minute() > b.minute()) {
+    if (a.minute() > b.minute()) {
       return 1;
     }
-    if(a.minute() < b.minute()) {
+    if (a.minute() < b.minute()) {
       return -1;
     }
-    if(a.second() > b.second()) {
+    if (a.second() > b.second()) {
       return 1;
     }
-    if(a.second() < b.second()) {
+    if (a.second() < b.second()) {
       return -1;
     }
     return 0;

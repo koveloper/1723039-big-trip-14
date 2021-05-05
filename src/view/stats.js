@@ -1,6 +1,6 @@
 import AbstractViewElement from './abstract-view-element.js';
-import { createDefaultChart } from './stats-charts.js';
-import { TimeUtils } from '../utils/time.js';
+import {createDefaultChart} from './stats-charts.js';
+import {TimeUtils} from '../utils/time.js';
 
 export default class StatisticsView extends AbstractViewElement {
 
@@ -8,7 +8,7 @@ export default class StatisticsView extends AbstractViewElement {
     super();
   }
 
-  createMoneyChart (labelDataObject = {}){
+  createMoneyChart(labelDataObject = {}) {
     createDefaultChart({
       ctx: this.getElement().querySelector('.statistics__chart--money'),
       formatter: (val) => `€ ${val}`,

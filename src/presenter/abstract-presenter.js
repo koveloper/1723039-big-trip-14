@@ -1,4 +1,4 @@
-import {renderElement, removeView} from '../utils/ui.js';
+import {renderElement} from '../utils/ui.js';
 
 export default class AbstractPresenter {
 

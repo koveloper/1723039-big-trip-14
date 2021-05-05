@@ -1,5 +1,5 @@
 import AbstractInteractiveElement from './abstract-interactive-element.js';
-import { ViewEvents } from './view-events.js';
+import {ViewEvents} from './view-events.js';
 
 const createFilter = (title, checked) => {
   const idMix = title.toLowerCase();
@@ -23,10 +23,10 @@ export default class Filters extends AbstractInteractiveElement {
   }
 
   init(filter) {
-    if(!filter) {
+    if (!filter) {
       return;
     }
-    if(this._selectedFilter === null) {
+    if (this._selectedFilter === null) {
       this._selectedFilter = filter;
       this._registerEventSupport({
         parent: this.getElement().parentElement,
@@ -47,8 +47,8 @@ export default class Filters extends AbstractInteractiveElement {
   }
 
   _filterTypeClickHandler(evt) {
-    if(evt.event.target.dataset.filterType && this._filterTypeChangeCallback) {
-      if(this._filterTypeChangeCallback) {
+    if (evt.event.target.dataset.filterType && this._filterTypeChangeCallback) {
+      if (this._filterTypeChangeCallback) {
         this._filterTypeChangeCallback(evt.event.target.dataset.filterType);
       }
     }

@@ -1,31 +1,36 @@
 import AbstractViewElement from './abstract-view-element.js';
-import { ViewValues } from '../constants.js';
+import {ViewValues} from '../constants.js';
 
 
 export default class TripPointsContainerEmpty extends AbstractViewElement {
   constructor() {
     super();
-    this._isLoading = true;
-    this._isError = false;
+    this._state = ViewValues.loadStates.LOADING;
   }
 
   setLoadingState(value) {
-    this._isLoading = value == ViewValues.loadStates.LOADING;
-    this._isError = value == ViewValues.loadStates.ERROR;
+    this._state = value;
   }
 
   getElement() {
-    if(!this._element && document.querySelector('.trip-events__msg')) {
+    if (!this._element && document.querySelector('.trip-events__msg')) {
       this._element = document.querySelector('.trip-events__msg');
     }
     return super.getElement();
   }
 
   getTemplate() {
-    const sign =
-      this._isError ? 'Something goes wrong...<br>Try to connect later...' : (
-        this._isLoading ? 'Loading...' : 'Click New Event to create your first point'
-      );
-    return `<p class="trip-events__msg ${this._isError ? 'trip-events__msg__error' : ''}">${sign}</p>`;
+    let sign;
+    switch (this._state) {
+      case ViewValues.loadStates.ERROR:
+        sign = 'Something goes wrong...<br>Try to connect later...';
+        break;
+      case ViewValues.loadStates.LOAD_DONE:
+        sign = 'Click New Event to create your first point';
+        break;
+      default:
+        sign = 'Loading...';
+    }
+    return `<p class="trip-events__msg ${this._state === ViewValues.loadStates.ERROR ? 'trip-events__msg__error' : ''}">${sign}</p>`;
   }
 }

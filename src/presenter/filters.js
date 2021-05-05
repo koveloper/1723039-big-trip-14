@@ -1,8 +1,8 @@
 import AbstractPresenter from './abstract-presenter.js';
 import FiltersView from '../view/filters-menu.js';
-import { renderElement, removeView } from '../utils/ui.js';
-import { FiltersRules } from '../app-data.js';
-import { ViewValues } from '../constants.js';
+import {removeView} from '../utils/ui.js';
+import {FiltersRules} from '../app-data.js';
+import {ViewValues} from '../constants.js';
 
 export default class FiltersPresenter extends AbstractPresenter {
   constructor({container, model}) {
@@ -15,16 +15,16 @@ export default class FiltersPresenter extends AbstractPresenter {
   }
 
   _handleModelEvent(evt) {
-    if(evt.type === ViewValues.updateType.ERROR) {
+    if (evt.type === ViewValues.updateType.ERROR) {
       return;
     }
-    if(evt.type === ViewValues.updateType.INIT) {
+    if (evt.type === ViewValues.updateType.INIT) {
       this.setLoading(false);
     }
   }
 
   init() {
-    if(this.isLoading()) {
+    if (this.isLoading()) {
       return;
     }
     this.destroy();

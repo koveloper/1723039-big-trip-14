@@ -130,7 +130,7 @@ export default class TripPresenter extends AbstractPresenter {
   }
 
   _renderTrip() {
-    if(this._isLoading) {
+    if (this._isLoading) {
       this._renderView(this._noPointsView);
       return;
     }

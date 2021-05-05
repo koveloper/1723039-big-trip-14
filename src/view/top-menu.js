@@ -1,6 +1,6 @@
 import AbstractViewElement from './abstract-view-element.js';
-import { ViewEvents } from './view-events.js';
-import { ViewValues } from '../constants.js';
+import {ViewEvents} from './view-events.js';
+import {ViewValues} from '../constants.js';
 
 export default class Menu extends AbstractViewElement {
   constructor(uiTypeClickCallback) {
@@ -9,11 +9,11 @@ export default class Menu extends AbstractViewElement {
   }
 
   init() {
-    if(!this.getElement()) {
+    if (!this.getElement()) {
       return;
     }
     this.getElement().addEventListener(ViewEvents.type.CLICK, (evt) => {
-      if(evt.target.dataset.uiType && this._uiTypeClickCallback) {
+      if (evt.target.dataset.uiType && this._uiTypeClickCallback) {
         this._uiTypeClickCallback(evt.target.dataset.uiType);
       }
     });
@@ -21,7 +21,7 @@ export default class Menu extends AbstractViewElement {
   }
 
   setUiViewType(type) {
-    if(!this.getElement()) {
+    if (!this.getElement()) {
       return;
     }
     [...this.getElement().querySelectorAll('[data-ui-type]')].forEach((el) => el.classList.remove('trip-tabs__btn--active'));

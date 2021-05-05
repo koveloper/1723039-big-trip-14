@@ -1,7 +1,7 @@
 import AbstractPresenter from './abstract-presenter.js';
 import TripInfoView from '../view/trip-info.js';
-import { RenderPosition, removeView } from '../utils/ui.js';
-import { ViewValues } from '../constants.js';
+import {RenderPosition, removeView} from '../utils/ui.js';
+import {ViewValues} from '../constants.js';
 
 export default class HeaderPresenter extends AbstractPresenter {
   constructor({container, model}) {
@@ -13,10 +13,10 @@ export default class HeaderPresenter extends AbstractPresenter {
   }
 
   _handleModelEvent(evt) {
-    if(evt.type === ViewValues.updateType.ERROR) {
+    if (evt.type === ViewValues.updateType.ERROR) {
       return;
     }
-    if(evt.type === ViewValues.updateType.INIT) {
+    if (evt.type === ViewValues.updateType.INIT) {
       this.setLoading(false);
       return;
     }
@@ -24,7 +24,7 @@ export default class HeaderPresenter extends AbstractPresenter {
   }
 
   init() {
-    if(this.isLoading()) {
+    if (this.isLoading()) {
       return;
     }
     this.destroy();

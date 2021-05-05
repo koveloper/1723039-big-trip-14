@@ -1,6 +1,6 @@
 import AbstractInteractiveElement from './abstract-interactive-element.js';
-import { ViewEvents } from './view-events.js';
-import { TimeUtils } from '../utils/time.js';
+import {ViewEvents} from './view-events.js';
+import {TimeUtils} from '../utils/time.js';
 
 const createDate = (from) => {
   return `<time class="event__date" datetime="${TimeUtils.convertToYYYYMMDD(from)}">${TimeUtils.convertToMMMDD(from)}</time>`;

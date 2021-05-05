@@ -1,8 +1,8 @@
 import AbstractPresenter from './abstract-presenter.js';
 import StatisticsView from '../view/stats.js';
-import { removeView } from '../utils/ui.js';
-import { TimeUtils } from '../utils/time.js';
-import { ViewValues } from '../constants.js';
+import {removeView} from '../utils/ui.js';
+import {TimeUtils} from '../utils/time.js';
+import {ViewValues} from '../constants.js';
 
 export default class StatisticsPresenter extends AbstractPresenter {
   constructor({container, model}) {
@@ -21,10 +21,10 @@ export default class StatisticsPresenter extends AbstractPresenter {
   }
 
   _handleModelEvent(evt) {
-    if(evt.type === ViewValues.updateType.ERROR) {
+    if (evt.type === ViewValues.updateType.ERROR) {
       return;
     }
-    if(evt.type === ViewValues.updateType.INIT) {
+    if (evt.type === ViewValues.updateType.INIT) {
       this.setLoading(false);
       return;
     }

@@ -1,6 +1,6 @@
 import AbstractViewElement from './abstract-view-element.js';
-import { toggleView } from '../utils/ui.js';
-import { restoreFocus, getFocusObject } from '../utils/ui.js';
+import {toggleView} from '../utils/ui.js';
+import {restoreFocus, getFocusObject} from '../utils/ui.js';
 
 const bindEventListenerContext = function (fn, context, handlerType) {
   return function (...args) {
@@ -21,19 +21,19 @@ export default class AbstractInteractiveElement extends AbstractViewElement {
   }
 
   _performDefaultCallbackOnTextField({event, dataName, stateName, dataCreateFunctionByTextFieldValue, compareWith} = {}) {
-    if(event.target.value == compareWith) {
+    if (event.target.value === compareWith) {
       return;
     }
     const upd = {
       state: {},
     };
-    upd[dataName] =  dataCreateFunctionByTextFieldValue(event.target.value);
+    upd[dataName] = dataCreateFunctionByTextFieldValue(event.target.value);
     upd.state[stateName] = getFocusObject(event.target);
     this.updateData(upd);
   }
 
   _restoreDefaultTextFields(state, textFieldsArray) {
-    if(!state) {
+    if (!state) {
       return;
     }
     textFieldsArray.forEach((inp) => restoreFocus(this.getElement().querySelector(`.event__input--${inp}`), state[inp]));
@@ -49,9 +49,9 @@ export default class AbstractInteractiveElement extends AbstractViewElement {
     }
 
     this._data = Object.assign(
-      {},
-      this._data,
-      update,
+        {},
+        this._data,
+        update,
     );
 
     if (withoutElementUpdate) {
@@ -62,21 +62,21 @@ export default class AbstractInteractiveElement extends AbstractViewElement {
   }
 
   updateElement() {
-    //cache old element
+    // cache old element
     const old = this.getElement();
-    //clear old element data
+    // clear old element data
     this.removeElement();
-    //replace with new element
+    // replace with new element
     toggleView(old.parentElement, old, this.getElement());
-    //restore handlers
+    // restore handlers
     this.restoreHandlers();
   }
 
   _handler(handlerUID, evt) {
-    if(evt) {
+    if (evt) {
       evt.preventDefault();
     }
-    if(this._events[handlerUID].listener) {
+    if (this._events[handlerUID].listener) {
       this._events[handlerUID].listener({src: this, eventUID: handlerUID, event: evt});
     }
   }
@@ -89,10 +89,10 @@ export default class AbstractInteractiveElement extends AbstractViewElement {
       parent,
       element: parent.querySelector(selector),
       eventHandler: bindEventListenerContext(this._handler, this, handlerUID),
-      registerHandler: function() {
+      registerHandler: function () {
         this.element.addEventListener(this.eventType, this.eventHandler);
       },
-      unregisterHandler: function() {
+      unregisterHandler: function () {
         this.element.removeEventListener(this.eventType, this.eventHandler);
       },
     };
@@ -105,30 +105,30 @@ export default class AbstractInteractiveElement extends AbstractViewElement {
   _registerEventSupport({handlerUID, parent, selectorInsideParent, eventType} = {}) {
     this._unregisterEventSupport(handlerUID);
     this._events[handlerUID] = Object.assign(
-      {},
-      this._events[handlerUID],
-      this._createEventHandler(
-        handlerUID,
-        parent,
-        selectorInsideParent,
-        eventType,
-      ),
+        {},
+        this._events[handlerUID],
+        this._createEventHandler(
+            handlerUID,
+            parent,
+            selectorInsideParent,
+            eventType,
+        ),
     );
   }
 
   _unregisterEventSupport(handlerUID) {
-    if(this._events[handlerUID]) {
+    if (this._events[handlerUID]) {
       this._events[handlerUID].unregisterHandler();
     }
   }
 
   setEventListener(handlerUID, callbackFunction) {
     this._events[handlerUID] = Object.assign(
-      {},
-      this._events[handlerUID],
-      {
-        listener: callbackFunction,
-      },
+        {},
+        this._events[handlerUID],
+        {
+          listener: callbackFunction,
+        },
     );
   }
 }
