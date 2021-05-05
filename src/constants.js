@@ -76,4 +76,7 @@ export const ViewValues = {
     STATS: 'STATS',
     TABLE: 'TABLE',
   },
+  uiNumbers: {
+    MAX_CITY_COUNT_IN_HEADER: 3,
+  },
 };
