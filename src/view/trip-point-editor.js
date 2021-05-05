@@ -110,22 +110,16 @@ const createHeader = (tripPoint) => {
             ${createButtons(tripPoint.isEditMode, tripPoint.isDestinationExists)}
           </header>`;
 };
-
-const getOfferIdFromTitle = (title) => {
-  return title.toLowerCase().replaceAll(/\s+/gm, '_');
-};
-
 const createOffer = (offer, pointId, offers) => {
   const checked = offers.find((el) => {
     return el.title === offer.title;
   });
-  const offerId = getOfferIdFromTitle(offer.title);
   return `<div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offerId}-${pointId}" type="checkbox" name="event-offer-${offerId}" ${checked ? 'checked' : ''}>
-            <label class="event__offer-label" data-offer-id='${offerId}' for="event-offer-${offerId}-${pointId}">
-              <span class="event__offer-title" data-offer-id='${offerId}'>${offer.title}</span>
+            <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}-${pointId}" type="checkbox" name="event-offer-${offer.id}" ${checked ? 'checked' : ''}>
+            <label class="event__offer-label" data-offer-id='${offer.id}' for="event-offer-${offer.id}-${pointId}">
+              <span class="event__offer-title" data-offer-id='${offer.id}'>${offer.title}</span>
               +€&nbsp;
-              <span class="event__offer-price" data-offer-id='${offerId}'>${offer.price}</span>
+              <span class="event__offer-price" data-offer-id='${offer.id}'>${offer.price}</span>
             </label>
           </div>`;
 };
@@ -182,8 +176,8 @@ export default class TripPointEditor extends AbstractInteractiveElement {
     this._wrapAsInternalListener(this._priceTextFieldEvent, ViewEvents.uid.PRICE_FIELD_INPUT);
     this._wrapAsInternalListener(this._offersListClick, ViewEvents.uid.OFFERS_CLICK);
     this._wrapAsInternalListener(this._dateTextFieldClick,
-        ViewEvents.uid.START_DATE_CLICK,
-        ViewEvents.uid.END_DATE_CLICK,
+      ViewEvents.uid.START_DATE_CLICK,
+      ViewEvents.uid.END_DATE_CLICK,
     );
   }
 
@@ -202,7 +196,7 @@ export default class TripPointEditor extends AbstractInteractiveElement {
 
   _offersListClick(evt) {
     if (evt.event.target.dataset.offerId) {
-      const filter = (off) => getOfferIdFromTitle(off.title) === evt.event.target.dataset.offerId;
+      const filter = (off) => off.id === evt.event.target.dataset.offerId;
       const offerInModel = TripPointRules.getOffersByTypeName(this._data.type).find(filter);
       const offerInData = this._data.offers.find(filter);
       let offers = this._data.offers.slice();
@@ -277,9 +271,9 @@ export default class TripPointEditor extends AbstractInteractiveElement {
 
   _dateTextFieldClick(evt) {
     const selector = `#event-${evt.eventUID === ViewEvents.uid.START_DATE_CLICK ? 'start' : 'end'}-time-${this._data.id}`;
-    const date = Date.parse(evt.eventUID === ViewEvents.uid.START_DATE_CLICK ? this._data.date_from : this._data.date_to);
-    const minDate = evt.eventUID === ViewEvents.uid.START_DATE_CLICK ? null : Date.parse(this._data.date_from);
-    const maxDate = evt.eventUID === ViewEvents.uid.END_DATE_CLICK ? null : Date.parse(this._data.date_to);
+    const date = Date.parse(evt.eventUID === ViewEvents.uid.START_DATE_CLICK ? this._data.dateFrom : this._data.dateTo);
+    const minDate = evt.eventUID === ViewEvents.uid.START_DATE_CLICK ? null : Date.parse(this._data.dateFrom);
+    const maxDate = evt.eventUID === ViewEvents.uid.END_DATE_CLICK ? null : Date.parse(this._data.dateTo);
     this._showCalendar({selector, date, minDate, maxDate});
   }
 
