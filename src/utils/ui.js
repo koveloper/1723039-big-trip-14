@@ -42,7 +42,7 @@ export const toggleView = (container, from, to) => {
 };
 
 export const removeView = (component) => {
-  if(!component) {
+  if (!component) {
     return;
   }
   if (!(component instanceof AbstractViewElement)) {
@@ -60,13 +60,13 @@ export const getFocusObject = (target) => {
 };
 
 export const restoreFocus = (target, focusObj) => {
-  if(!focusObj) {
+  if (!focusObj) {
     return;
   }
-  if(focusObj.isFocusOn) {
+  if (focusObj.isFocusOn) {
     target.focus();
   }
-  if(focusObj.caret) {
+  if (focusObj.caret) {
     target.setSelectionRange(focusObj.caret[0], focusObj.caret[1]);
   }
 };

@@ -2,22 +2,22 @@ import dayjs from 'dayjs';
 
 export const TimeUtils = {
 
-  convertTo_MMMDD: (isoTimeStampString) => {
+  convertToMMMDD: (isoTimeStampString) => {
     return dayjs(isoTimeStampString).format('MMM DD');
   },
-  convertTo_MMDD: (isoTimeStampString) => {
+  convertToMMDD: (isoTimeStampString) => {
     return dayjs(isoTimeStampString).format('MM DD');
   },
-  convertTo_YYYYMMDD: (isoTimeStampString) => {
+  convertToYYYYMMDD: (isoTimeStampString) => {
     return dayjs(isoTimeStampString).format('YYYY-MM-DD');
   },
-  convertTo_YYYYMMDD_HHMM: (isoTimeStampString) => {
+  convertToYYYYMMDDHHMM: (isoTimeStampString) => {
     return dayjs(isoTimeStampString).format('YYYY-MM-DDTHH:mm');
   },
-  convertTo_DDMMYY_HHMM: (isoTimeStampString) => {
+  convertToDDMMYYHHMM: (isoTimeStampString) => {
     return dayjs(isoTimeStampString).format('DD/MM/YY HH:mm');
   },
-  convertTo_HHMM: (isoTimeStampString) => {
+  convertToHHMM: (isoTimeStampString) => {
     return dayjs(isoTimeStampString).format('HH:mm');
   },
   getDiff: (isoDateStrFrom, isoDateStrTo) => {
@@ -31,13 +31,13 @@ export const TimeUtils = {
       useGrouping: false,
     }];
     let result = '';
-    if(dayDiff) {
+    if (dayDiff) {
       result += dayDiff.toLocaleString(Object.assign({}, ...formatterArgs, {minimumIntegerDigits: 1})) + 'D ';
     }
-    if(result.length || hourDiff) {
+    if (result.length || hourDiff) {
       result += hourDiff.toLocaleString(...formatterArgs) + 'H ';
     }
-    if(result.length || minDiff) {
+    if (result.length || minDiff) {
       result += minDiff.toLocaleString(...formatterArgs) + 'M ';
     }
     return result;
@@ -63,27 +63,27 @@ export const TimeUtils = {
     const current = dayjs();
     const max = Math.max(from, to, current);
     const min = Math.min(from, to, current);
-    return min == from && max == to;
+    return min === from && max === to;
   },
   compareTime: (isoDateStrA, isoDateStrB) => {
     const a = dayjs(isoDateStrA);
     const b = dayjs(isoDateStrB);
-    if(a.hour() > b.hour()) {
+    if (a.hour() > b.hour()) {
       return 1;
     }
-    if(a.hour() < b.hour()) {
+    if (a.hour() < b.hour()) {
       return -1;
     }
-    if(a.minute() > b.minute()) {
+    if (a.minute() > b.minute()) {
       return 1;
     }
-    if(a.minute() < b.minute()) {
+    if (a.minute() < b.minute()) {
       return -1;
     }
-    if(a.second() > b.second()) {
+    if (a.second() > b.second()) {
       return 1;
     }
-    if(a.second() < b.second()) {
+    if (a.second() < b.second()) {
       return -1;
     }
     return 0;

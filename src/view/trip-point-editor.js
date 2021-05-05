@@ -1,7 +1,7 @@
 import AbstractInteractiveElement from './abstract-interactive-element.js';
-import { ViewEvents } from './view-events.js';
-import { CityRules, TripPointRules } from '../app-data.js';
-import { TimeUtils } from '../utils/time.js';
+import {ViewEvents} from './view-events.js';
+import {CityRules, TripPointRules} from '../app-data.js';
+import {TimeUtils} from '../utils/time.js';
 import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
@@ -12,9 +12,9 @@ const parseTripPoint = (tripPoint = {}) => {
     type = TripPointRules.getPointTypeByIndex(0).type,
     destination = CityRules.getCityByIndex(0),
     offers = [],
-    base_price = 0,
-    date_from = date_,
-    date_to = date_,
+    basePrice = 0,
+    dateFrom = date_,
+    dateTo = date_,
     isFavorite = false,
   } = tripPoint;
 
@@ -23,12 +23,12 @@ const parseTripPoint = (tripPoint = {}) => {
     type,
     destination,
     offers,
-    base_price,
-    date_from,
-    date_to,
+    basePrice,
+    dateFrom,
+    dateTo,
     isFavorite,
     isEditMode: id !== 'new',
-    isDestinationExists: CityRules.getCity(destination.name) ? true: false,
+    isDestinationExists: CityRules.getCity(destination.name) ? true : false,
   };
 };
 
@@ -105,8 +105,8 @@ const createHeader = (tripPoint) => {
   return `<header class="event__header">                  
             ${createEventTypeMenuButton(tripPoint.id, tripPoint.type)}
             ${createDestination(tripPoint.id, tripPoint.type, tripPoint.destination.name, tripPoint.state)}
-            ${createDates(tripPoint.id, TimeUtils.convertTo_DDMMYY_HHMM(tripPoint.date_from), TimeUtils.convertTo_DDMMYY_HHMM(tripPoint.date_to))}
-            ${createBasePrice(tripPoint.id, tripPoint.base_price)}
+            ${createDates(tripPoint.id, TimeUtils.convertToDDMMYYHHMM(tripPoint.dateFrom), TimeUtils.convertToDDMMYYHHMM(tripPoint.dateTo))}
+            ${createBasePrice(tripPoint.id, tripPoint.basePrice)}
             ${createButtons(tripPoint.isEditMode, tripPoint.isDestinationExists)}
           </header>`;
 };
@@ -116,7 +116,9 @@ const getOfferIdFromTitle = (title) => {
 };
 
 const createOffer = (offer, pointId, offers) => {
-  const checked = offers.find((el) => { return el.title === offer.title; });
+  const checked = offers.find((el) => {
+    return el.title === offer.title;
+  });
   const offerId = getOfferIdFromTitle(offer.title);
   return `<div class="event__offer-selector">
             <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offerId}-${pointId}" type="checkbox" name="event-offer-${offerId}" ${checked ? 'checked' : ''}>
@@ -180,32 +182,32 @@ export default class TripPointEditor extends AbstractInteractiveElement {
     this._wrapAsInternalListener(this._priceTextFieldEvent, ViewEvents.uid.PRICE_FIELD_INPUT);
     this._wrapAsInternalListener(this._offersListClick, ViewEvents.uid.OFFERS_CLICK);
     this._wrapAsInternalListener(this._dateTextFieldClick,
-      ViewEvents.uid.START_DATE_CLICK,
-      ViewEvents.uid.END_DATE_CLICK,
+        ViewEvents.uid.START_DATE_CLICK,
+        ViewEvents.uid.END_DATE_CLICK,
     );
   }
 
   _initCalendar() {
-    if(this._calendar) {
+    if (this._calendar) {
       this._calendar.destroy();
       this._calendar = null;
     }
   }
 
   _eventTypeListClick(evt) {
-    if(evt.event.target.dataset.eventType) {
+    if (evt.event.target.dataset.eventType) {
       this.updateData({type: evt.event.target.dataset.eventType, offers: []});
     }
   }
 
   _offersListClick(evt) {
-    if(evt.event.target.dataset.offerId) {
+    if (evt.event.target.dataset.offerId) {
       const filter = (off) => getOfferIdFromTitle(off.title) === evt.event.target.dataset.offerId;
       const offerInModel = TripPointRules.getOffersByTypeName(this._data.type).find(filter);
       const offerInData = this._data.offers.find(filter);
       let offers = this._data.offers.slice();
-      if(offerInData) {
-        offers = offers.filter((off) => getOfferIdFromTitle(off.title) !== offerInData.title);
+      if (offerInData) {
+        offers = offers.filter((off) => off.title !== offerInData.title);
       } else {
         offers.push(offerInModel);
       }
@@ -226,25 +228,25 @@ export default class TripPointEditor extends AbstractInteractiveElement {
   _priceTextFieldEvent(evt) {
     this._performDefaultCallbackOnTextField({
       event: evt.event,
-      dataName: 'base_price',
+      dataName: 'basePrice',
       stateName: 'price',
-      dataCreateFunctionByTextFieldValue: (value) => isNaN(parseInt(value)) ? '' : parseInt(value),
-      compareWith: this._data.base_price,
+      dataCreateFunctionByTextFieldValue: (value) => isNaN(parseInt(value, 10)) ? '' : parseInt(value, 10),
+      compareWith: this._data.basePrice,
     });
   }
 
   _showCalendar({selector, date, minDate, maxDate}) {
-    if(!this._calendar) {
+    if (!this._calendar) {
       this._calendar = flatpickr(this.getElement().querySelector(selector), {
-        dateFormat: 'd/m/y H:i',
-        enableTime: true,
-        time_24hr: true,
-        onClose: this._calendarClosed,
+        'dateFormat': 'd/m/y H:i',
+        'enableTime': true,
+        'time_24hr': true,
+        'onClose': this._calendarClosed,
       });
     } else {
       this._calendar.input = this.getElement().querySelector(selector);
     }
-    //clear callback function to prevent event callback after setDate call
+    // clear callback function to prevent event callback after setDate call
     this._calendar.set('onChange', null);
     this._calendar.setDate(date, true);
     this._calendar.set('onChange', this._dateChanged);
@@ -255,15 +257,15 @@ export default class TripPointEditor extends AbstractInteractiveElement {
   }
 
   _calendarClosed() {
-    if(!this._calendar._dateCache) {
+    if (!this._calendar._dateCache) {
       return;
     }
     const update = {};
-    if(this._calendar.config.minDate) { //date-to
-      update.date_to = this._calendar._dateCache;
+    if (this._calendar.config.minDate) { // date-to
+      update.dateTo = this._calendar._dateCache;
     }
-    if(this._calendar.config.maxDate) { //date-from
-      update.date_from = this._calendar._dateCache;
+    if (this._calendar.config.maxDate) { // date-from
+      update.dateFrom = this._calendar._dateCache;
     }
     this._calendar._dateCache = null;
     this.updateData(update);
@@ -274,7 +276,7 @@ export default class TripPointEditor extends AbstractInteractiveElement {
   }
 
   _dateTextFieldClick(evt) {
-    const selector = `#event-${evt.eventUID === ViewEvents.uid.START_DATE_CLICK ? 'start': 'end'}-time-${this._data.id}`;
+    const selector = `#event-${evt.eventUID === ViewEvents.uid.START_DATE_CLICK ? 'start' : 'end'}-time-${this._data.id}`;
     const date = Date.parse(evt.eventUID === ViewEvents.uid.START_DATE_CLICK ? this._data.date_from : this._data.date_to);
     const minDate = evt.eventUID === ViewEvents.uid.START_DATE_CLICK ? null : Date.parse(this._data.date_from);
     const maxDate = evt.eventUID === ViewEvents.uid.END_DATE_CLICK ? null : Date.parse(this._data.date_to);
@@ -301,7 +303,7 @@ export default class TripPointEditor extends AbstractInteractiveElement {
       createRegEventObject(`#event-start-time-${this._data.id}`, ViewEvents.uid.START_DATE_CLICK),
       createRegEventObject(`#event-end-time-${this._data.id}`, ViewEvents.uid.END_DATE_CLICK),
     ];
-    if(this._data.isEditMode) {
+    if (this._data.isEditMode) {
       events.push(createRegEventObject('.event__rollup-btn', ViewEvents.uid.CLOSE_POINT_POPUP));
     }
     events.forEach((evt) => {

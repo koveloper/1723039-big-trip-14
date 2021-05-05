@@ -1,11 +1,12 @@
+import AbstractPresenter from './abstract-presenter.js';
 import FiltersView from '../view/filters-menu.js';
-import { renderElement, removeView } from '../utils/ui.js';
-import { FiltersRules } from '../app-data.js';
-import { ViewValues } from '../constants.js';
+import {removeView} from '../utils/ui.js';
+import {FiltersRules} from '../app-data.js';
+import {ViewValues} from '../constants.js';
 
-export default class FiltersPresenter {
+export default class FiltersPresenter extends AbstractPresenter {
   constructor({container, model}) {
-    this._container = container;
+    super(container);
     this._model = model;
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleFilterTypeChangeFromView = this._handleFilterTypeChangeFromView.bind(this);
@@ -13,17 +14,26 @@ export default class FiltersPresenter {
     this._view = null;
   }
 
-  _handleModelEvent() {
+  _handleModelEvent(evt) {
+    if (evt.type === ViewValues.updateType.ERROR) {
+      return;
+    }
+    if (evt.type === ViewValues.updateType.INIT) {
+      this.setLoading(false);
+    }
   }
 
   init() {
+    if (this.isLoading()) {
+      return;
+    }
     this.destroy();
     this._view = new FiltersView({
       filerTypes: FiltersRules.getFilters(),
       filterTypeChangeCallback: this._handleFilterTypeChangeFromView,
     });
     this._view.init(this._model.getFilterType());
-    renderElement(this._container, this._view);
+    this._renderView(this._view);
   }
 
   _handleFilterTypeChangeFromView(filterType) {

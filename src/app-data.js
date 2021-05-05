@@ -1,5 +1,5 @@
-import { ViewValues } from './constants.js';
-import { TimeUtils } from './utils/time.js';
+import {ViewValues} from './constants.js';
+import {TimeUtils} from './utils/time.js';
 
 /**
  * Trip points rules
@@ -58,8 +58,8 @@ export const TripPointRules = {
 const filters = Object.values(ViewValues.filters);
 const filtersFunctions = {
   [ViewValues.filters.EVERYTHING]: () => true,
-  [ViewValues.filters.FUTURE]: (point) => TimeUtils.isInFuture(point.date_from) || TimeUtils.isCurrent(point.date_from, point.date_to),
-  [ViewValues.filters.PAST]: (point) => TimeUtils.isInPast(point.date_to) || TimeUtils.isCurrent(point.date_from, point.date_to),
+  [ViewValues.filters.FUTURE]: (point) => TimeUtils.isInFuture(point.dateFrom) || TimeUtils.isCurrent(point.dateFrom, point.dateTo),
+  [ViewValues.filters.PAST]: (point) => TimeUtils.isInPast(point.dateTo) || TimeUtils.isCurrent(point.dateFrom, point.dateTo),
 };
 
 export const FiltersRules = {
@@ -71,16 +71,20 @@ export const FiltersRules = {
 /**
  * sort rules
  */
+const sortTypes = Object.values(ViewValues.sortTypes);
 const getOffersCost = (tripPoint) => {
   return tripPoint.offers.reduce((acc, offer) => (acc + offer.price), 0);
 };
-const sortTypes = Object.values(ViewValues.sortTypes);
 const sortFunctions = {
-  [ViewValues.sortTypes.DAY]: (a, b) => TimeUtils.compare(a.date_from, b.date_from),
+  [ViewValues.sortTypes.DAY]: (a, b) => TimeUtils.compare(a.dateFrom, b.dateFrom),
   [ViewValues.sortTypes.EVENT]: (a, b) => a.type.localeCompare(b.type),
-  [ViewValues.sortTypes.TIME]: (a, b) => TimeUtils.compare(a.date_from, a.date_to) - TimeUtils.compare(b.date_from, b.date_to),
-  [ViewValues.sortTypes.PRICE]: (a, b) => { return b.base_price - a.base_price; },
-  [ViewValues.sortTypes.OFFERS]: (a, b) => { return getOffersCost(b) - getOffersCost(a); },
+  [ViewValues.sortTypes.TIME]: (a, b) => TimeUtils.compare(a.dateFrom, a.dateTo) - TimeUtils.compare(b.dateFrom, b.dateTo),
+  [ViewValues.sortTypes.PRICE]: (a, b) => {
+    return b.basePrice - a.basePrice;
+  },
+  [ViewValues.sortTypes.OFFERS]: (a, b) => {
+    return getOffersCost(b) - getOffersCost(a);
+  },
 };
 
 export const SortRules = {
@@ -99,13 +103,13 @@ export const CityRules = {
 
   getCityList: () => cityList,
 
-  addCity: ({ name, description = '', pictures = [] } = {}) =>{
+  addCity: ({name, description = '', pictures = []} = {}) =>{
     if (name) {
       const c = cityList.find((v) => v.name === name);
       if (c) {
-        cityList[cityList.indexOf(c)] = { name, description, pictures };
+        cityList[cityList.indexOf(c)] = {name, description, pictures};
       } else {
-        cityList.push({ name, description, pictures });
+        cityList.push({name, description, pictures});
       }
     }
   },
@@ -121,7 +125,7 @@ export const CityRules = {
     return pictures;
   },
 
-  getCityDescription: function(name) {
+  getCityDescription: function (name) {
     const {
       description = [],
     } = this.getCity(name);

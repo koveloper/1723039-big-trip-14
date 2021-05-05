@@ -18,9 +18,18 @@ export const ViewValues = {
     PRICE: 'price',
     OFFERS: 'offers',
   },
+  loadStates: {
+    LOADING: 'LOADING',
+    LOAD_DONE: 'LOAD_DONE',
+    ERROR: 'ERROR',
+  },
   pointTypes: [
     {
       name: 'Taxi',
+      isInMotion: true,
+    },
+    {
+      name: 'Bus',
       isInMotion: true,
     },
     {
@@ -60,6 +69,8 @@ export const ViewValues = {
     PATCH: 'PATCH',
     MINOR: 'MINOR',
     MAJOR: 'MAJOR',
+    INIT: 'INIT',
+    ERROR: 'ERROR',
   },
   uiViewType: {
     STATS: 'STATS',
