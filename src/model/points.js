@@ -47,13 +47,15 @@ export default class PointsModel extends Observer {
     if (index === -1) {
       throw new Error('Trip point is not exists');
     }
-
-    this._tripPoints = [
-      ...this._tripPoints.slice(0, index),
-      ...this._tripPoints.slice(index + 1),
-    ];
-
-    this._notify(updateType);
+    this._api.deleteTripPoint(Object.assign({}, tripPointForDelete))
+      .then(() => {
+        this._tripPoints = [
+          ...this._tripPoints.slice(0, index),
+          ...this._tripPoints.slice(index + 1),
+        ];
+        this._notify(updateType);
+      }).catch(() => {
+      });
   }
 
   addTripPoint(updateType, tripPointData) {
