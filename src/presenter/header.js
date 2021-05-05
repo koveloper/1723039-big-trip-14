@@ -13,7 +13,7 @@ export default class HeaderPresenter extends AbstractPresenter {
   }
 
   _handleModelEvent(evt) {
-    if (evt.type === ViewValues.updateType.ERROR) {
+    if (evt.type === ViewValues.updateType.INIT_ERROR) {
       return;
     }
     if (evt.type === ViewValues.updateType.INIT) {

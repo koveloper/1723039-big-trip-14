@@ -1,5 +1,6 @@
 import AbstractViewElement from './abstract-view-element.js';
 import {TimeUtils} from '../utils/time.js';
+import {ViewValues} from '../constants.js';
 
 const createDateLimits = (from, to) => {
   let inner = '';
@@ -19,7 +20,7 @@ const createMainInfo = (tripPointsArray = []) => {
     }
     return acc;
   }, []);
-  if (cities.length > 5) {
+  if (cities.length > ViewValues.uiNumbers.MAX_CITY_COUNT_IN_HEADER) {
     cities = [cities[0], '...', cities[cities.length - 1]];
   }
   return `<div class="trip-info__main">

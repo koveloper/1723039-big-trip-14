@@ -79,6 +79,6 @@ api.getDestinations()
     renderElement(getComponent(ViewValues.selectors.MENU), viewItems.menu);
     viewItems.menu.init();
   }).catch(() => {
-    models.points.commitError();
+    models.points.commitInitError();
   });
 

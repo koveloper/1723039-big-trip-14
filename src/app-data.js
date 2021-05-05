@@ -1,5 +1,6 @@
 import {ViewValues} from './constants.js';
 import {TimeUtils} from './utils/time.js';
+import {nanoid} from 'nanoid';
 
 /**
  * Trip points rules
@@ -13,6 +14,13 @@ const pointTypes = ViewValues.pointTypes.map((v) => {
   };
 });
 
+const _setOffers = (getMethod, selector, offers) => {
+  const t = getMethod(selector);
+  if (t) {
+    t.offers = [...offers].map((offer) => Object.assign(offer, {id: nanoid()}));
+  }
+};
+
 export const TripPointRules = {
 
   getPointTypes: () => pointTypes,
@@ -24,17 +32,11 @@ export const TripPointRules = {
   getPointTypeByTitle: (title) => pointTypes.find((v) => v.title === title),
 
   setOffersByTypeName: function (type, offers) {
-    const t = this.getPointTypeByTypeName(type);
-    if (t) {
-      t.offers = [...offers];
-    }
+    _setOffers(this.getPointTypeByTypeName, type, offers);
   },
 
   setOffersByTypeTitle: function (title, offers) {
-    const t = this.getPointTypeByTitle(title);
-    if (t) {
-      t.offers = [...offers];
-    }
+    _setOffers(this.getPointTypeByTitle, title, offers);
   },
 
   getOffersByTypeName: function (type) {

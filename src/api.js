@@ -30,8 +30,17 @@ export default class Api {
     this._authorization = authorization;
   }
 
+  _removeOffersId(tripPoint) {
+    const handledTripPoint = Object.assign({}, tripPoint);
+    if(handledTripPoint.offers) {
+      handledTripPoint.offers.forEach((offer) => {delete offer.id;});
+    }
+    return handledTripPoint;
+  }
+
   updateTripPoint(tripPoint) {
-    return this._request({
+    tripPoint = this._removeOffersId(tripPoint);
+    return this._makeRequestWithDataResponse({
       url: `points/${tripPoint.id}`,
       body: Api.adaptToBack(tripPoint),
       method: Method.PUT,
@@ -39,16 +48,34 @@ export default class Api {
     });
   }
 
+  deleteTripPoint(tripPoint) {
+    return this._makeRequestWithoutDataResponse({
+      url: `points/${tripPoint.id}`,
+      method: Method.DELETE,
+    });
+  }
+
+  addTripPoint(tripPoint) {
+    delete tripPoint.id;
+    tripPoint = this._removeOffersId(tripPoint);
+    return this._makeRequestWithDataResponse({
+      url: 'points',
+      body: Api.adaptToBack(tripPoint),
+      method: Method.POST,
+      headers: new Headers({'Content-Type': 'application/json'}),
+    });
+  }
+
   getTripPoints() {
-    return this._request({url: 'points'});
+    return this._makeRequestWithDataResponse({url: 'points'});
   }
 
   getDestinations() {
-    return this._request({url: 'destinations'});
+    return this._makeRequestWithDataResponse({url: 'destinations'});
   }
 
   getOffers() {
-    return this._request({url: 'offers'});
+    return this._makeRequestWithDataResponse({url: 'offers'});
   }
 
   _request({
@@ -58,14 +85,31 @@ export default class Api {
     headers = new Headers(),
   }) {
     headers.append('Authorization', this._authorization);
-
     return fetch(
-        `${this._endPoint}/${url}`,
-        {method, body, headers},
-    )
-      .then(Api.checkStatus)
+      `${this._endPoint}/${url}`,
+      {method, body, headers},
+    ).then(Api.checkStatus);
+  }
+
+  _makeRequestWithDataResponse({
+    url,
+    method = Method.GET,
+    body = null,
+    headers = new Headers(),
+  }) {
+    return this._request({url, method, body, headers})
       .then(Api.toJSON)
       .then(Api.adaptToFront)
+      .catch(Api.catchError);
+  }
+
+  _makeRequestWithoutDataResponse({
+    url,
+    method = Method.GET,
+    body = null,
+    headers = new Headers(),
+  }) {
+    return this._request({url, method, body, headers})
       .catch(Api.catchError);
   }
 

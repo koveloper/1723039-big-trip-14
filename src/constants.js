@@ -70,10 +70,14 @@ export const ViewValues = {
     MINOR: 'MINOR',
     MAJOR: 'MAJOR',
     INIT: 'INIT',
+    INIT_ERROR: 'INIT_ERROR',
     ERROR: 'ERROR',
   },
   uiViewType: {
     STATS: 'STATS',
     TABLE: 'TABLE',
+  },
+  uiNumbers: {
+    MAX_CITY_COUNT_IN_HEADER: 3,
   },
 };
