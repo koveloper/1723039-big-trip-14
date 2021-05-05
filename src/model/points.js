@@ -7,6 +7,7 @@ export default class PointsModel extends Observer {
     super();
     this._tripPoints = [];
     this._api = api;
+    this._commitError = this._commitError.bind(this);
   }
 
   setTripPoints(pointsArr) {
@@ -14,7 +15,11 @@ export default class PointsModel extends Observer {
     this._notify(ViewValues.updateType.INIT);
   }
 
-  commitError() {
+  commitInitError() {
+    this._notify(ViewValues.updateType.INIT_ERROR);
+  }
+
+  _commitError() {
     this._notify(ViewValues.updateType.ERROR);
   }
 
@@ -36,9 +41,7 @@ export default class PointsModel extends Observer {
           ...this._tripPoints.slice(index + 1),
         ];
         this._notify(updateType, updatedPoint);
-      }).catch(() => {
-
-      });
+      }).catch(this._commitError);
   }
 
   deleteTripPoint(updateType, tripPointForDelete) {
@@ -54,8 +57,7 @@ export default class PointsModel extends Observer {
           ...this._tripPoints.slice(index + 1),
         ];
         this._notify(updateType);
-      }).catch(() => {
-      });
+      }).catch(this._commitError);
   }
 
   addTripPoint(updateType, tripPointData) {
@@ -66,8 +68,6 @@ export default class PointsModel extends Observer {
       .then((newPoint) => {
         this._tripPoints.push(newPoint);
         this._notify(updateType, newPoint);
-      }).catch(() => {
-
-      });
+      }).catch(this._commitError);
   }
 }

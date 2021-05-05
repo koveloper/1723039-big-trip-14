@@ -65,7 +65,9 @@ export default class TripPresenter extends AbstractPresenter {
   }
 
   _handleUpdateTripPointEvent(update) {
-    this._currentEditForm.setBlock(true);
+    if(this._currentEditForm) {
+      this._currentEditForm.setBlock(true);
+    }
     this._tripPointsModel.updateTripPoint(ViewValues.updateType.PATCH, update);
   }
 
@@ -89,6 +91,19 @@ export default class TripPresenter extends AbstractPresenter {
   }
 
   _handleTripPointsModelEvent(evt) {
+    if(evt.type === ViewValues.updateType.INIT_ERROR) {
+      removeView(this._noPointsView);
+      this._noPointsView.setLoadingState(ViewValues.loadStates.ERROR);
+      this.setLoading(true);
+      return;
+    }
+    if(evt.type === ViewValues.updateType.ERROR) {
+      if(this._currentEditForm) {
+        this._currentEditForm.unlockWithError();
+      }
+      return;
+    }
+
     if(this._currentEditForm) {
       this._currentEditForm.setBlock(false);
     }
@@ -111,12 +126,6 @@ export default class TripPresenter extends AbstractPresenter {
         this._newPointView.setEventListener(ViewEvents.uid.DELETE_POINT, this._handleCloseNewPointButtonClick);
         this._newPointView.setEventListener(ViewEvents.uid.SAVE_POINT, this._handleAddNewPointButtonClick);
         this.setLoading(false);
-        break;
-
-      case ViewValues.updateType.ERROR:
-        removeView(this._noPointsView);
-        this._noPointsView.setLoadingState(ViewValues.loadStates.ERROR);
-        this.setLoading(true);
         break;
 
       default:

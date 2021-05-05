@@ -327,6 +327,17 @@ export default class TripPointEditor extends AbstractInteractiveElement {
       return;
     }
     this.getElement().querySelector('.event--edit').classList.remove('event--edit__performing-operation');
+    this.getElement().querySelector('.event--edit').classList.remove('event--edit__performing-operation-error');
+  }
+
+  unlockWithError() {
+    this.getElement().querySelector('.event--edit').classList.add('shake');
+    this.getElement().querySelector('.event--edit').classList.remove('event--edit__performing-operation');
+    this.getElement().querySelector('.event--edit').classList.add('event--edit__performing-operation-error');
+    setTimeout(() => {
+      this.getElement().querySelector('.event--edit').classList.remove('shake');
+      this.setBlock(false);
+    }, 2000);
   }
 
   getTemplate() {

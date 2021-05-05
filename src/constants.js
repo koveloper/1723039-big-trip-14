@@ -70,6 +70,7 @@ export const ViewValues = {
     MINOR: 'MINOR',
     MAJOR: 'MAJOR',
     INIT: 'INIT',
+    INIT_ERROR: 'INIT_ERROR',
     ERROR: 'ERROR',
   },
   uiViewType: {
