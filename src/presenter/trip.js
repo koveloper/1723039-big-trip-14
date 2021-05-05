@@ -65,7 +65,7 @@ export default class TripPresenter extends AbstractPresenter {
   }
 
   _handleUpdateTripPointEvent(update) {
-    if(this._currentEditForm) {
+    if (this._currentEditForm) {
       this._currentEditForm.setBlock(true);
     }
     this._tripPointsModel.updateTripPoint(ViewValues.updateType.PATCH, update);
@@ -91,20 +91,24 @@ export default class TripPresenter extends AbstractPresenter {
   }
 
   _handleTripPointsModelEvent(evt) {
-    if(evt.type === ViewValues.updateType.INIT_ERROR) {
+    if (evt.type === ViewValues.updateType.INIT_ERROR) {
       removeView(this._noPointsView);
       this._noPointsView.setLoadingState(ViewValues.loadStates.ERROR);
       this.setLoading(true);
       return;
     }
-    if(evt.type === ViewValues.updateType.ERROR) {
-      if(this._currentEditForm) {
+    if (evt.type === ViewValues.updateType.ERROR) {
+      if (this._currentEditForm) {
         this._currentEditForm.unlockWithError();
+      } else {
+        if (evt.data.id in this._tripPointsPresenters) {
+          this._tripPointsPresenters[evt.data.id].unlockWithError();
+        }
       }
       return;
     }
 
-    if(this._currentEditForm) {
+    if (this._currentEditForm) {
       this._currentEditForm.setBlock(false);
     }
     this._handleCloseEditFormEvent(this._currentEditForm);
@@ -208,7 +212,7 @@ export default class TripPresenter extends AbstractPresenter {
   }
 
   _handleCloseNewPointButtonClick() {
-    if(!this._newPointView) {
+    if (!this._newPointView) {
       return;
     }
     removeView(this._newPointView);

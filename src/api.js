@@ -32,8 +32,10 @@ export default class Api {
 
   _removeOffersId(tripPoint) {
     const handledTripPoint = Object.assign({}, tripPoint);
-    if(handledTripPoint.offers) {
-      handledTripPoint.offers.forEach((offer) => {delete offer.id;});
+    if (handledTripPoint.offers) {
+      handledTripPoint.offers.forEach((offer) => {
+        delete offer.id;
+      });
     }
     return handledTripPoint;
   }
@@ -86,8 +88,8 @@ export default class Api {
   }) {
     headers.append('Authorization', this._authorization);
     return fetch(
-      `${this._endPoint}/${url}`,
-      {method, body, headers},
+        `${this._endPoint}/${url}`,
+        {method, body, headers},
     ).then(Api.checkStatus);
   }
 

@@ -2,8 +2,6 @@ import TripPointEditorView from '../view/trip-point-editor.js';
 import TripPointView from '../view/trip-point.js';
 import {ViewEvents} from '../view/view-events.js';
 import {renderElement, toggleView, removeView} from '../utils/ui.js';
-import {ViewValues} from '../constants.js';
-
 
 export default class TripPointPresenter {
 
@@ -23,6 +21,7 @@ export default class TripPointPresenter {
     this._handleCloseEditFormButtonClick = this._handleCloseEditFormButtonClick.bind(this);
     this._handleSavePointChangesButtonClick = this._handleSavePointChangesButtonClick.bind(this);
     this._handleDeletePointButtonClick = this._handleDeletePointButtonClick.bind(this);
+    this._editMode = false;
   }
 
   init(tripPointData) {
@@ -53,6 +52,7 @@ export default class TripPointPresenter {
   }
 
   destroy() {
+    this._editMode = false;
     removeView(this._tripPointView);
     removeView(this._tripPointEditView);
   }
@@ -68,6 +68,7 @@ export default class TripPointPresenter {
     if (!enabled) {
       this._tripPointEditView.tripPoint = this._tripPointData;
     }
+    this._editMode = enabled;
   }
 
   setBlock(isBlocked) {
@@ -75,7 +76,11 @@ export default class TripPointPresenter {
   }
 
   unlockWithError() {
-    this._tripPointEditView.unlockWithError();
+    if (this._editMode) {
+      this._tripPointEditView.unlockWithError();
+    } else {
+      this._tripPointView.unlockWithError();
+    }
   }
 
   _handleCloseEditFormButtonClick() {
@@ -103,7 +108,7 @@ export default class TripPointPresenter {
   }
 
   _invokeCallback(cFunc, ...params) {
-    if(!cFunc) {
+    if (!cFunc) {
       return;
     }
     cFunc(...params);

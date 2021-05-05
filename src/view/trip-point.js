@@ -97,4 +97,14 @@ export default class TripPoint extends AbstractInteractiveElement {
               </div>
             </li>`;
   }
+
+  unlockWithError() {
+    this.getElement().querySelector('.event').classList.add('shake');
+    this.getElement().querySelector('.event').classList.add('event--edit__performing-operation-error');
+    setTimeout(() => {
+      this.getElement().querySelector('.event').classList.remove('event--edit__performing-operation-error');
+      this.getElement().querySelector('.event').classList.remove('shake');
+    }, 2000);
+  }
+
 }

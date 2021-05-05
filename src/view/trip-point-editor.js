@@ -176,8 +176,8 @@ export default class TripPointEditor extends AbstractInteractiveElement {
     this._wrapAsInternalListener(this._priceTextFieldEvent, ViewEvents.uid.PRICE_FIELD_INPUT);
     this._wrapAsInternalListener(this._offersListClick, ViewEvents.uid.OFFERS_CLICK);
     this._wrapAsInternalListener(this._dateTextFieldClick,
-      ViewEvents.uid.START_DATE_CLICK,
-      ViewEvents.uid.END_DATE_CLICK,
+        ViewEvents.uid.START_DATE_CLICK,
+        ViewEvents.uid.END_DATE_CLICK,
     );
   }
 
@@ -322,7 +322,7 @@ export default class TripPointEditor extends AbstractInteractiveElement {
   }
 
   setBlock(isBlocked) {
-    if(isBlocked) {
+    if (isBlocked) {
       this.getElement().querySelector('.event--edit').classList.add('event--edit__performing-operation');
       return;
     }
