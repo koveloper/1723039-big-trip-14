@@ -65,10 +65,12 @@ export default class TripPresenter extends AbstractPresenter {
   }
 
   _handleUpdateTripPointEvent(update) {
+    this._currentEditForm.setBlock(true);
     this._tripPointsModel.updateTripPoint(ViewValues.updateType.PATCH, update);
   }
 
   _handleDeleteTripPointEvent(tripPointData) {
+    this._currentEditForm.setBlock(true);
     this._tripPointsModel.deleteTripPoint(ViewValues.updateType.MAJOR, tripPointData);
   }
 
@@ -87,6 +89,9 @@ export default class TripPresenter extends AbstractPresenter {
   }
 
   _handleTripPointsModelEvent(evt) {
+    if(this._currentEditForm) {
+      this._currentEditForm.setBlock(false);
+    }
     this._handleCloseEditFormEvent(this._currentEditForm);
     this._handleCloseNewPointButtonClick();
     switch (evt.type) {
@@ -203,6 +208,7 @@ export default class TripPresenter extends AbstractPresenter {
   }
 
   _handleAddNewPointButtonClick() {
+    this._currentEditForm.setBlock(true);
     this._tripPointsModel.addTripPoint(ViewValues.updateType.MAJOR, this._newPointView.tripPoint);
   }
 }

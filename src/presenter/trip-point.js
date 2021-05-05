@@ -70,6 +70,10 @@ export default class TripPointPresenter {
     }
   }
 
+  setBlock(isBlocked) {
+    this._tripPointEditView.setBlock(isBlocked);
+  }
+
   _handleCloseEditFormButtonClick() {
     this._invokeCallback(this._callbacks.onCloseEditForm, this);
   }

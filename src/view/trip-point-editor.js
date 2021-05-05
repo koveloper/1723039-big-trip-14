@@ -321,6 +321,14 @@ export default class TripPointEditor extends AbstractInteractiveElement {
     this.updateData(parseTripPoint(value));
   }
 
+  setBlock(isBlocked) {
+    if(isBlocked) {
+      this.getElement().querySelector('.event--edit').classList.add('event--edit__performing-operation');
+      return;
+    }
+    this.getElement().querySelector('.event--edit').classList.remove('event--edit__performing-operation');
+  }
+
   getTemplate() {
     return `<li class="trip-events__item">
               <form class="event event--edit" action="#" method="post">
