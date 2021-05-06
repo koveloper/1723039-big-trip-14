@@ -168,7 +168,6 @@ export default class TripPointEditorView extends AbstractInteractiveElement {
     super();
     this._data = parseTripPoint(tripPoint);
     this._calendar = null;
-    this._init();
     //
     this._dateChanged = this._dateChanged.bind(this);
     this._calendarClosed = this._calendarClosed.bind(this);

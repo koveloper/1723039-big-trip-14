@@ -117,7 +117,7 @@ export default class AbstractInteractiveElement extends AbstractViewElement {
   }
 
   _unregisterEventSupport(handlerUID) {
-    if (this._events[handlerUID]) {
+    if (this._events[handlerUID] && 'unregisterHandler' in this._events[handlerUID]) {
       this._events[handlerUID].unregisterHandler();
     }
   }

@@ -67,6 +67,8 @@ export default class TripPointPresenter {
     toggleView(this._container, from, to);
     if (!enabled) {
       this._tripPointEditView.tripPoint = this._tripPointData;
+    } else {
+      this._tripPointEditView.restoreHandlers();
     }
     this._editMode = enabled;
   }

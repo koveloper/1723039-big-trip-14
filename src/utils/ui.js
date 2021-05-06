@@ -48,6 +48,9 @@ export const removeView = (component) => {
   if (!(component instanceof AbstractViewElement)) {
     throw new Error('Can remove only ViewElement');
   }
+  if(!component.isElementExists()) {
+    return;
+  }
   component.getElement().remove();
   component.removeElement();
 };
