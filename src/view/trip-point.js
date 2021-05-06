@@ -55,7 +55,7 @@ const createFavoriteButton = (isFavorite) => {
           </button>`;
 };
 
-export default class TripPoint extends AbstractInteractiveElement {
+export default class TripPointView extends AbstractInteractiveElement {
   constructor(tripPoint) {
     super();
     this.tripPoint = tripPoint;

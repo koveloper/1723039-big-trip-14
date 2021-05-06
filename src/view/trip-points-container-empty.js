@@ -2,7 +2,7 @@ import AbstractViewElement from './abstract-view-element.js';
 import {ViewValues} from '../constants.js';
 
 
-export default class TripPointsContainerEmpty extends AbstractViewElement {
+export default class TripPointsContainerEmptyView extends AbstractViewElement {
   constructor() {
     super();
     this._state = ViewValues.loadStates.LOADING;

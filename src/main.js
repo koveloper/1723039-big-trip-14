@@ -5,10 +5,11 @@ import FiltersPresenter from './presenter/filters.js';
 import TripPresenter from './presenter/trip.js';
 import PointsModel from './model/points.js';
 import FiltersModel from './model/filters.js';
+import TripPointType from './app-structures/trip-point-type.js';
+import Cities from './app-structures/cities.js';
 import Api from './api.js';
 import {getComponent, renderElement} from './utils/ui.js';
 import {ViewValues} from './constants.js';
-import {CityRules, TripPointRules} from './app-data.js';
 
 const AUTHORIZATION = 'Basic KMh6KWDNNVywmlOMihTM';
 const END_POINT = 'https://14.ecmascript.pages.academy/big-trip';
@@ -69,10 +70,10 @@ initApp();
 
 api.getDestinations()
   .then((cityList) => {
-    cityList.forEach((city) => CityRules.addCity(city));
+    cityList.forEach((city) => Cities.addCity(city));
     return api.getOffers();
   }).then((offers) => {
-    offers.forEach((offer) => TripPointRules.setOffers(offer.type, offer.offers));
+    offers.forEach((offer) => TripPointType.setOffers(offer.type, offer.offers));
     return api.getTripPoints();
   }).then((points) => {
     models.points.setTripPoints(points);

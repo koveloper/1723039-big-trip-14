@@ -13,7 +13,7 @@ const createFilters = (filerTypes, selectedFilter) => {
   return filerTypes.map((f) => createFilter(f, selectedFilter === f)).join('');
 };
 
-export default class Filters extends AbstractInteractiveElement {
+export default class FiltersView extends AbstractInteractiveElement {
   constructor({filerTypes = [], filterTypeChangeCallback} = {}) {
     super();
     this._filterTypeChangeCallback = filterTypeChangeCallback;

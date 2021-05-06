@@ -1,7 +1,7 @@
 import AbstractPresenter from './abstract-presenter.js';
 import FiltersView from '../view/filters-menu.js';
+import Filters from '../app-structures/filters.js';
 import {removeView} from '../utils/ui.js';
-import {FiltersRules} from '../app-data.js';
 import {ViewValues} from '../constants.js';
 
 export default class FiltersPresenter extends AbstractPresenter {
@@ -29,7 +29,7 @@ export default class FiltersPresenter extends AbstractPresenter {
     }
     this.destroy();
     this._view = new FiltersView({
-      filerTypes: FiltersRules.getFilters(),
+      filerTypes: Filters.getFilters(),
       filterTypeChangeCallback: this._handleFilterTypeChangeFromView,
     });
     this._view.init(this._model.getFilterType());

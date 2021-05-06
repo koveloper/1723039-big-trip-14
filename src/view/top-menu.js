@@ -2,7 +2,7 @@ import AbstractViewElement from './abstract-view-element.js';
 import {ViewEvents} from './view-events.js';
 import {ViewValues} from '../constants.js';
 
-export default class Menu extends AbstractViewElement {
+export default class MenuView extends AbstractViewElement {
   constructor(uiTypeClickCallback) {
     super();
     this._uiTypeClickCallback = uiTypeClickCallback;

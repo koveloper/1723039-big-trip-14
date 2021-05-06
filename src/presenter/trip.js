@@ -3,9 +3,10 @@ import SortView from '../view/sort-menu.js';
 import TripPointPresenter from './trip-point.js';
 import TripPointsContainerView from '../view/trip-points-container.js';
 import TripPointsContainerEmptyView from '../view/trip-points-container-empty.js';
-import TripPointEditor from '../view/trip-point-editor.js';
+import TripPointEditorView from '../view/trip-point-editor.js';
+import Filters from '../app-structures/filters.js';
+import Sort from '../app-structures/sort.js';
 import {renderElement, RenderPosition, removeView} from '../utils/ui.js';
-import {SortRules, FiltersRules} from '../app-data.js';
 import {ViewValues} from '../constants.js';
 import {ViewEvents} from '../view/view-events.js';
 
@@ -139,7 +140,7 @@ export default class TripPresenter extends AbstractPresenter {
       case ViewValues.updateType.INIT:
         this._noPointsView.setLoadingState(ViewValues.loadStates.LOAD_DONE);
         removeView(this._noPointsView);
-        this._newPointView = new TripPointEditor();
+        this._newPointView = new TripPointEditorView();
         this._newPointView.setEventListener(ViewEvents.uid.DELETE_POINT, this._handleCloseNewPointButtonClick);
         this._newPointView.setEventListener(ViewEvents.uid.SAVE_POINT, this._handleAddNewPointButtonClick);
         this.setLoading(false);
@@ -158,8 +159,8 @@ export default class TripPresenter extends AbstractPresenter {
 
   _getTripPoints() {
     return this._tripPointsModel.getTripPoints().slice()
-      .filter(FiltersRules.getFilterFunction(this._filtersModel.getFilterType()))
-      .sort(SortRules.getSortFunction(this._currentSortType));
+      .filter(Filters.getFilterFunction(this._filtersModel.getFilterType()))
+      .sort(Sort.getSortFunction(this._currentSortType));
   }
 
   _clearTripPoints() {

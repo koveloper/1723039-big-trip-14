@@ -35,7 +35,7 @@ const createTotalCost = (value) => {
           </p>`;
 };
 
-export default class TripInfo extends AbstractViewElement {
+export default class TripInfoView extends AbstractViewElement {
   constructor(tripPointsArray = []) {
     super();
     this._tripPointsArray = tripPointsArray;
