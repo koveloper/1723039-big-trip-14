@@ -110,16 +110,17 @@ const createHeader = (tripPoint) => {
             ${createButtons(tripPoint.isEditMode, tripPoint.isDestinationExists)}
           </header>`;
 };
-const createOffer = (offer, pointId, offers) => {
+
+const createOffer = (offer, pointId, offers, index) => {
   const checked = offers.find((el) => {
     return el.title === offer.title;
   });
   return `<div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}-${pointId}" type="checkbox" name="event-offer-${offer.id}" ${checked ? 'checked' : ''}>
-            <label class="event__offer-label" data-offer-id='${offer.id}' for="event-offer-${offer.id}-${pointId}">
-              <span class="event__offer-title" data-offer-id='${offer.id}'>${offer.title}</span>
+            <input class="event__offer-checkbox  visually-hidden" id="event-offer-${index}-${pointId}" type="checkbox" name="event-offer-${index}-${pointId}" ${checked ? 'checked' : ''} value="${offer.title}">
+            <label class="event__offer-label" for="event-offer-${index}-${pointId}">
+              <span class="event__offer-title">${offer.title}</span>
               +€&nbsp;
-              <span class="event__offer-price" data-offer-id='${offer.id}'>${offer.price}</span>
+              <span class="event__offer-price">${offer.price}</span>
             </label>
           </div>`;
 };
@@ -128,7 +129,7 @@ const createOffers = (pointId, type, offers) => {
   return `<section class="event__section  event__section--offers">
             <h3 class="event__section-title  event__section-title--offers">Offers</h3>
             <div class="event__available-offers">
-              ${TripPointRules.getOffersByTypeName(type).map((o) => createOffer(o, pointId, offers)).join('')}
+              ${TripPointRules.getOffersByTypeName(type).map((o, index) => createOffer(o, pointId, offers, index)).join('')}
             </div>
           </section>`;
 };
@@ -176,8 +177,8 @@ export default class TripPointEditor extends AbstractInteractiveElement {
     this._wrapAsInternalListener(this._priceTextFieldEvent, ViewEvents.uid.PRICE_FIELD_INPUT);
     this._wrapAsInternalListener(this._offersListClick, ViewEvents.uid.OFFERS_CLICK);
     this._wrapAsInternalListener(this._dateTextFieldClick,
-        ViewEvents.uid.START_DATE_CLICK,
-        ViewEvents.uid.END_DATE_CLICK,
+      ViewEvents.uid.START_DATE_CLICK,
+      ViewEvents.uid.END_DATE_CLICK,
     );
   }
 
@@ -195,18 +196,16 @@ export default class TripPointEditor extends AbstractInteractiveElement {
   }
 
   _offersListClick(evt) {
-    if (evt.event.target.dataset.offerId) {
-      const filter = (off) => off.id === evt.event.target.dataset.offerId;
-      const offerInModel = TripPointRules.getOffersByTypeName(this._data.type).find(filter);
-      const offerInData = this._data.offers.find(filter);
-      let offers = this._data.offers.slice();
-      if (offerInData) {
-        offers = offers.filter((off) => off.title !== offerInData.title);
-      } else {
-        offers.push(offerInModel);
-      }
-      this.updateData({offers});
+    const filter = (offer) => offer.title === evt.event.target.value;
+    const offerInModel = TripPointRules.getOffersByTypeName(this._data.type).find(filter);
+    const offerInData = this._data.offers.find(filter);
+    let offers = this._data.offers.slice();
+    if (offerInData) {
+      offers = offers.filter((off) => off.title !== offerInData.title);
+    } else {
+      offers.push(offerInModel);
     }
+    this.updateData({offers});
   }
 
   _destinationTextFieldEvent(evt) {
@@ -291,7 +290,7 @@ export default class TripPointEditor extends AbstractInteractiveElement {
       createRegEventObject('.event__type-list', ViewEvents.uid.EVENT_TYPE_CLICK),
       createRegEventObject('.event__input--destination', ViewEvents.uid.DESTINATION_FIELD_INPUT, ViewEvents.type.KEYBOARD_BUTTON_UP),
       createRegEventObject('.event__input--price', ViewEvents.uid.PRICE_FIELD_INPUT, ViewEvents.type.KEYBOARD_BUTTON_UP),
-      createRegEventObject('.event__available-offers', ViewEvents.uid.OFFERS_CLICK),
+      createRegEventObject('.event__available-offers', ViewEvents.uid.OFFERS_CLICK, ViewEvents.type.ONCHANGE),
       createRegEventObject(`#event-start-time-${this._data.id}`, ViewEvents.uid.START_DATE_INPUT, ViewEvents.type.KEYBOARD_BUTTON_UP),
       createRegEventObject(`#event-end-time-${this._data.id}`, ViewEvents.uid.END_DATE_INPUT, ViewEvents.type.KEYBOARD_BUTTON_UP),
       createRegEventObject(`#event-start-time-${this._data.id}`, ViewEvents.uid.START_DATE_CLICK),
@@ -317,7 +316,6 @@ export default class TripPointEditor extends AbstractInteractiveElement {
   }
 
   set tripPoint(value = {}) {
-    // this._data = ;
     this.updateData(parseTripPoint(value));
   }
 
