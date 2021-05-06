@@ -7,7 +7,6 @@ import {TimeUtils} from './utils/time.js';
 const pointTypes = ViewValues.pointTypes.map((v) => {
   return {
     title: v.name,
-    type: v.name.toLowerCase(),
     offers: [],
     isInMotion: v.isInMotion,
   };
@@ -26,26 +25,13 @@ export const TripPointRules = {
 
   getPointTypeByIndex: (i) => pointTypes[i],
 
-  getPointTypeByTypeName: (type) => pointTypes.find((v) => v.type === type),
+  getPointTypeByTitle: (title) => pointTypes.find((v) => v.title.toLowerCase() === title.toLowerCase()),
 
-  getPointTypeByTitle: (title) => pointTypes.find((v) => v.title === title),
-
-  setOffersByTypeName: function (type, offers) {
-    _setOffers(this.getPointTypeByTypeName, type, offers);
+  setOffers: function (title, offers) {
+    this.getPointTypeByTitle(title).offers = [...offers].map((offer) => Object.assign({}, offer));
   },
 
-  setOffersByTypeTitle: function (title, offers) {
-    _setOffers(this.getPointTypeByTitle, title, offers);
-  },
-
-  getOffersByTypeName: function (type) {
-    const {
-      offers = [],
-    } = this.getPointTypeByTypeName(type);
-    return offers;
-  },
-
-  getOffersByTitle: function (title) {
+  getOffers: function (title) {
     const {
       offers = [],
     } = this.getPointTypeByTitle(title);

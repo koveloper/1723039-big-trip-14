@@ -72,7 +72,7 @@ api.getDestinations()
     cityList.forEach((city) => CityRules.addCity(city));
     return api.getOffers();
   }).then((offers) => {
-    offers.forEach((offer) => TripPointRules.setOffersByTypeName(offer.type, offer.offers));
+    offers.forEach((offer) => TripPointRules.setOffers(offer.type, offer.offers));
     return api.getTripPoints();
   }).then((points) => {
     models.points.setTripPoints(points);

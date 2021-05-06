@@ -9,7 +9,7 @@ const parseTripPoint = (tripPoint = {}) => {
   const date_ = new Date().toISOString();
   const {
     id = 'new',
-    type = TripPointRules.getPointTypeByIndex(0).type,
+    type = TripPointRules.getPointTypeByIndex(0).title.toLocaleLowerCase(),
     destination = CityRules.getCityByIndex(0),
     offers = [],
     basePrice = 0,
@@ -64,7 +64,7 @@ const createDestinationDataList = (id) => {
 const createDestination = (id, type, dst) => {
   return `<div class="event__field-group  event__field-group--destination">
             <label class="event__label  event__type-output" for="event-destination-${id}">
-              ${TripPointRules.getPointTypeByTypeName(type).title}
+              ${TripPointRules.getPointTypeByTitle(type).title}
             </label>
             <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${dst}" list="destination-list-${id}">
             ${createDestinationDataList(id)}
@@ -129,7 +129,7 @@ const createOffers = (pointId, type, offers) => {
   return `<section class="event__section  event__section--offers">
             <h3 class="event__section-title  event__section-title--offers">Offers</h3>
             <div class="event__available-offers">
-              ${TripPointRules.getOffersByTypeName(type).map((o, index) => createOffer(o, pointId, offers, index)).join('')}
+              ${TripPointRules.getOffers(type).map((o, index) => createOffer(o, pointId, offers, index)).join('')}
             </div>
           </section>`;
 };
@@ -197,7 +197,7 @@ export default class TripPointEditor extends AbstractInteractiveElement {
 
   _offersListClick(evt) {
     const filter = (offer) => offer.title === evt.event.target.value;
-    const offerInModel = TripPointRules.getOffersByTypeName(this._data.type).find(filter);
+    const offerInModel = TripPointRules.getOffers(this._data.type).find(filter);
     const offerInData = this._data.offers.find(filter);
     let offers = this._data.offers.slice();
     if (offerInData) {

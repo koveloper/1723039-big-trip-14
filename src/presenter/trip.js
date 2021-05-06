@@ -71,10 +71,8 @@ export default class TripPresenter extends AbstractPresenter {
     }
     this._api.updateTripPoint(Object.assign({}, point))
       .then((updatedPoint) => {
-        console.log(updatedPoint);
         this._tripPointsModel.updateTripPoint(ViewValues.updateType.PATCH, updatedPoint);
       }).catch((err) => {
-        console.log(err);
         this._tripPointsModel.commitError(point);
       });
   }
