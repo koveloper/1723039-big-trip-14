@@ -41,6 +41,7 @@ const viewItems = {
   }),
   tripPresenter: new TripPresenter({
     container: getComponent(ViewValues.selectors.TRIP),
+    api,
     tripPointsModel: models.points,
     filtersModel: models.filters,
     switchToTableModeCallback: () => {
