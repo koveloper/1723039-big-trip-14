@@ -143,7 +143,8 @@ main {
     background-color: #0d8ae4; }
   .btn:disabled {
     opacity: 0.46;
-    cursor: default; }
+    cursor: default; 
+    cursor: not-allowed; }
 
 .page-header {
   padding-top: 23px;
@@ -791,6 +792,9 @@ main {
   cursor: pointer; }
   .event__rollup-btn:disabled {
     cursor: not-allowed;
+  }
+  .event__rollup-btn:disabled::after {
+    opacity: 0.2;
   }
   .event__rollup-btn::after {
     content: "";
