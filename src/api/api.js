@@ -28,6 +28,9 @@ export default class Api {
   constructor(endPoint, authorization) {
     this._endPoint = endPoint;
     this._authorization = authorization;
+    this.getDestinations = this.getDestinations.bind(this);
+    this.getOffers = this.getOffers.bind(this);
+    this.getTripPoints = this.getTripPoints.bind(this);
   }
 
   _removeOffersId(tripPoint) {

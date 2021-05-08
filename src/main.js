@@ -7,7 +7,9 @@ import PointsModel from './model/points.js';
 import FiltersModel from './model/filters.js';
 import TripPointType from './app-structures/trip-point-type.js';
 import Cities from './app-structures/cities.js';
-import Api from './api.js';
+import Api from './api/api.js';
+import Provider from './api/provider.js';
+import Store from './api/store.js';
 import {getComponent, renderElement} from './utils/ui.js';
 import {ViewValues} from './constants.js';
 
@@ -15,8 +17,13 @@ const AUTHORIZATION = 'Basic KMh6KWDNNVywmlOMihTM';
 const END_POINT = 'https://14.ecmascript.pages.academy/big-trip';
 const api = new Api(END_POINT, AUTHORIZATION);
 
+const APP_ID = 'koveloper.big-trip';
+const APP_VERSION = '1';
+const store = new Store({key: `${APP_ID}-${APP_VERSION}`, storage: localStorage});
+const provider = new Provider({api, storage: store});
+
 const models = {
-  points: new PointsModel(api),
+  points: new PointsModel(),
   filters: new FiltersModel(),
 };
 
@@ -42,7 +49,7 @@ const viewItems = {
   }),
   tripPresenter: new TripPresenter({
     container: getComponent(ViewValues.selectors.TRIP),
-    api,
+    provider,
     tripPointsModel: models.points,
     filtersModel: models.filters,
     switchToTableModeCallback: () => {
@@ -68,13 +75,13 @@ const initApp = () => {
 
 initApp();
 
-api.getDestinations()
+provider.getDestinations()
   .then((cityList) => {
     cityList.forEach((city) => Cities.addCity(city));
-    return api.getOffers();
+    return provider.getOffers();
   }).then((offers) => {
     offers.forEach((offer) => TripPointType.setOffers(offer.type, offer.offers));
-    return api.getTripPoints();
+    return provider.getTripPoints();
   }).then((points) => {
     models.points.setTripPoints(points);
     models.filters.init();
