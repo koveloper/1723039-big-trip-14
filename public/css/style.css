@@ -1074,3 +1074,21 @@ main {
   padding: 0 5px;
   font-weight: 600;
 }
+
+.modal_message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  text-align: center;
+  left: 50%;  
+  transform: translateX(-50%);
+  flex-wrap: wrap;
+  top: 40%;
+  padding: 20px 40px;
+  border-radius: 10px;
+  background-color: #ffd054;    
+  z-index: 200;
+  opacity: 0.9;
+  font-size: 32px;
+}

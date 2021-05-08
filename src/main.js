@@ -11,7 +11,7 @@ import Cities from './app-structures/cities.js';
 import Api from './api/api.js';
 import Provider from './api/provider.js';
 import Store from './api/store.js';
-import {getComponent, removeView, renderElement} from './utils/ui.js';
+import {displayModalMessage, getComponent, removeView, renderElement} from './utils/ui.js';
 import {ViewValues} from './constants.js';
 import {isOnline} from './utils/common.js';
 import Observer from './utils/observer.js';
@@ -87,7 +87,11 @@ const renderApp = () => {
 const initApp = () => {
   renderApp();
   getComponent(ViewValues.selectors.INFO).querySelector('.trip-main__event-add-btn').addEventListener('click', () => {
-    viewItems.tripPresenter.setAddNewPointMode();
+    if(isOnline()) {
+      viewItems.tripPresenter.setAddNewPointMode();
+      return;
+    }
+    displayModalMessage('Offline mode is not support point adding!');
   });
 };
 

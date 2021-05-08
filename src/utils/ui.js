@@ -73,3 +73,13 @@ export const restoreFocus = (target, focusObj) => {
     target.setSelectionRange(focusObj.caret[0], focusObj.caret[1]);
   }
 };
+
+export const displayModalMessage = (text, delay = 3000) => {
+  const modal = document.createElement('div');
+  modal.classList.add('modal_message');
+  modal.innerHTML = `<span>${text}</span>`;
+  document.body.append(modal);
+  setTimeout(() => {
+    modal.remove(modal);
+  }, delay);
+};
