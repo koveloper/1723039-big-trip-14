@@ -56,7 +56,6 @@ const createFavoriteButton = (isFavorite) => {
 };
 
 const createOpenButton = (isOnline) => {
-  console.log('update', isOnline);
   return `<button class="event__rollup-btn" type="button" ${isOnline ? '' : 'disabled'}>
                   <span class="visually-hidden">Open event</span>
                 </button>`;
