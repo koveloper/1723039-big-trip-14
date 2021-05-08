@@ -74,7 +74,6 @@ const handleFetch = (evt) => {
 
         return fetch(request)
           .then((response) => {
-            console.log(response.type);
             if (!response || response.status !== HTTP_STATUS_OK || response.type !== RESPONSE_SAFE_TYPE) {
               return response;
             }
