@@ -789,6 +789,9 @@ main {
   background-color: transparent;
   border: none;
   cursor: pointer; }
+  .event__rollup-btn:disabled {
+    cursor: not-allowed;
+  }
   .event__rollup-btn::after {
     content: "";
     position: absolute;
@@ -804,7 +807,7 @@ main {
     transition: border-color 0.2s, -webkit-transform 0.6s;
     transition: border-color 0.2s, transform 0.6s;
     transition: border-color 0.2s, transform 0.6s, -webkit-transform 0.6s; }
-  .event__rollup-btn:hover::after {
+  .event__rollup-btn:enabled:hover::after {
     border-color: #0d8ae4; }
 
 .event--edit .event__rollup-btn {
@@ -1045,4 +1048,25 @@ main {
 .shake {
   animation: shake 0.6s;
   position: relative;
+}
+
+.offline-mode-warning {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  left: 50%;  
+  transform: translateX(-50%);
+  flex-wrap: wrap;
+  bottom: 8px;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #ffd054;    
+  z-index: 200;
+  opacity: 0.9;
+}
+
+.offline-mode-warning__sign {
+  padding: 0 5px;
+  font-weight: 600;
 }

@@ -33,18 +33,7 @@ export default class Api {
     this.getTripPoints = this.getTripPoints.bind(this);
   }
 
-  _removeOffersId(tripPoint) {
-    const handledTripPoint = Object.assign({}, tripPoint);
-    if (handledTripPoint.offers) {
-      handledTripPoint.offers.forEach((offer) => {
-        delete offer.id;
-      });
-    }
-    return handledTripPoint;
-  }
-
   updateTripPoint(tripPoint) {
-    tripPoint = this._removeOffersId(tripPoint);
     return this._makeRequestWithDataResponse({
       url: `points/${tripPoint.id}`,
       body: Api.adaptToBack(tripPoint),
@@ -62,10 +51,18 @@ export default class Api {
 
   addTripPoint(tripPoint) {
     delete tripPoint.id;
-    tripPoint = this._removeOffersId(tripPoint);
     return this._makeRequestWithDataResponse({
       url: 'points',
       body: Api.adaptToBack(tripPoint),
+      method: Method.POST,
+      headers: new Headers({'Content-Type': 'application/json'}),
+    });
+  }
+
+  sync(tripPoints) {
+    return this._makeRequestWithDataResponse({
+      url: 'points/sync',
+      body: Api.adaptToBack(tripPoints),
       method: Method.POST,
       headers: new Headers({'Content-Type': 'application/json'}),
     });

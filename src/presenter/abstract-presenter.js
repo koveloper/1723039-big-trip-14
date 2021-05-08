@@ -1,3 +1,4 @@
+import Observer from '../utils/observer.js';
 import {renderElement} from '../utils/ui.js';
 
 export default class AbstractPresenter {
@@ -5,10 +6,26 @@ export default class AbstractPresenter {
   constructor(container) {
     this._container = container;
     this._isLoading = true;
+    this._externalEventsObserver = null;
+    this._externalEventsCallback = null;
   }
 
   _renderView(view, ...args) {
     renderElement(this._container, view, ...args);
+  }
+
+  setExternalEventsObserver(source) {
+    this._externalEventsObserver = source;
+    if(this._externalEventsObserver && this._externalEventsCallback) {
+      this._externalEventsObserver.addObserver(this._externalEventsCallback);
+    }
+  }
+
+  _setExternalEventsCallback(cFunc) {
+    this._externalEventsCallback = cFunc;
+    if(this._externalEventsObserver && this._externalEventsCallback) {
+      this._externalEventsObserver.addObserver(this._externalEventsCallback);
+    }
   }
 
   setLoading(value) {

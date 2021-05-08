@@ -33,12 +33,14 @@ export default class TripPresenter extends AbstractPresenter {
     this._handleCloseEditFormEvent = this._handleCloseEditFormEvent.bind(this);
     this._handleUpdateTripPointEvent = this._handleUpdateTripPointEvent.bind(this);
     this._handleDeleteTripPointEvent = this._handleDeleteTripPointEvent.bind(this);
+    this._handleExternalEvent = this._handleExternalEvent.bind(this);
 
     this._tripPointsModel = tripPointsModel;
     this._tripPointsModel.addObserver(this._handleTripPointsModelEvent);
 
     this._filtersModel = filtersModel;
     this._filtersModel.addObserver(this._handleFiltersModelEvent);
+    this._setExternalEventsCallback(this._handleExternalEvent);
   }
 
   setAddNewPointMode() {
@@ -63,6 +65,12 @@ export default class TripPresenter extends AbstractPresenter {
     } else {
       this._sortView.getElement().classList.add('visually-hidden');
       this._tripPointsContainerView.getElement().classList.add('visually-hidden');
+    }
+  }
+
+  _handleExternalEvent(evt) {
+    if(evt.type === ViewValues.externalEvent.ONLINE) {
+      Object.values(this._tripPointsPresenters).forEach((point) => point.setOnlineMode(evt.data));
     }
   }
 

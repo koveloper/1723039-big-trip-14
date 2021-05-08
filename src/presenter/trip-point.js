@@ -21,7 +21,8 @@ export default class TripPointPresenter {
     this._handleCloseEditFormButtonClick = this._handleCloseEditFormButtonClick.bind(this);
     this._handleSavePointChangesButtonClick = this._handleSavePointChangesButtonClick.bind(this);
     this._handleDeletePointButtonClick = this._handleDeletePointButtonClick.bind(this);
-    this._editMode = false;
+    this._isEditMode = false;
+    this._isOnlineMode = true;
   }
 
   init(tripPointData) {
@@ -33,6 +34,7 @@ export default class TripPointPresenter {
     this._tripPointView = new TripPointView(tripPointData);
     this._tripPointView.setEventListener(ViewEvents.uid.OPEN_POINT_POPUP, this._handleOpenEditFormButtonClick);
     this._tripPointView.setEventListener(ViewEvents.uid.FAVORITE_CLICK, this._handleFavoriteButtonClick);
+    this._tripPointView.setOnlineMode(this._isOnlineMode);
     // create edit form view
     this._tripPointEditView = new TripPointEditorView(tripPointData);
     this._tripPointEditView.setEventListener(ViewEvents.uid.CLOSE_POINT_POPUP, this._handleCloseEditFormButtonClick);
@@ -52,7 +54,7 @@ export default class TripPointPresenter {
   }
 
   destroy() {
-    this._editMode = false;
+    this._isEditMode = false;
     removeView(this._tripPointView);
     removeView(this._tripPointEditView);
   }
@@ -70,7 +72,12 @@ export default class TripPointPresenter {
     } else {
       this._tripPointEditView.restoreHandlers();
     }
-    this._editMode = enabled;
+    this._isEditMode = enabled;
+  }
+
+  setOnlineMode(isOnline) {
+    this._isOnlineMode = isOnline;
+    this._tripPointView.setOnlineMode(isOnline);
   }
 
   setBlock(isBlocked) {
@@ -78,7 +85,7 @@ export default class TripPointPresenter {
   }
 
   unlockWithError() {
-    if (this._editMode) {
+    if (this._isEditMode) {
       this._tripPointEditView.unlockWithError();
     } else {
       this._tripPointView.unlockWithError();

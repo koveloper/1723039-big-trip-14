@@ -12,6 +12,7 @@ export default class Provider {
   constructor({ api, storage }) {
     this._api = api;
     this._storage = storage;
+    this._isMustBeSunced = false;
   }
 
   _getInOnlineMode(apiMethod, itemNameInStorageObject) {
@@ -29,7 +30,17 @@ export default class Provider {
   }
 
   updateTripPoint(tripPoint) {
-    return this._api.updateTripPoint(tripPoint);
+    if (isOnline()) {
+      return this._api.updateTripPoint(tripPoint);
+    }
+    this._isMustBeSunced = true;
+    return this._getInOfflineMode(DataField.POINTS)
+      .then((points) => {
+        this._storage.save({[DataField.POINTS]: points.map((point) => {
+          return point.id === tripPoint.id ? tripPoint : point;
+        })});
+        return tripPoint;
+      });
   }
 
   getTripPoints() {
@@ -45,6 +56,18 @@ export default class Provider {
   getOffers() {
     return this._getInOnlineMode(this._api.getOffers, DataField.OFFERS)
             || this._getInOfflineMode(DataField.OFFERS);
+  }
+
+  sync() {
+    if(!this._isMustBeSunced) {
+      return;
+    }
+    this._api.sync(this._storage.getAll()[DataField.POINTS])
+      .then((points) => {
+        this._isMustBeSunced = true;
+        this._storage.save({[DataField.POINTS]: points});
+        return points;
+      });
   }
 
   deleteTripPoint(tripPoint) {

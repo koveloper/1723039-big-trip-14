@@ -1,5 +1,6 @@
 export const ViewValues = {
   selectors: {
+    OFFLINE_INDICATOR: '.page-body__page-main',
     MENU: '.trip-controls__navigation',
     INFO: '.trip-main',
     FILTERS: '.trip-controls__filters',
@@ -79,5 +80,8 @@ export const ViewValues = {
   },
   uiNumbers: {
     MAX_CITY_COUNT_IN_HEADER: 3,
+  },
+  externalEvent: {
+    ONLINE: 'online',
   },
 };
