@@ -69,7 +69,7 @@ export default class TripPresenter extends AbstractPresenter {
   }
 
   _handleExternalEvent(evt) {
-    if(evt.type === ViewValues.externalEvent.ONLINE) {
+    if (evt.type === ViewValues.externalEvent.ONLINE) {
       Object.values(this._tripPointsPresenters).forEach((point) => point.setOnlineMode(evt.data));
     }
   }
@@ -81,7 +81,7 @@ export default class TripPresenter extends AbstractPresenter {
     this._api.updateTripPoint(Object.assign({}, point))
       .then((updatedPoint) => {
         this._tripPointsModel.updateTripPoint(ViewValues.updateType.PATCH, updatedPoint);
-      }).catch((err) => {
+      }).catch(() => {
         this._tripPointsModel.commitError(point);
       });
   }
@@ -94,7 +94,7 @@ export default class TripPresenter extends AbstractPresenter {
       .then(() => {
         this._tripPointsModel.deleteTripPoint(ViewValues.updateType.MINOR, point);
       }).catch(() => {
-        this._tripPointsModel.commitError(update);
+        this._tripPointsModel.commitError(point);
       });
   }
 
@@ -243,7 +243,7 @@ export default class TripPresenter extends AbstractPresenter {
   }
 
   _handleAddNewPointButtonClick() {
-    if(this._currentEditForm) {
+    if (this._currentEditForm) {
       this._currentEditForm.setBlock(true);
     }
     const pointFromForm = this._newPointView.tripPoint;

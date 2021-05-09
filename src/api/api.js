@@ -90,8 +90,8 @@ export default class Api {
   }) {
     headers.append('Authorization', this._authorization);
     return fetch(
-      `${this._endPoint}/${url}`,
-      {method, body, headers},
+        `${this._endPoint}/${url}`,
+        {method, body, headers},
     ).then(Api.checkStatus);
   }
 

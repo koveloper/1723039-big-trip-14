@@ -1,5 +1,4 @@
-import { isOnline } from '../utils/common.js';
-import Api from './api.js';
+import {isOnline} from '../utils/common.js';
 
 const DataField = {
   DESTINATIONS: 'destinations',
@@ -9,7 +8,7 @@ const DataField = {
 
 export default class Provider {
 
-  constructor({ api, storage }) {
+  constructor({api, storage}) {
     this._api = api;
     this._storage = storage;
     this._isMustBeSunced = false;
@@ -23,6 +22,7 @@ export default class Provider {
           return value;
         });
     }
+    return null;
   }
 
   _getInOfflineMode(itemNameInStorageObject) {
@@ -59,7 +59,7 @@ export default class Provider {
   }
 
   sync() {
-    if(!this._isMustBeSunced) {
+    if (!this._isMustBeSunced) {
       return;
     }
     this._api.sync(this._storage.getAll()[DataField.POINTS])

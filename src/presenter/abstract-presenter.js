@@ -1,4 +1,3 @@
-import Observer from '../utils/observer.js';
 import {renderElement} from '../utils/ui.js';
 
 export default class AbstractPresenter {
@@ -16,14 +15,14 @@ export default class AbstractPresenter {
 
   setExternalEventsObserver(source) {
     this._externalEventsObserver = source;
-    if(this._externalEventsObserver && this._externalEventsCallback) {
+    if (this._externalEventsObserver && this._externalEventsCallback) {
       this._externalEventsObserver.addObserver(this._externalEventsCallback);
     }
   }
 
   _setExternalEventsCallback(cFunc) {
     this._externalEventsCallback = cFunc;
-    if(this._externalEventsObserver && this._externalEventsCallback) {
+    if (this._externalEventsObserver && this._externalEventsCallback) {
       this._externalEventsObserver.addObserver(this._externalEventsCallback);
     }
   }
