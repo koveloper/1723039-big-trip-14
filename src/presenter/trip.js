@@ -206,6 +206,7 @@ export default class TripPresenter extends AbstractPresenter {
     const points = this._getTripPoints();
     if (!this._tripPointsModel.getTripPoints().length) {
       this._renderView(this._noPointsView);
+      removeView(this._sortView);
       return;
     }
     removeView(this._noPointsView);
@@ -214,8 +215,8 @@ export default class TripPresenter extends AbstractPresenter {
   }
 
   _renderSort() {
-    this._sortView.setSortType(this._currentSortType);
     this._renderView(this._sortView);
+    this._sortView.setSortType(this._currentSortType);
     this._sortView.setSortTypeClickCallback(this._handleSortTypeClick);
   }
 
