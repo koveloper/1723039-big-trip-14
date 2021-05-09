@@ -47,6 +47,10 @@ export default class TripPresenter extends AbstractPresenter {
 
   setAddNewPointMode() {
     this._handleCloseEditFormEvent(this._currentEditForm);
+    if(!this._tripPointsModel.getTripPoints().length) {
+      removeView(this._noPointsView);
+      this._renderView(this._tripPointsContainerView);
+    }
     renderElement(this._tripPointsContainerView, this._newPointView, RenderPosition.AFTERBEGIN);
     this._newPointView.restoreHandlers();
     this._newPointView.setEditModeEnabled = () => this._handleCloseNewPointButtonClick();
@@ -265,6 +269,9 @@ export default class TripPresenter extends AbstractPresenter {
     this._newPointView.tripPoint = undefined;
     this._currentEditForm = null;
     this._setForKeyboardEventHandler(false);
+    if(!this._tripPointsModel.getTripPoints().length) {
+      this._renderView(this._noPointsView);
+    }
   }
 
   _handleAddNewPointButtonClick() {
