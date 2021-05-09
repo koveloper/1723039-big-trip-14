@@ -126,9 +126,9 @@ provider.getDestinations()
     models.points.commitInitError();
   });
 
-// window.addEventListener('load', () => {
-//   navigator.serviceWorker.register('/sw.js');
-// });
+window.addEventListener('load', () => {
+  navigator.serviceWorker.register('/sw.js');
+});
 
 window.addEventListener('online', () => {
   document.title = document.title.replace(' [offline]', '');
