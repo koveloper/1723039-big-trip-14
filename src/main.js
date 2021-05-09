@@ -15,8 +15,10 @@ import {displayModalMessage, getComponent, removeView, renderElement} from './ut
 import {ViewValues} from './constants.js';
 import {isOnline} from './utils/common.js';
 import Observer from './utils/observer.js';
+import Filters from './app-structures/filters.js';
+import Sort from './app-structures/sort.js';
 
-const AUTHORIZATION = 'Basic KMh6KWDNNVywmlOMihTMskadhgasdksadd';
+const AUTHORIZATION = 'Basic KMh6KWDNNVywmlOMihTMskadhga';
 const END_POINT = 'https://14.ecmascript.pages.academy/big-trip';
 const api = new Api(END_POINT, AUTHORIZATION);
 
@@ -30,6 +32,9 @@ const models = {
 };
 
 const menuCallback = (uiType) => {
+  if(!models.points.getTripPoints().length) {
+    return;
+  }
   viewItems.menu.setUiViewType(uiType);
   viewItems.statisticsPresenter.setVisible(uiType === ViewValues.uiViewType.STATS);
   viewItems.tripPresenter.setVisible(uiType === ViewValues.uiViewType.TABLE);
@@ -48,16 +53,20 @@ onlineModeObserver.onlineModeChanged = function (isOnline) {
   this._notify(ViewValues.externalEvent.ONLINE, isOnline);
 };
 
+
 const viewItems = {
   menu: new MenuView(menuCallback),
   offlineIndicator: new OfflineModeView(),
   headerPresenter: new HeaderPresenter({
     container: getComponent(ViewValues.selectors.INFO),
     model: models.points,
+    sortIface: Sort,
   }),
   filtersPresenter: new FiltersPresenter({
     container: getComponent(ViewValues.selectors.FILTERS),
-    model: models.filters,
+    tripPointsModel: models.points,
+    filtersModel: models.filters,
+    filtersIface: Filters,
   }),
   statisticsPresenter: new StatisticsPresenter({
     container: getComponent(ViewValues.selectors.BODY_CONTAINER),
@@ -112,13 +121,14 @@ provider.getDestinations()
     models.filters.init();
     renderElement(getComponent(ViewValues.selectors.MENU), viewItems.menu);
     viewItems.menu.init();
+    getComponent(ViewValues.selectors.INFO).querySelector('.trip-main__event-add-btn').disabled = false;
   }).catch(() => {
     models.points.commitInitError();
   });
 
-window.addEventListener('load', () => {
-  navigator.serviceWorker.register('/sw.js');
-});
+// window.addEventListener('load', () => {
+//   navigator.serviceWorker.register('/sw.js');
+// });
 
 window.addEventListener('online', () => {
   document.title = document.title.replace(' [offline]', '');
