@@ -34,6 +34,8 @@ export default class TripPresenter extends AbstractPresenter {
     this._handleUpdateTripPointEvent = this._handleUpdateTripPointEvent.bind(this);
     this._handleDeleteTripPointEvent = this._handleDeleteTripPointEvent.bind(this);
     this._handleExternalEvent = this._handleExternalEvent.bind(this);
+    this._setForKeyboardEventHandler = this._setForKeyboardEventHandler.bind(this);
+    this._keyboardEventHandler = this._keyboardEventHandler.bind(this);
 
     this._tripPointsModel = tripPointsModel;
     this._tripPointsModel.addObserver(this._handleTripPointsModelEvent);
@@ -52,6 +54,7 @@ export default class TripPresenter extends AbstractPresenter {
     if (this._sortView.getElement().classList.contains('visually-hidden') && this._switchToTableModeCallback) {
       this._switchToTableModeCallback();
     }
+    this._setForKeyboardEventHandler(true);
   }
 
   init() {
@@ -65,6 +68,24 @@ export default class TripPresenter extends AbstractPresenter {
     } else {
       this._sortView.getElement().classList.add('visually-hidden');
       this._tripPointsContainerView.getElement().classList.add('visually-hidden');
+    }
+  }
+
+  _setForKeyboardEventHandler(isHandlerEnabled) {
+    if(isHandlerEnabled) {
+      document.addEventListener('keyup', this._keyboardEventHandler);
+    } else {
+      document.removeEventListener('keyup', this._keyboardEventHandler);
+    }
+  }
+
+  _keyboardEventHandler(evt) {
+    if(evt.keyCode === 27) {//ESC
+      if(this._currentEditForm === this._newPointView) {
+        this._handleCloseNewPointButtonClick();
+      } else {
+        this._handleCloseEditFormEvent(this._currentEditForm);
+      }
     }
   }
 
@@ -223,6 +244,7 @@ export default class TripPresenter extends AbstractPresenter {
     }
     this._currentEditForm = pointIptr;
     pointIptr.setEditModeEnabled(true);
+    this._setForKeyboardEventHandler(true);
   }
 
   _handleCloseEditFormEvent(pointIptr) {
@@ -231,6 +253,7 @@ export default class TripPresenter extends AbstractPresenter {
     }
     this._currentEditForm = null;
     pointIptr.setEditModeEnabled(false);
+    this._setForKeyboardEventHandler(false);
   }
 
   _handleCloseNewPointButtonClick() {
@@ -240,6 +263,7 @@ export default class TripPresenter extends AbstractPresenter {
     removeView(this._newPointView);
     this._newPointView.tripPoint = undefined;
     this._currentEditForm = null;
+    this._setForKeyboardEventHandler(false);
   }
 
   _handleAddNewPointButtonClick() {
