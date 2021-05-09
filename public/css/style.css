@@ -302,9 +302,11 @@ main {
     opacity: 1;
     cursor: default; }
   .trip-filters__filter-input:disabled + .trip-filters__filter-label {
-    opacity: 0.4;
-    cursor: default; }
-
+    text-decoration: line-through;
+    opacity: 0.3;
+    cursor: not-allowed;
+    color: black;}
+    
 .trip-search {
   -ms-flex-positive: 1;
       flex-grow: 1;
@@ -1092,3 +1094,4 @@ main {
   opacity: 0.9;
   font-size: 32px;
 }
+
