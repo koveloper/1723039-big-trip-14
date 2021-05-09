@@ -25,7 +25,7 @@ const createMainInfo = (tripPointsArray = []) => {
   }
   return `<div class="trip-info__main">
             <h1 class="trip-info__title">${cities.join(' &mdash; ')}</h1>
-            ${tripPointsArray.length ? createDateLimits(tripPointsArray[0].date_from, tripPointsArray[tripPointsArray.length - 1].date_to) : ''}            
+            ${tripPointsArray.length ? createDateLimits(tripPointsArray[0].dateFrom, tripPointsArray[tripPointsArray.length - 1].dateTo) : ''}            
           </div>`;
 };
 
