@@ -65,6 +65,8 @@ export default class Api {
       body: Api.adaptToBack(tripPoints),
       method: Method.POST,
       headers: new Headers({'Content-Type': 'application/json'}),
+    }).then((sync) => {
+      return sync.updated;
     });
   }
 
