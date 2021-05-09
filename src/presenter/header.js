@@ -4,9 +4,10 @@ import {RenderPosition, removeView} from '../utils/ui.js';
 import {ViewValues} from '../constants.js';
 
 export default class HeaderPresenter extends AbstractPresenter {
-  constructor({container, model}) {
+  constructor({container, model, sortIface}) {
     super(container);
     this._model = model;
+    this._sortIface = sortIface;
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._model.addObserver(this._handleModelEvent);
     this._view = null;
@@ -28,7 +29,7 @@ export default class HeaderPresenter extends AbstractPresenter {
       return;
     }
     this.destroy();
-    this._view = new TripInfoView(this._model.getTripPoints().slice());
+    this._view = new TripInfoView(this._model.getTripPoints().slice().sort(this._sortIface.getSortFunction(ViewValues.sortTypes.DAY)));
     this._renderView(this._view, RenderPosition.AFTERBEGIN);
   }
 
