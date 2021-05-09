@@ -1,6 +1,6 @@
 import AbstractViewElement from './abstract-view-element.js';
 import {ViewEvents} from './view-events.js';
-import {ViewValues} from '../constants.js';
+import {AppConstants} from '../constants.js';
 
 export default class MenuView extends AbstractViewElement {
   constructor(uiTypeClickCallback) {
@@ -17,7 +17,7 @@ export default class MenuView extends AbstractViewElement {
         this._uiTypeClickCallback(evt.target.dataset.uiType);
       }
     });
-    this.setUiViewType(ViewValues.uiViewType.TABLE);
+    this.setUiViewType(AppConstants.page.TABLE);
   }
 
   setUiViewType(type) {
@@ -30,8 +30,8 @@ export default class MenuView extends AbstractViewElement {
 
   getTemplate() {
     return `<nav class="trip-controls__trip-tabs  trip-tabs">
-              <a class="trip-tabs__btn" data-ui-type='${ViewValues.uiViewType.TABLE}' href="#">Table</a>
-              <a class="trip-tabs__btn" data-ui-type='${ViewValues.uiViewType.STATS}' href="#">Stats</a>
+              <a class="trip-tabs__btn" data-ui-type='${AppConstants.page.TABLE}' href="#">Table</a>
+              <a class="trip-tabs__btn" data-ui-type='${AppConstants.page.STATS}' href="#">Stats</a>
             </nav>`;
   }
 }

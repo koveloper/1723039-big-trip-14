@@ -1,15 +1,15 @@
 import Observer from '../utils/observer.js';
-import {ViewValues} from '../constants.js';
+import {AppConstants} from '../constants.js';
 
 export default class FiltersModel extends Observer {
 
   constructor() {
     super();
-    this._currentFilterType = ViewValues.filters.EVERYTHING;
+    this._currentFilterType = AppConstants.filter.EVERYTHING;
   }
 
   init() {
-    this._notify(ViewValues.updateType.INIT);
+    this._notify(AppConstants.updateType.INIT);
   }
 
   setFilterType(updateType, filterType) {

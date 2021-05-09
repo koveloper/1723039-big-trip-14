@@ -15,34 +15,6 @@ export default class AbstractInteractiveElement extends AbstractViewElement {
     this._events = {};
   }
 
-  _wrapAsInternalListener(func, ...eventUID) {
-    func = func.bind(this);
-    eventUID.forEach((uid) => this.setEventListener(uid, func));
-  }
-
-  _performDefaultCallbackOnTextField({event, dataName, stateName, dataCreateFunctionByTextFieldValue, compareWith} = {}) {
-    if (event.target.value === compareWith) {
-      return;
-    }
-    const upd = {
-      state: {},
-    };
-    upd[dataName] = dataCreateFunctionByTextFieldValue(event.target.value);
-    upd.state[stateName] = getFocusObject(event.target);
-    this.updateData(upd);
-  }
-
-  _restoreDefaultTextFields(state, textFieldsArray) {
-    if (!state) {
-      return;
-    }
-    textFieldsArray.forEach((inp) => restoreFocus(this.getElement().querySelector(`.event__input--${inp}`), state[inp]));
-  }
-
-  restoreHandlers() {
-    throw new Error('Method is not supported by child.');
-  }
-
   updateData(update, withoutElementUpdate) {
     if (!update) {
       return;
@@ -70,6 +42,44 @@ export default class AbstractInteractiveElement extends AbstractViewElement {
     toggleView(old.parentElement, old, this.getElement());
     // restore handlers
     this.restoreHandlers();
+  }
+
+  setEventListener(handlerUID, callbackFunction) {
+    this._events[handlerUID] = Object.assign(
+      {},
+      this._events[handlerUID],
+      {
+        listener: callbackFunction,
+      },
+    );
+  }
+
+  restoreHandlers() {
+    throw new Error('Method is not supported by child.');
+  }
+
+  _wrapAsInternalListener(func, ...eventUID) {
+    func = func.bind(this);
+    eventUID.forEach((uid) => this.setEventListener(uid, func));
+  }
+
+  _performDefaultCallbackOnTextField({event, dataName, stateName, dataCreateFunctionByTextFieldValue, compareWith} = {}) {
+    if (event.target.value === compareWith) {
+      return;
+    }
+    const upd = {
+      state: {},
+    };
+    upd[dataName] = dataCreateFunctionByTextFieldValue(event.target.value);
+    upd.state[stateName] = getFocusObject(event.target);
+    this.updateData(upd);
+  }
+
+  _restoreDefaultTextFields(state, textFieldsArray) {
+    if (!state) {
+      return;
+    }
+    textFieldsArray.forEach((inp) => restoreFocus(this.getElement().querySelector(`.event__input--${inp}`), state[inp]));
   }
 
   _handler(handlerUID, evt) {
@@ -120,15 +130,5 @@ export default class AbstractInteractiveElement extends AbstractViewElement {
     if (this._events[handlerUID] && 'unregisterHandler' in this._events[handlerUID]) {
       this._events[handlerUID].unregisterHandler();
     }
-  }
-
-  setEventListener(handlerUID, callbackFunction) {
-    this._events[handlerUID] = Object.assign(
-      {},
-      this._events[handlerUID],
-      {
-        listener: callbackFunction,
-      },
-    );
   }
 }

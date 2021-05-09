@@ -1,5 +1,5 @@
 import Observer from '../utils/observer.js';
-import {ViewValues} from '../constants.js';
+import {AppConstants} from '../constants.js';
 
 export default class PointsModel extends Observer {
   constructor() {
@@ -9,15 +9,15 @@ export default class PointsModel extends Observer {
 
   setTripPoints(pointsArr) {
     this._tripPoints = pointsArr.slice();
-    this._notify(ViewValues.updateType.INIT);
+    this._notify(AppConstants.updateType.INIT);
   }
 
   commitInitError() {
-    this._notify(ViewValues.updateType.INIT_ERROR);
+    this._notify(AppConstants.updateType.INIT_ERROR);
   }
 
   commitError(data) {
-    this._notify(ViewValues.updateType.ERROR, data);
+    this._notify(AppConstants.updateType.ERROR, data);
   }
 
   getTripPoints() {

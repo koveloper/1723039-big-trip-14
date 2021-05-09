@@ -1,8 +1,8 @@
 import AbstractPresenter from './abstract-presenter.js';
-import StatisticsView from '../view/stats.js';
+import StatisticsView from '../view/stats-view.js';
 import {removeView} from '../utils/ui.js';
 import {TimeUtils} from '../utils/time.js';
-import {ViewValues} from '../constants.js';
+import {AppConstants} from '../constants.js';
 
 export default class StatisticsPresenter extends AbstractPresenter {
   constructor({container, model}) {
@@ -18,53 +18,6 @@ export default class StatisticsPresenter extends AbstractPresenter {
       time: {},
     };
     this._isUpdateCharts = true;
-  }
-
-  _handleModelEvent(evt) {
-    if (evt.type === ViewValues.updateType.INIT_ERROR) {
-      return;
-    }
-    if (evt.type === ViewValues.updateType.INIT) {
-      this.setLoading(false);
-      return;
-    }
-    this._isUpdateCharts = true;
-    this.init();
-  }
-
-  setVisible(isVisible) {
-    this._isVisible = isVisible;
-    if (isVisible) {
-      if (!this._view || this._isUpdateCharts) {
-        this.init();
-      }
-      this._view.getElement().classList.remove('visually-hidden');
-      return;
-    }
-    if (this._view && this._view.getElement()) {
-      this._view.getElement().classList.add('visually-hidden');
-    }
-  }
-
-  _createSortedObject(obj) {
-    const sortedArray = Object.entries(obj).sort((o1, o2) => o2[1] - o1[1]).map((el) => {
-      return {[el[0]]: el[1]};
-    });
-    return Object.assign({}, ...sortedArray);
-  }
-
-  _initChartData() {
-    ViewValues.pointTypes.forEach((pType) => {
-      this._chartData.type[pType.name.toUpperCase()] = this._model.getTripPoints().reduce((cnt, tripPoint) => {
-        return cnt + (tripPoint.type.toUpperCase() === pType.name.toUpperCase() ? 1 : 0);
-      }, 0);
-      this._chartData.money[pType.name.toUpperCase()] = this._model.getTripPoints().reduce((cnt, tripPoint) => {
-        return cnt + (tripPoint.type.toUpperCase() === pType.name.toUpperCase() ? tripPoint.basePrice : 0);
-      }, 0);
-      this._chartData.time[pType.name.toUpperCase()] = this._model.getTripPoints().reduce((cnt, tripPoint) => {
-        return cnt + (tripPoint.type.toUpperCase() === pType.name.toUpperCase() ? TimeUtils.getDurationInMilliseconds(tripPoint.dateFrom, tripPoint.dateTo) : 0);
-      }, 0);
-    });
   }
 
   init() {
@@ -85,5 +38,52 @@ export default class StatisticsPresenter extends AbstractPresenter {
   destroy() {
     removeView(this._view);
     this._view = null;
+  }
+
+  setVisible(isVisible) {
+    this._isVisible = isVisible;
+    if (isVisible) {
+      if (!this._view || this._isUpdateCharts) {
+        this.init();
+      }
+      this._view.getElement().classList.remove('visually-hidden');
+      return;
+    }
+    if (this._view && this._view.getElement()) {
+      this._view.getElement().classList.add('visually-hidden');
+    }
+  }
+
+  _handleModelEvent(evt) {
+    if (evt.type === AppConstants.updateType.INIT_ERROR) {
+      return;
+    }
+    if (evt.type === AppConstants.updateType.INIT) {
+      this.setLoading(false);
+      return;
+    }
+    this._isUpdateCharts = true;
+    this.init();
+  }
+
+  _createSortedObject(obj) {
+    const sortedArray = Object.entries(obj).sort((o1, o2) => o2[1] - o1[1]).map((el) => {
+      return {[el[0]]: el[1]};
+    });
+    return Object.assign({}, ...sortedArray);
+  }
+
+  _initChartData() {
+    AppConstants.pointType.forEach((pType) => {
+      this._chartData.type[pType.name.toUpperCase()] = this._model.getTripPoints().reduce((cnt, tripPoint) => {
+        return cnt + (tripPoint.type.toUpperCase() === pType.name.toUpperCase() ? 1 : 0);
+      }, 0);
+      this._chartData.money[pType.name.toUpperCase()] = this._model.getTripPoints().reduce((cnt, tripPoint) => {
+        return cnt + (tripPoint.type.toUpperCase() === pType.name.toUpperCase() ? tripPoint.basePrice : 0);
+      }, 0);
+      this._chartData.time[pType.name.toUpperCase()] = this._model.getTripPoints().reduce((cnt, tripPoint) => {
+        return cnt + (tripPoint.type.toUpperCase() === pType.name.toUpperCase() ? TimeUtils.getDurationInMilliseconds(tripPoint.dateFrom, tripPoint.dateTo) : 0);
+      }, 0);
+    });
   }
 }

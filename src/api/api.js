@@ -33,6 +33,18 @@ export default class Api {
     this.getTripPoints = this.getTripPoints.bind(this);
   }
 
+  getTripPoints() {
+    return this._makeRequestWithDataResponse({url: 'points'});
+  }
+
+  getDestinations() {
+    return this._makeRequestWithDataResponse({url: 'destinations'});
+  }
+
+  getOffers() {
+    return this._makeRequestWithDataResponse({url: 'offers'});
+  }
+
   updateTripPoint(tripPoint) {
     return this._makeRequestWithDataResponse({
       url: `points/${tripPoint.id}`,
@@ -68,18 +80,6 @@ export default class Api {
     }).then((sync) => {
       return sync.updated;
     });
-  }
-
-  getTripPoints() {
-    return this._makeRequestWithDataResponse({url: 'points'});
-  }
-
-  getDestinations() {
-    return this._makeRequestWithDataResponse({url: 'destinations'});
-  }
-
-  getOffers() {
-    return this._makeRequestWithDataResponse({url: 'offers'});
   }
 
   _request({

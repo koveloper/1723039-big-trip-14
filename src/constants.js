@@ -1,5 +1,5 @@
-export const ViewValues = {
-  selectors: {
+export const AppConstants = {
+  selector: {
     OFFLINE_INDICATOR: '.page-body__page-main',
     MENU: '.trip-controls__navigation',
     INFO: '.trip-main',
@@ -7,24 +7,24 @@ export const ViewValues = {
     TRIP: '.trip-events',
     BODY_CONTAINER: '.page-main > .page-body__container',
   },
-  filters: {
+  filter: {
     EVERYTHING: 'Everything',
     FUTURE: 'Future',
     PAST: 'Past',
   },
-  sortTypes: {
+  sortType: {
     DAY: 'day',
     EVENT: 'event',
     TIME: 'time',
     PRICE: 'price',
     OFFERS: 'offers',
   },
-  loadStates: {
+  loadState: {
     LOADING: 'LOADING',
     LOAD_DONE: 'LOAD_DONE',
     ERROR: 'ERROR',
   },
-  pointTypes: [
+  pointType: [
     {
       name: 'Taxi',
       isInMotion: true,
@@ -74,14 +74,17 @@ export const ViewValues = {
     INIT_ERROR: 'INIT_ERROR',
     ERROR: 'ERROR',
   },
-  uiViewType: {
+  page: {
     STATS: 'STATS',
     TABLE: 'TABLE',
   },
-  uiNumbers: {
+  limit: {
     MAX_CITY_COUNT_IN_HEADER: 3,
   },
   externalEvent: {
     ONLINE: 'online',
+  },
+  keyboard: {
+    ESC_KEY_CODE: 27,
   },
 };

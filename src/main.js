@@ -1,4 +1,4 @@
-import MenuView from './view/top-menu.js';
+import MenuView from './view/menu-view.js';
 import OfflineModeView from './view/offline-mode-view.js';
 import StatisticsPresenter from './presenter/stats.js';
 import HeaderPresenter from './presenter/header.js';
@@ -12,7 +12,7 @@ import Api from './api/api.js';
 import Provider from './api/provider.js';
 import Store from './api/store.js';
 import {displayModalMessage, getComponent, removeView, renderElement} from './utils/ui.js';
-import {ViewValues} from './constants.js';
+import {AppConstants} from './constants.js';
 import {isOnline} from './utils/common.js';
 import Observer from './utils/observer.js';
 import Filters from './app-structures/filters.js';
@@ -36,21 +36,21 @@ const menuCallback = (uiType) => {
     return;
   }
   viewItems.menu.setUiViewType(uiType);
-  viewItems.statisticsPresenter.setVisible(uiType === ViewValues.uiViewType.STATS);
-  viewItems.tripPresenter.setVisible(uiType === ViewValues.uiViewType.TABLE);
+  viewItems.statisticsPresenter.setVisible(uiType === AppConstants.page.STATS);
+  viewItems.tripPresenter.setVisible(uiType === AppConstants.page.TABLE);
 };
 
 const checkForOffline = () => {
   if(!isOnline()) {
-    renderElement(getComponent(ViewValues.selectors.OFFLINE_INDICATOR), viewItems.offlineIndicator);
+    renderElement(getComponent(AppConstants.selector.OFFLINE_INDICATOR), viewItems.offlineIndicator);
   } else {
     removeView(viewItems.offlineIndicator);
   }
 };
 
 const onlineModeObserver = new Observer();
-onlineModeObserver.onlineModeChanged = function (isOnline) {
-  this._notify(ViewValues.externalEvent.ONLINE, isOnline);
+onlineModeObserver.onlineModeChanged = function (isOnlineMode) {
+  this._notify(AppConstants.externalEvent.ONLINE, isOnlineMode);
 };
 
 
@@ -58,27 +58,27 @@ const viewItems = {
   menu: new MenuView(menuCallback),
   offlineIndicator: new OfflineModeView(),
   headerPresenter: new HeaderPresenter({
-    container: getComponent(ViewValues.selectors.INFO),
-    model: models.points,
+    container: getComponent(AppConstants.selector.INFO),
+    tripPointsModel: models.points,
     sortIface: Sort,
   }),
   filtersPresenter: new FiltersPresenter({
-    container: getComponent(ViewValues.selectors.FILTERS),
+    container: getComponent(AppConstants.selector.FILTERS),
     tripPointsModel: models.points,
     filtersModel: models.filters,
     filtersIface: Filters,
   }),
   statisticsPresenter: new StatisticsPresenter({
-    container: getComponent(ViewValues.selectors.BODY_CONTAINER),
+    container: getComponent(AppConstants.selector.BODY_CONTAINER),
     model: models.points,
   }),
   tripPresenter: new TripPresenter({
-    container: getComponent(ViewValues.selectors.TRIP),
+    container: getComponent(AppConstants.selector.TRIP),
     api: provider,
     tripPointsModel: models.points,
     filtersModel: models.filters,
     switchToTableModeCallback: () => {
-      menuCallback(ViewValues.uiViewType.TABLE);
+      menuCallback(AppConstants.page.TABLE);
     },
   }),
 };
@@ -88,14 +88,14 @@ const renderApp = () => {
   viewItems.filtersPresenter.init();
   viewItems.statisticsPresenter.init();
   viewItems.tripPresenter.init();
-  menuCallback(ViewValues.uiViewType.TABLE);
+  menuCallback(AppConstants.page.TABLE);
   checkForOffline();
   viewItems.tripPresenter.setExternalEventsObserver(onlineModeObserver);
 };
 
 const initApp = () => {
   renderApp();
-  getComponent(ViewValues.selectors.INFO).querySelector('.trip-main__event-add-btn').addEventListener('click', () => {
+  getComponent(AppConstants.selector.INFO).querySelector('.trip-main__event-add-btn').addEventListener('click', () => {
     if(isOnline()) {
       viewItems.tripPresenter.setAddNewPointMode();
       return;
@@ -119,9 +119,9 @@ provider.getDestinations()
   }).then((points) => {
     models.points.setTripPoints(points);
     models.filters.init();
-    renderElement(getComponent(ViewValues.selectors.MENU), viewItems.menu);
+    renderElement(getComponent(AppConstants.selector.MENU), viewItems.menu);
     viewItems.menu.init();
-    getComponent(ViewValues.selectors.INFO).querySelector('.trip-main__event-add-btn').disabled = false;
+    getComponent(AppConstants.selector.INFO).querySelector('.trip-main__event-add-btn').disabled = false;
   }).catch(() => {
     models.points.commitInitError();
   });

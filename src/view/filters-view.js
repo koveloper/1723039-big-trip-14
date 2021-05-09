@@ -19,7 +19,7 @@ export default class FiltersView extends AbstractInteractiveElement {
     this._filterTypeChangeCallback = filterTypeChangeCallback;
     this._filters = filters;
     this._selectedFilter = null;
-    this._filterTypeClickHandler = this._filterTypeClickHandler.bind(this);
+    this._handleFilterTypeClick = this._handleFilterTypeClick.bind(this);
   }
 
   init(filter) {
@@ -34,7 +34,7 @@ export default class FiltersView extends AbstractInteractiveElement {
         handlerUID: ViewEvents.uid.FILTER_TYPE_CHANGE,
         eventType: ViewEvents.type.ONCHANGE,
       });
-      this.setEventListener(ViewEvents.uid.FILTER_TYPE_CHANGE, this._filterTypeClickHandler);
+      this.setEventListener(ViewEvents.uid.FILTER_TYPE_CHANGE, this._handleFilterTypeClick);
     }
     this._selectedFilter = filter;
   }
@@ -46,7 +46,7 @@ export default class FiltersView extends AbstractInteractiveElement {
             </form>`;
   }
 
-  _filterTypeClickHandler(evt) {
+  _handleFilterTypeClick(evt) {
     if (evt.event.target.dataset.filterType && this._filterTypeChangeCallback) {
       if (this._filterTypeChangeCallback) {
         this._filterTypeChangeCallback(evt.event.target.dataset.filterType);

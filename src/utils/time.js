@@ -48,8 +48,14 @@ export const TimeUtils = {
   getDurationInMilliseconds: (isoDateStrFrom, isoDateStrTo) => {
     return Math.abs(dayjs(isoDateStrTo) - dayjs(isoDateStrFrom));
   },
-  compare: (isoDateStrA, isoDateStrB) => {
-    return dayjs(isoDateStrA).diff(dayjs(isoDateStrB));
+  /**
+   * Function copares two dates.
+   * @param {string} baseDate base date in ISO string format
+   * @param {string} compareWith second date for compare with base date
+   * @return {number} negative value if base date is less than compare date, positive value if base date is greater than compare date and zero otherwise
+   */
+  compare: (baseDate, compareWith) => {
+    return dayjs(baseDate).diff(dayjs(compareWith));
   },
   isInPast: (isoDateStr) => {
     return dayjs().diff(dayjs(isoDateStr)) > 0;

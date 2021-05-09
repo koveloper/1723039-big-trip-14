@@ -1,7 +1,7 @@
 import AbstractPresenter from './abstract-presenter.js';
-import FiltersView from '../view/filters-menu.js';
+import FiltersView from '../view/filters-view.js';
 import {removeView} from '../utils/ui.js';
-import {ViewValues} from '../constants.js';
+import {AppConstants} from '../constants.js';
 
 export default class FiltersPresenter extends AbstractPresenter {
   constructor({container, filtersModel, tripPointsModel, filtersIface}) {
@@ -15,19 +15,6 @@ export default class FiltersPresenter extends AbstractPresenter {
     this._tripPointsModel.addObserver(this._handleTripPointsModelEvent);
     this._handleFilterTypeChangeFromView = this._handleFilterTypeChangeFromView.bind(this);
     this._view = null;
-  }
-
-  _handleFiltersModelEvent(evt) {
-    if (evt.type === ViewValues.updateType.INIT_ERROR) {
-      return;
-    }
-    if (evt.type === ViewValues.updateType.INIT) {
-      this.setLoading(false);
-    }
-  }
-
-  _handleTripPointsModelEvent() {
-    this.init();
   }
 
   init() {
@@ -47,10 +34,6 @@ export default class FiltersPresenter extends AbstractPresenter {
     this._renderView(this._view);
   }
 
-  _handleFilterTypeChangeFromView(filterType) {
-    this._filtersModel.setFilterType(ViewValues.updateType.MINOR, filterType);
-  }
-
   destroy() {
     if(!this._view) {
       return;
@@ -58,5 +41,25 @@ export default class FiltersPresenter extends AbstractPresenter {
     removeView(this._view);
     this._view.removeElement();
     this._view = null;
+  }
+
+  _handleFiltersModelEvent(evt) {
+    if (evt.type === AppConstants.updateType.INIT_ERROR) {
+      return;
+    }
+    if (evt.type === AppConstants.updateType.INIT) {
+      this.setLoading(false);
+    }
+  }
+
+  _handleTripPointsModelEvent(evt) {
+    if(evt.type !== AppConstants.updateType.MINOR && evt.type !== AppConstants.updateType.MAJOR) {
+      return;
+    }
+    this.init();
+  }
+
+  _handleFilterTypeChangeFromView(filterType) {
+    this._filtersModel.setFilterType(AppConstants.updateType.MINOR, filterType);
   }
 }

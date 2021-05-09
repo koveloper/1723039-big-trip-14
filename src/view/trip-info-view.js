@@ -1,6 +1,7 @@
 import AbstractViewElement from './abstract-view-element.js';
+import TripPointType from '../app-structures/trip-point-type.js';
 import {TimeUtils} from '../utils/time.js';
-import {ViewValues} from '../constants.js';
+import {AppConstants} from '../constants.js';
 
 const createDateLimits = (from, to) => {
   let inner = '';
@@ -20,7 +21,7 @@ const createMainInfo = (tripPointsArray = []) => {
     }
     return acc;
   }, []);
-  if (cities.length > ViewValues.uiNumbers.MAX_CITY_COUNT_IN_HEADER) {
+  if (cities.length > AppConstants.limit.MAX_CITY_COUNT_IN_HEADER) {
     cities = [cities[0], '...', cities[cities.length - 1]];
   }
   return `<div class="trip-info__main">
@@ -42,11 +43,7 @@ export default class TripInfoView extends AbstractViewElement {
   }
 
   getTemplate() {
-    const totalCost = this._tripPointsArray.reduce((acc, tp) => {
-      return acc + tp.basePrice + tp.offers.reduce((med, offer) => {
-        return med + offer.price;
-      }, 0);
-    }, 0);
+    const totalCost = this._tripPointsArray.reduce((acc, tp) => (acc + TripPointType.getPointCost(tp)), 0);
     return `<section class="trip-main__trip-info  trip-info">
             ${createMainInfo(this._tripPointsArray)}
             ${createTotalCost(totalCost)}

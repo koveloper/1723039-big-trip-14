@@ -9,8 +9,17 @@ export default class AbstractPresenter {
     this._externalEventsCallback = null;
   }
 
-  _renderView(view, ...args) {
-    renderElement(this._container, view, ...args);
+  init() {
+    throw new Error('method is not defined in child');
+  }
+
+  setLoading(value) {
+    this._isLoading = value;
+    this.init();
+  }
+
+  isLoading() {
+    return this._isLoading;
   }
 
   setExternalEventsObserver(source) {
@@ -27,16 +36,7 @@ export default class AbstractPresenter {
     }
   }
 
-  setLoading(value) {
-    this._isLoading = value;
-    this.init();
-  }
-
-  isLoading() {
-    return this._isLoading;
-  }
-
-  init() {
-    throw new Error('method is not defined in child');
+  _renderView(view, ...args) {
+    renderElement(this._container, view, ...args);
   }
 }
