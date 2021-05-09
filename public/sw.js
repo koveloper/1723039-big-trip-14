@@ -7,7 +7,7 @@ const RESPONSE_SAFE_TYPE = 'basic';
 
 self.addEventListener('install', (evt) => {
   evt.waitUntil(
-      caches.open(CACHE_NAME)
+    caches.open(CACHE_NAME)
       .then((cache) => {
         return cache.addAll([
           '/',
@@ -44,19 +44,19 @@ self.addEventListener('install', (evt) => {
 
 self.addEventListener('activate', (evt) => {
   evt.waitUntil(
-      caches.keys()
+    caches.keys()
       .then(
-          (keys) => Promise.all(
-              keys.map(
-                  (key) => {
-                    if (key.startsWith(CACHE_PREFIX) && key !== CACHE_NAME) {
-                      return caches.delete(key);
-                    }
+        (keys) => Promise.all(
+          keys.map(
+            (key) => {
+              if (key.startsWith(CACHE_PREFIX) && key !== CACHE_NAME) {
+                return caches.delete(key);
+              }
 
-                    return null;
-                  })
+              return null;
+            })
             .filter((key) => key !== null),
-          ),
+        ),
       ),
   );
 });
@@ -65,7 +65,7 @@ const handleFetch = (evt) => {
   const {request} = evt;
 
   evt.respondWith(
-      caches.match(request)
+    caches.match(request)
       .then((cacheResponse) => {
 
         if (cacheResponse) {
