@@ -1,6 +1,6 @@
 import AbstractViewElement from './abstract-view-element.js';
 
-export default class TripPointsContainer extends AbstractViewElement {
+export default class TripPointsContainerView extends AbstractViewElement {
   constructor() {
     super();
   }

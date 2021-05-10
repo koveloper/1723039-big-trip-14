@@ -55,14 +55,34 @@ const createFavoriteButton = (isFavorite) => {
           </button>`;
 };
 
-export default class TripPoint extends AbstractInteractiveElement {
+const createOpenButton = (isOnline) => {
+  return `<button class="event__rollup-btn" type="button" ${isOnline ? '' : 'disabled'}>
+                  <span class="visually-hidden">Open event</span>
+                </button>`;
+};
+
+export default class TripPointView extends AbstractInteractiveElement {
   constructor(tripPoint) {
     super();
     this.tripPoint = tripPoint;
+    this._isOnline = true;
   }
 
   set tripPoint(value) {
     this._tripPoint = value;
+    this.restoreHandlers();
+  }
+
+  get tripPoint() {
+    return this._tripPoint;
+  }
+
+  setOnlineMode(isOnline) {
+    this._isOnline = isOnline;
+    this.updateElement();
+  }
+
+  restoreHandlers() {
     this._registerEventSupport({
       parent: this.getElement(),
       selectorInsideParent: '.event__rollup-btn',
@@ -77,10 +97,6 @@ export default class TripPoint extends AbstractInteractiveElement {
     });
   }
 
-  get tripPoint() {
-    return this._tripPoint;
-  }
-
   getTemplate() {
     return `<li class="trip-events__item">
               <div class="event">
@@ -91,10 +107,18 @@ export default class TripPoint extends AbstractInteractiveElement {
                 ${createBasePrice(this.tripPoint.basePrice)}                
                 ${createOffers(this.tripPoint.offers)}                
                 ${createFavoriteButton(this.tripPoint.isFavorite)}
-                <button class="event__rollup-btn" type="button">
-                  <span class="visually-hidden">Open event</span>
-                </button>
+                ${createOpenButton(this._isOnline)}                
               </div>
             </li>`;
   }
+
+  unlockWithError() {
+    this.getElement().querySelector('.event').classList.add('shake');
+    this.getElement().querySelector('.event').classList.add('event--edit__performing-operation-error');
+    setTimeout(() => {
+      this.getElement().querySelector('.event').classList.remove('event--edit__performing-operation-error');
+      this.getElement().querySelector('.event').classList.remove('shake');
+    }, 2000);
+  }
+
 }

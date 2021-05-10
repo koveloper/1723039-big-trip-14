@@ -1,5 +1,5 @@
 import AbstractInteractiveElement from './abstract-interactive-element.js';
-import {SortRules} from '../app-data.js';
+import Sort from '../app-structures/sort.js';
 import {ViewEvents} from './view-events.js';
 
 const createSortTemplate = (title = '', checked) => {
@@ -10,12 +10,12 @@ const createSortTemplate = (title = '', checked) => {
 };
 
 const createSortTemplates = (selectedSortType) => {
-  return SortRules.getSortTypes().map((title) => {
+  return Sort.getSortTypes().map((title) => {
     return createSortTemplate(title, title === selectedSortType);
   }).join('');
 };
 
-export default class Sort extends AbstractInteractiveElement {
+export default class SortView extends AbstractInteractiveElement {
   constructor() {
     super();
     this._sortTypeClickHandler = this._sortTypeClickHandler.bind(this);
@@ -25,7 +25,7 @@ export default class Sort extends AbstractInteractiveElement {
       handlerUID: ViewEvents.uid.SORT_TYPE_CLICK,
       eventType: ViewEvents.type.CLICK,
     });
-    this._currentSortType = SortRules.getSortTypes()[0];
+    this._currentSortType = Sort.getSortTypes()[0];
     this.setEventListener(ViewEvents.uid.SORT_TYPE_CLICK, this._sortTypeClickHandler);
     this._sortTypeClickCallback = null;
     this._sortElements = [...this.getElement().querySelectorAll('.trip-sort__input')];
@@ -36,7 +36,7 @@ export default class Sort extends AbstractInteractiveElement {
   }
 
   setSortType(type) {
-    if (!SortRules.getSortTypes().find((t) => t === type)) {
+    if (!Sort.getSortTypes().find((t) => t === type)) {
       return;
     }
     this._currentSortType = type;

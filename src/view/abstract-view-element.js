@@ -19,6 +19,10 @@ export default class AbstractViewElement {
     return this._element;
   }
 
+  isElementExists() {
+    return this._element !== null;
+  }
+
   removeElement() {
     this._element = null;
   }

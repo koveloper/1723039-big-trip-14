@@ -28,18 +28,12 @@ export default class Api {
   constructor(endPoint, authorization) {
     this._endPoint = endPoint;
     this._authorization = authorization;
-  }
-
-  _removeOffersId(tripPoint) {
-    const handledTripPoint = Object.assign({}, tripPoint);
-    if(handledTripPoint.offers) {
-      handledTripPoint.offers.forEach((offer) => {delete offer.id;});
-    }
-    return handledTripPoint;
+    this.getDestinations = this.getDestinations.bind(this);
+    this.getOffers = this.getOffers.bind(this);
+    this.getTripPoints = this.getTripPoints.bind(this);
   }
 
   updateTripPoint(tripPoint) {
-    tripPoint = this._removeOffersId(tripPoint);
     return this._makeRequestWithDataResponse({
       url: `points/${tripPoint.id}`,
       body: Api.adaptToBack(tripPoint),
@@ -57,12 +51,22 @@ export default class Api {
 
   addTripPoint(tripPoint) {
     delete tripPoint.id;
-    tripPoint = this._removeOffersId(tripPoint);
     return this._makeRequestWithDataResponse({
       url: 'points',
       body: Api.adaptToBack(tripPoint),
       method: Method.POST,
       headers: new Headers({'Content-Type': 'application/json'}),
+    });
+  }
+
+  sync(tripPoints) {
+    return this._makeRequestWithDataResponse({
+      url: 'points/sync',
+      body: Api.adaptToBack(tripPoints),
+      method: Method.POST,
+      headers: new Headers({'Content-Type': 'application/json'}),
+    }).then((sync) => {
+      return sync.updated;
     });
   }
 

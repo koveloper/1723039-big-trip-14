@@ -49,9 +49,9 @@ export default class AbstractInteractiveElement extends AbstractViewElement {
     }
 
     this._data = Object.assign(
-        {},
-        this._data,
-        update,
+      {},
+      this._data,
+      update,
     );
 
     if (withoutElementUpdate) {
@@ -105,30 +105,30 @@ export default class AbstractInteractiveElement extends AbstractViewElement {
   _registerEventSupport({handlerUID, parent, selectorInsideParent, eventType} = {}) {
     this._unregisterEventSupport(handlerUID);
     this._events[handlerUID] = Object.assign(
-        {},
-        this._events[handlerUID],
-        this._createEventHandler(
-            handlerUID,
-            parent,
-            selectorInsideParent,
-            eventType,
-        ),
+      {},
+      this._events[handlerUID],
+      this._createEventHandler(
+        handlerUID,
+        parent,
+        selectorInsideParent,
+        eventType,
+      ),
     );
   }
 
   _unregisterEventSupport(handlerUID) {
-    if (this._events[handlerUID]) {
+    if (this._events[handlerUID] && 'unregisterHandler' in this._events[handlerUID]) {
       this._events[handlerUID].unregisterHandler();
     }
   }
 
   setEventListener(handlerUID, callbackFunction) {
     this._events[handlerUID] = Object.assign(
-        {},
-        this._events[handlerUID],
-        {
-          listener: callbackFunction,
-        },
+      {},
+      this._events[handlerUID],
+      {
+        listener: callbackFunction,
+      },
     );
   }
 }

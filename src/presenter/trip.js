@@ -3,14 +3,15 @@ import SortView from '../view/sort-menu.js';
 import TripPointPresenter from './trip-point.js';
 import TripPointsContainerView from '../view/trip-points-container.js';
 import TripPointsContainerEmptyView from '../view/trip-points-container-empty.js';
-import TripPointEditor from '../view/trip-point-editor.js';
+import TripPointEditorView from '../view/trip-point-editor.js';
+import Filters from '../app-structures/filters.js';
+import Sort from '../app-structures/sort.js';
 import {renderElement, RenderPosition, removeView} from '../utils/ui.js';
-import {SortRules, FiltersRules} from '../app-data.js';
 import {ViewValues} from '../constants.js';
 import {ViewEvents} from '../view/view-events.js';
 
 export default class TripPresenter extends AbstractPresenter {
-  constructor({container, tripPointsModel, filtersModel, switchToTableModeCallback}) {
+  constructor({container, api, tripPointsModel, filtersModel, switchToTableModeCallback}) {
     super(container);
     this._sortView = new SortView();
     this._tripPointsContainerView = new TripPointsContainerView();
@@ -20,6 +21,7 @@ export default class TripPresenter extends AbstractPresenter {
     this._tripPointsPresenters = {};
     this._switchToTableModeCallback = switchToTableModeCallback;
     this._currentEditForm = null;
+    this._api = api;
 
     this._handleTripPointsModelEvent = this._handleTripPointsModelEvent.bind(this);
     this._handleFiltersModelEvent = this._handleFiltersModelEvent.bind(this);
@@ -31,12 +33,14 @@ export default class TripPresenter extends AbstractPresenter {
     this._handleCloseEditFormEvent = this._handleCloseEditFormEvent.bind(this);
     this._handleUpdateTripPointEvent = this._handleUpdateTripPointEvent.bind(this);
     this._handleDeleteTripPointEvent = this._handleDeleteTripPointEvent.bind(this);
+    this._handleExternalEvent = this._handleExternalEvent.bind(this);
 
     this._tripPointsModel = tripPointsModel;
     this._tripPointsModel.addObserver(this._handleTripPointsModelEvent);
 
     this._filtersModel = filtersModel;
     this._filtersModel.addObserver(this._handleFiltersModelEvent);
+    this._setExternalEventsCallback(this._handleExternalEvent);
   }
 
   setAddNewPointMode() {
@@ -64,16 +68,34 @@ export default class TripPresenter extends AbstractPresenter {
     }
   }
 
-  _handleUpdateTripPointEvent(update) {
-    if(this._currentEditForm) {
-      this._currentEditForm.setBlock(true);
+  _handleExternalEvent(evt) {
+    if (evt.type === ViewValues.externalEvent.ONLINE) {
+      Object.values(this._tripPointsPresenters).forEach((point) => point.setOnlineMode(evt.data));
     }
-    this._tripPointsModel.updateTripPoint(ViewValues.updateType.PATCH, update);
   }
 
-  _handleDeleteTripPointEvent(tripPointData) {
-    this._currentEditForm.setBlock(true);
-    this._tripPointsModel.deleteTripPoint(ViewValues.updateType.MAJOR, tripPointData);
+  _handleUpdateTripPointEvent(point) {
+    if (this._currentEditForm) {
+      this._currentEditForm.setBlock(true);
+    }
+    this._api.updateTripPoint(Object.assign({}, point))
+      .then((updatedPoint) => {
+        this._tripPointsModel.updateTripPoint(ViewValues.updateType.PATCH, updatedPoint);
+      }).catch(() => {
+        this._tripPointsModel.commitError(point);
+      });
+  }
+
+  _handleDeleteTripPointEvent(point) {
+    if (this._currentEditForm) {
+      this._currentEditForm.setBlock(true);
+    }
+    this._api.deleteTripPoint(Object.assign({}, point))
+      .then(() => {
+        this._tripPointsModel.deleteTripPoint(ViewValues.updateType.MINOR, point);
+      }).catch(() => {
+        this._tripPointsModel.commitError(point);
+      });
   }
 
   _handleSortTypeClick(sortType) {
@@ -91,20 +113,24 @@ export default class TripPresenter extends AbstractPresenter {
   }
 
   _handleTripPointsModelEvent(evt) {
-    if(evt.type === ViewValues.updateType.INIT_ERROR) {
+    if (evt.type === ViewValues.updateType.INIT_ERROR) {
       removeView(this._noPointsView);
       this._noPointsView.setLoadingState(ViewValues.loadStates.ERROR);
       this.setLoading(true);
       return;
     }
-    if(evt.type === ViewValues.updateType.ERROR) {
-      if(this._currentEditForm) {
+    if (evt.type === ViewValues.updateType.ERROR) {
+      if (this._currentEditForm) {
         this._currentEditForm.unlockWithError();
+      } else {
+        if (evt.data.id in this._tripPointsPresenters) {
+          this._tripPointsPresenters[evt.data.id].unlockWithError();
+        }
       }
       return;
     }
 
-    if(this._currentEditForm) {
+    if (this._currentEditForm) {
       this._currentEditForm.setBlock(false);
     }
     this._handleCloseEditFormEvent(this._currentEditForm);
@@ -122,7 +148,7 @@ export default class TripPresenter extends AbstractPresenter {
       case ViewValues.updateType.INIT:
         this._noPointsView.setLoadingState(ViewValues.loadStates.LOAD_DONE);
         removeView(this._noPointsView);
-        this._newPointView = new TripPointEditor();
+        this._newPointView = new TripPointEditorView();
         this._newPointView.setEventListener(ViewEvents.uid.DELETE_POINT, this._handleCloseNewPointButtonClick);
         this._newPointView.setEventListener(ViewEvents.uid.SAVE_POINT, this._handleAddNewPointButtonClick);
         this.setLoading(false);
@@ -141,8 +167,8 @@ export default class TripPresenter extends AbstractPresenter {
 
   _getTripPoints() {
     return this._tripPointsModel.getTripPoints().slice()
-      .filter(FiltersRules.getFilterFunction(this._filtersModel.getFilterType()))
-      .sort(SortRules.getSortFunction(this._currentSortType));
+      .filter(Filters.getFilterFunction(this._filtersModel.getFilterType()))
+      .sort(Sort.getSortFunction(this._currentSortType));
   }
 
   _clearTripPoints() {
@@ -208,7 +234,7 @@ export default class TripPresenter extends AbstractPresenter {
   }
 
   _handleCloseNewPointButtonClick() {
-    if(!this._newPointView) {
+    if (!this._newPointView) {
       return;
     }
     removeView(this._newPointView);
@@ -217,7 +243,15 @@ export default class TripPresenter extends AbstractPresenter {
   }
 
   _handleAddNewPointButtonClick() {
-    this._currentEditForm.setBlock(true);
-    this._tripPointsModel.addTripPoint(ViewValues.updateType.MAJOR, this._newPointView.tripPoint);
+    if (this._currentEditForm) {
+      this._currentEditForm.setBlock(true);
+    }
+    const pointFromForm = this._newPointView.tripPoint;
+    this._api.addTripPoint(Object.assign({}, pointFromForm))
+      .then((newPoint) => {
+        this._tripPointsModel.addTripPoint(ViewValues.updateType.MAJOR, newPoint);
+      }).catch(() => {
+        this._commitError(pointFromForm);
+      });
   }
 }

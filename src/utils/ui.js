@@ -48,6 +48,9 @@ export const removeView = (component) => {
   if (!(component instanceof AbstractViewElement)) {
     throw new Error('Can remove only ViewElement');
   }
+  if(!component.isElementExists()) {
+    return;
+  }
   component.getElement().remove();
   component.removeElement();
 };
@@ -69,4 +72,14 @@ export const restoreFocus = (target, focusObj) => {
   if (focusObj.caret) {
     target.setSelectionRange(focusObj.caret[0], focusObj.caret[1]);
   }
+};
+
+export const displayModalMessage = (text, delay = 3000) => {
+  const modal = document.createElement('div');
+  modal.classList.add('modal_message');
+  modal.innerHTML = `<span>${text}</span>`;
+  document.body.append(modal);
+  setTimeout(() => {
+    modal.remove(modal);
+  }, delay);
 };
