@@ -1,11 +1,11 @@
-import {ViewValues} from '../constants.js';
+import {AppConstants} from '../constants.js';
 import {TimeUtils} from '../utils/time.js';
 
-const filters = Object.values(ViewValues.filters);
+const filters = Object.values(AppConstants.filter);
 const filtersFunctions = {
-  [ViewValues.filters.EVERYTHING]: () => true,
-  [ViewValues.filters.FUTURE]: (point) => TimeUtils.isInFuture(point.dateFrom) || TimeUtils.isCurrent(point.dateFrom, point.dateTo),
-  [ViewValues.filters.PAST]: (point) => TimeUtils.isInPast(point.dateTo) || TimeUtils.isCurrent(point.dateFrom, point.dateTo),
+  [AppConstants.filter.EVERYTHING]: () => true,
+  [AppConstants.filter.FUTURE]: (point) => TimeUtils.isInFuture(point.dateFrom) || TimeUtils.isCurrent(point.dateFrom, point.dateTo),
+  [AppConstants.filter.PAST]: (point) => TimeUtils.isInPast(point.dateTo) || TimeUtils.isCurrent(point.dateFrom, point.dateTo),
 };
 
 const Filters = {

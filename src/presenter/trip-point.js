@@ -1,5 +1,5 @@
-import TripPointEditorView from '../view/trip-point-editor.js';
-import TripPointView from '../view/trip-point.js';
+import TripPointEditorView from '../view/trip-point-editor-view.js';
+import TripPointView from '../view/trip-point-view.js';
 import {ViewEvents} from '../view/view-events.js';
 import {renderElement, toggleView, removeView} from '../utils/ui.js';
 
@@ -59,16 +59,12 @@ export default class TripPointPresenter {
     removeView(this._tripPointEditView);
   }
 
-  get tripPointData() {
-    return this._tripPointData;
-  }
-
   setEditModeEnabled(enabled) {
     const from = enabled ? this._tripPointView : this._tripPointEditView;
     const to = enabled ? this._tripPointEditView : this._tripPointView;
     toggleView(this._container, from, to);
     if (!enabled) {
-      this._tripPointEditView.tripPoint = this._tripPointData;
+      this._tripPointEditView.setTripPoint(this._tripPointData);
     } else {
       this._tripPointEditView.restoreHandlers();
     }
@@ -105,7 +101,7 @@ export default class TripPointPresenter {
   }
 
   _handleSavePointChangesButtonClick() {
-    this._commitUpdate(this._tripPointEditView.tripPoint);
+    this._commitUpdate(this._tripPointEditView.getTripPoint());
   }
 
   _commitUpdate(updatedObjectPart) {

@@ -14,19 +14,19 @@ export default class Provider {
     this._isMustBeSunced = false;
   }
 
-  _getInOnlineMode(apiMethod, itemNameInStorageObject) {
-    if (isOnline()) {
-      return apiMethod()
-        .then((value) => {
-          this._storage.save({[itemNameInStorageObject]: value});
-          return value;
-        });
-    }
-    return null;
+  getTripPoints() {
+    return this._getDataInOnlineMode(this._api.getTripPoints, DataField.POINTS)
+            || this._getDataInOfflineMode(DataField.POINTS);
   }
 
-  _getInOfflineMode(itemNameInStorageObject) {
-    return Promise.resolve(this._storage.getAll()[itemNameInStorageObject] || []);
+  getDestinations() {
+    return this._getDataInOnlineMode(this._api.getDestinations, DataField.DESTINATIONS)
+            || this._getDataInOfflineMode(DataField.DESTINATIONS);
+  }
+
+  getOffers() {
+    return this._getDataInOnlineMode(this._api.getOffers, DataField.OFFERS)
+            || this._getDataInOfflineMode(DataField.OFFERS);
   }
 
   updateTripPoint(tripPoint) {
@@ -34,7 +34,7 @@ export default class Provider {
       return this._api.updateTripPoint(tripPoint);
     }
     this._isMustBeSunced = true;
-    return this._getInOfflineMode(DataField.POINTS)
+    return this._getDataInOfflineMode(DataField.POINTS)
       .then((points) => {
         this._storage.save({[DataField.POINTS]: points.map((point) => {
           return point.id === tripPoint.id ? tripPoint : point;
@@ -43,19 +43,12 @@ export default class Provider {
       });
   }
 
-  getTripPoints() {
-    return this._getInOnlineMode(this._api.getTripPoints, DataField.POINTS)
-            || this._getInOfflineMode(DataField.POINTS);
+  deleteTripPoint(tripPoint) {
+    return this._api.deleteTripPoint(tripPoint);
   }
 
-  getDestinations() {
-    return this._getInOnlineMode(this._api.getDestinations, DataField.DESTINATIONS)
-            || this._getInOfflineMode(DataField.DESTINATIONS);
-  }
-
-  getOffers() {
-    return this._getInOnlineMode(this._api.getOffers, DataField.OFFERS)
-            || this._getInOfflineMode(DataField.OFFERS);
+  addTripPoint(tripPoint) {
+    return this._api.addTripPoint(tripPoint);
   }
 
   sync() {
@@ -70,11 +63,18 @@ export default class Provider {
       });
   }
 
-  deleteTripPoint(tripPoint) {
-    return this._api.deleteTripPoint(tripPoint);
+  _getDataInOnlineMode(apiMethod, itemNameInStorageObject) {
+    if (isOnline()) {
+      return apiMethod()
+        .then((value) => {
+          this._storage.save({[itemNameInStorageObject]: value});
+          return value;
+        });
+    }
+    return null;
   }
 
-  addTripPoint(tripPoint) {
-    return this._api.addTripPoint(tripPoint);
+  _getDataInOfflineMode(itemNameInStorageObject) {
+    return Promise.resolve(this._storage.getAll()[itemNameInStorageObject] || []);
   }
 }

@@ -1,11 +1,11 @@
 import AbstractViewElement from './abstract-view-element.js';
-import {ViewValues} from '../constants.js';
+import {AppConstants} from '../constants.js';
 
 
 export default class TripPointsContainerEmptyView extends AbstractViewElement {
   constructor() {
     super();
-    this._state = ViewValues.loadStates.LOADING;
+    this._state = AppConstants.loadState.LOADING;
   }
 
   setLoadingState(value) {
@@ -22,15 +22,15 @@ export default class TripPointsContainerEmptyView extends AbstractViewElement {
   getTemplate() {
     let sign;
     switch (this._state) {
-      case ViewValues.loadStates.ERROR:
+      case AppConstants.loadState.ERROR:
         sign = 'Something goes wrong...<br>Try to connect later...';
         break;
-      case ViewValues.loadStates.LOAD_DONE:
+      case AppConstants.loadState.LOAD_DONE:
         sign = 'Click New Event to create your first point';
         break;
       default:
         sign = 'Loading...';
     }
-    return `<p class="trip-events__msg ${this._state === ViewValues.loadStates.ERROR ? 'trip-events__msg__error' : ''}">${sign}</p>`;
+    return `<p class="trip-events__msg ${this._state === AppConstants.loadState.ERROR ? 'trip-events__msg__error' : ''}">${sign}</p>`;
   }
 }

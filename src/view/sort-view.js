@@ -18,7 +18,7 @@ const createSortTemplates = (selectedSortType) => {
 export default class SortView extends AbstractInteractiveElement {
   constructor() {
     super();
-    this._sortTypeClickHandler = this._sortTypeClickHandler.bind(this);
+    this._handleSortTypeClick = this._handleSortTypeClick.bind(this);
     this._registerEventSupport({
       parent: this.getElement().parentElement,
       selectorInsideParent: '.trip-events__trip-sort',
@@ -26,7 +26,7 @@ export default class SortView extends AbstractInteractiveElement {
       eventType: ViewEvents.type.CLICK,
     });
     this._currentSortType = Sort.getSortTypes()[0];
-    this.setEventListener(ViewEvents.uid.SORT_TYPE_CLICK, this._sortTypeClickHandler);
+    this.setEventListener(ViewEvents.uid.SORT_TYPE_CLICK, this._handleSortTypeClick);
     this._sortTypeClickCallback = null;
     this._sortElements = [...this.getElement().querySelectorAll('.trip-sort__input')];
   }
@@ -46,15 +46,15 @@ export default class SortView extends AbstractInteractiveElement {
     this._sortElements.find((el) => el.value === ('sort-' + type)).setAttribute('checked', true);
   }
 
-  _sortTypeClickHandler(evt) {
-    if (evt.event.target.dataset.sortType && this._sortTypeClickCallback) {
-      this._sortTypeClickCallback(evt.event.target.dataset.sortType);
-    }
-  }
-
   getTemplate() {
     return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
               ${createSortTemplates(this._currentSortType)}            
             </form>`;
+  }
+
+  _handleSortTypeClick(evt) {
+    if (evt.event.target.dataset.sortType && this._sortTypeClickCallback) {
+      this._sortTypeClickCallback(evt.event.target.dataset.sortType);
+    }
   }
 }

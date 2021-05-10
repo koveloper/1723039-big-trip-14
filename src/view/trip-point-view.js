@@ -64,17 +64,8 @@ const createOpenButton = (isOnline) => {
 export default class TripPointView extends AbstractInteractiveElement {
   constructor(tripPoint) {
     super();
-    this.tripPoint = tripPoint;
+    this._tripPoint = tripPoint;
     this._isOnline = true;
-  }
-
-  set tripPoint(value) {
-    this._tripPoint = value;
-    this.restoreHandlers();
-  }
-
-  get tripPoint() {
-    return this._tripPoint;
   }
 
   setOnlineMode(isOnline) {
@@ -97,21 +88,6 @@ export default class TripPointView extends AbstractInteractiveElement {
     });
   }
 
-  getTemplate() {
-    return `<li class="trip-events__item">
-              <div class="event">
-                ${createDate(this.tripPoint.dateFrom)}
-                ${createType(this.tripPoint.type)}
-                ${createDestinationTitle(this.tripPoint.destination.name)}
-                ${createShedule(this.tripPoint.dateFrom, this.tripPoint.dateTo)}                
-                ${createBasePrice(this.tripPoint.basePrice)}                
-                ${createOffers(this.tripPoint.offers)}                
-                ${createFavoriteButton(this.tripPoint.isFavorite)}
-                ${createOpenButton(this._isOnline)}                
-              </div>
-            </li>`;
-  }
-
   unlockWithError() {
     this.getElement().querySelector('.event').classList.add('shake');
     this.getElement().querySelector('.event').classList.add('event--edit__performing-operation-error');
@@ -121,4 +97,18 @@ export default class TripPointView extends AbstractInteractiveElement {
     }, 2000);
   }
 
+  getTemplate() {
+    return `<li class="trip-events__item">
+              <div class="event">
+                ${createDate(this._tripPoint.dateFrom)}
+                ${createType(this._tripPoint.type)}
+                ${createDestinationTitle(this._tripPoint.destination.name)}
+                ${createShedule(this._tripPoint.dateFrom, this._tripPoint.dateTo)}                
+                ${createBasePrice(this._tripPoint.basePrice)}                
+                ${createOffers(this._tripPoint.offers)}                
+                ${createFavoriteButton(this._tripPoint.isFavorite)}
+                ${createOpenButton(this._isOnline)}                
+              </div>
+            </li>`;
+  }
 }

@@ -6,7 +6,7 @@ export const ViewEvents = {
     SAVE_POINT: 'save-point',
     DELETE_POINT: 'delete-point',
     SORT_TYPE_CLICK: 'sort-type-click',
-    EVENT_TYPE_CLICK: 'event-type-click',
+    POINT_TYPE_CLICK: 'event-type-click',
     DESTINATION_FIELD_INPUT: 'destination-field-input',
     PRICE_FIELD_INPUT: 'proce-field-input',
     OFFERS_CLICK: 'offers-click',
